@@ -5,37 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Lyra App v6 - Prueba Firebase</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="login-box" style="margin: 50px auto;">
     <h1>🔥 Prueba de Firebase</h1>
-    <p id="estadoFirebase">Conectando...</p>
+    <p id="estadoFirebase">Preparando prueba...</p>
     <button class="btn btn-primary" id="btnProbar">Probar Conexión</button>
+    <div id="resultado" style="margin-top: 20px; padding: 15px; border-radius: 6px; display: none;"></div>
 </div>
 
 <script type="module">
-    import { auth, db, storage } from './js/firebase.js';
+    import { auth, db, storage } from './firebase.js';
     
     const estadoEl = document.getElementById('estadoFirebase');
     const btnProbar = document.getElementById('btnProbar');
+    const resultadoEl = document.getElementById('resultado');
+    
+    estadoEl.textContent = '✅ Listo para probar';
     
     btnProbar.addEventListener('click', async () => {
-        estadoEl.textContent = '⏳ Probando conexión...';
+        btnProbar.disabled = true;
+        btnProbar.textContent = '⏳ Conectando...';
+        resultadoEl.style.display = 'none';
+        
         try {
-            // Verificar que los módulos se cargaron
-            if (auth && db && storage) {
-                estadoEl.innerHTML = '✅ <strong>Firebase conectado correctamente</strong><br><br>Auth: OK<br>Firestore: OK<br>Storage: OK';
-                estadoEl.style.color = '#166534';
-            } else {
-                estadoEl.textContent = '❌ Error: algún módulo no se cargó';
-                estadoEl.style.color = '#991b1b';
-            }
+            if (!auth) throw new Error('Auth no está disponible');
+            if (!db) throw new Error('Firestore no está disponible');
+            if (!storage) throw new Error('Storage no está disponible');
+            
+            resultadoEl.innerHTML = `
+                <h3 style="color: #166534; margin-bottom: 10px;">✅ Firebase conectado correctamente</h3>
+                <ul style="text-align: left; line-height: 1.8;">
+                    <li><strong>Auth:</strong> ✅ OK</li>
+                    <li><strong>Firestore:</strong> ✅ OK</li>
+                    <li><strong>Storage:</strong> ✅ OK</li>
+                </ul>
+            `;
+            resultadoEl.style.background = '#dcfce7';
+            resultadoEl.style.color = '#166534';
+            resultadoEl.style.display = 'block';
+            estadoEl.textContent = '✅ Firebase conectado';
+            
         } catch (error) {
-            estadoEl.textContent = '❌ Error: ' + error.message;
-            estadoEl.style.color = '#991b1b';
+            console.error('Error:', error);
+            resultadoEl.innerHTML = `
+                <h3 style="color: #991b1b; margin-bottom: 10px;">❌ Error de conexión</h3>
+                <p><strong>Mensaje:</strong> ${error.message}</p>
+            `;
+            resultadoEl.style.background = '#fee2e2';
+            resultadoEl.style.color = '#991b1b';
+            resultadoEl.style.display = 'block';
+            estadoEl.textContent = '❌ Error de conexión';
+        } finally {
+            btnProbar.disabled = false;
+            btnProbar.textContent = 'Probar Conexión';
         }
     });
+    
+    console.log('📝 Script de prueba cargado correctamente');
 </script>
 </body>
 </html>
