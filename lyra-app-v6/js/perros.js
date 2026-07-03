@@ -23,9 +23,7 @@ function getPerrosPath() {
 }
 
 /**
- * Crea un nuevo perro con TODOS los campos de la v5.17
- * @param {Object} data - Datos del perro
- * @returns {Promise<Object>} Resultado de la operación
+ * Crea un nuevo perro con TODOS los campos exactos de la v5.17
  */
 export async function crearPerro(data) {
   try {
@@ -38,7 +36,7 @@ export async function crearPerro(data) {
     }
 
     const perroData = {
-      // Datos principales
+      // Datos principales del perro
       nombrePerro: data.nombrePerro.trim(),
       raza: data.raza || 'Mestizo',
       fechaNacimiento: data.fechaNacimiento || '',
@@ -101,7 +99,6 @@ export async function crearPerro(data) {
 
 /**
  * Obtiene todos los perros del usuario
- * @returns {Promise<Object>} Lista de perros
  */
 export async function obtenerPerros() {
   try {
@@ -132,8 +129,6 @@ export async function obtenerPerros() {
 
 /**
  * Obtiene un perro específico por su ID
- * @param {string} perroId - ID del perro
- * @returns {Promise<Object>} Datos del perro
  */
 export async function obtenerPerro(perroId) {
   try {
@@ -168,9 +163,6 @@ export async function obtenerPerro(perroId) {
 
 /**
  * Actualiza los datos de un perro
- * @param {string} perroId - ID del perro
- * @param {Object} data - Datos a actualizar
- * @returns {Promise<Object>} Resultado de la operación
  */
 export async function actualizarPerro(perroId, data) {
   try {
@@ -181,7 +173,6 @@ export async function actualizarPerro(perroId, data) {
     const perrosPath = getPerrosPath();
     const perroRef = doc(db, perrosPath, perroId);
     
-    // Verificar que existe
     const perroDoc = await getDoc(perroRef);
     if (!perroDoc.exists()) {
       return {
@@ -190,7 +181,6 @@ export async function actualizarPerro(perroId, data) {
       };
     }
 
-    // Actualizar solo los campos proporcionados
     const updateData = { ...data };
     await updateDoc(perroRef, updateData);
 
@@ -210,8 +200,6 @@ export async function actualizarPerro(perroId, data) {
 
 /**
  * Elimina un perro de Firestore
- * @param {string} perroId - ID del perro
- * @returns {Promise<Object>} Resultado de la operación
  */
 export async function eliminarPerro(perroId) {
   try {
@@ -238,9 +226,7 @@ export async function eliminarPerro(perroId) {
 }
 
 /**
- * Busca perros por nombre o propietario
- * @param {string} termino - Término de búsqueda
- * @returns {Promise<Object>} Perros encontrados
+ * Busca perros por nombre, dueño, microchip o raza
  */
 export async function buscarPerros(termino) {
   try {
@@ -254,9 +240,9 @@ export async function buscarPerros(termino) {
     const perrosFiltrados = resultado.perros.filter(perro => {
       return (
         (perro.nombrePerro && perro.nombrePerro.toLowerCase().includes(terminoLower)) ||
-        (perro.raza && perro.raza.toLowerCase().includes(terminoLower)) ||
         (perro.nombreDueno && perro.nombreDueno.toLowerCase().includes(terminoLower)) ||
-        (perro.microchip && perro.microchip.toLowerCase().includes(terminoLower))
+        (perro.microchip && perro.microchip.toLowerCase().includes(terminoLower)) ||
+        (perro.raza && perro.raza.toLowerCase().includes(terminoLower))
       );
     });
 
@@ -278,7 +264,6 @@ export async function buscarPerros(termino) {
 
 /**
  * Obtiene estadísticas de los perros
- * @returns {Promise<Object>} Estadísticas
  */
 export async function obtenerEstadisticasPerros() {
   try {
@@ -301,7 +286,6 @@ export async function obtenerEstadisticasPerros() {
       conAlergias: perros.filter(p => p.alergias && p.alergias.trim() !== '').length
     };
 
-    // Agrupar por raza
     perros.forEach(perro => {
       const raza = perro.raza || 'Mestizo';
       estadisticas.porRaza[raza] = (estadisticas.porRaza[raza] || 0) + 1;
@@ -323,8 +307,6 @@ export async function obtenerEstadisticasPerros() {
 
 /**
  * Calcula la edad a partir de la fecha de nacimiento
- * @param {string} fechaNacimiento - Fecha de nacimiento (YYYY-MM-DD)
- * @returns {string} Edad formateada
  */
 export function calcularEdad(fechaNacimiento) {
   if (!fechaNacimiento) return '';
@@ -349,7 +331,6 @@ export function calcularEdad(fechaNacimiento) {
 
 /**
  * Obtiene dueños únicos con sus perros
- * @returns {Promise<Object>} Lista de dueños
  */
 export async function obtenerDuenos() {
   try {
