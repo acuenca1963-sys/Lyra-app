@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 20px auto;
       padding: 20px;
       background: #f5f5f5;
@@ -28,6 +28,13 @@
       border-bottom: 2px solid #2e7d32;
       padding-bottom: 10px;
       margin-top: 0;
+    }
+    h3 {
+      color: #475569;
+      margin-top: 20px;
+      margin-bottom: 15px;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 8px;
     }
     input, select, textarea {
       width: 100%;
@@ -119,6 +126,14 @@
       font-size: 12px;
       color: #666;
     }
+    .foto-preview {
+      max-width: 150px;
+      max-height: 150px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      margin: 10px auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -126,32 +141,66 @@
 
   <div class="container">
     <h2>➕ Crear Nuevo Perro</h2>
+    
+    <h3>📸 Foto del Perro</h3>
+    <img id="fotoPreview" class="foto-preview" style="display:none;" src="" alt="Foto">
+    <div>
+      <input type="file" id="pFoto" accept="image/*" onchange="previewFoto(this)">
+      <button onclick="quitarFoto()">🗑️ Quitar Foto</button>
+    </div>
+
+    <h3>📋 Datos Principales</h3>
     <div class="grid-2">
-      <input type="text" id="pNombre" placeholder="Nombre del perro *">
+      <input type="text" id="pNombrePerro" placeholder="Nombre del perro *">
       <input type="text" id="pRaza" placeholder="Raza">
-      <input type="number" id="pEdad" placeholder="Edad (años)">
-      <input type="number" id="pPeso" placeholder="Peso (kg)">
+      <input type="date" id="pFechaNacimiento" placeholder="Fecha Nacimiento">
+      <input type="text" id="pEdad" placeholder="Edad (auto)" readonly>
       <select id="pSexo">
+        <option value="">- Sexo -</option>
         <option value="Macho">Macho</option>
         <option value="Hembra">Hembra</option>
       </select>
-      <input type="text" id="pColor" placeholder="Color">
-      <input type="text" id="pChip" placeholder="Número de chip">
-      <input type="text" id="pPropietario" placeholder="Nombre del propietario">
-      <input type="text" id="pTelefono" placeholder="Teléfono propietario">
-      <input type="email" id="pEmail" placeholder="Email propietario">
+      <input type="text" id="pMicrochip" placeholder="Microchip">
+      <input type="text" id="pPasaporte" placeholder="Pasaporte">
     </div>
-    <textarea id="pObservaciones" placeholder="Observaciones"></textarea>
-    <textarea id="pAlergias" placeholder="Alergias"></textarea>
-    <textarea id="pMedicacion" placeholder="Medicación"></textarea>
-    <button onclick="testCrearPerro()">Crear Perro</button>
+
+    <h3> Datos del Dueño</h3>
+    <div class="grid-2">
+      <input type="text" id="pNombreDueno" placeholder="Nombre del dueño *">
+      <input type="text" id="pDniDueno" placeholder="DNI Dueño">
+      <input type="tel" id="pTelefono" placeholder="Teléfono">
+      <input type="email" id="pEmail" placeholder="Email">
+      <input type="text" id="pDireccion" placeholder="Dirección" style="grid-column: 1 / -1;">
+      <input type="text" id="pVeterinario" placeholder="Veterinario">
+    </div>
+    <textarea id="pNotas" placeholder="Notas"></textarea>
+
+    <h3>🏥 Salud y Cuidados</h3>
+    <div class="grid-2">
+      <select id="pEstadoPelo">
+        <option value="Bien">✅ Bien</option>
+        <option value="Regular">⚠️ Regular</option>
+        <option value="Mal">❌ Mal</option>
+      </select>
+      <select id="pMedicacion">
+        <option value="No">No necesita medicación</option>
+        <option value="Sí">Sí necesita medicación</option>
+      </select>
+    </div>
+    <textarea id="pDetallesMedicacion" placeholder="Detalles de medicación / curas"></textarea>
+    <textarea id="pAlergias" placeholder="Alergias / Intolerancias"></textarea>
+
+    <h3>💰 Tarifa Especial (Opcional)</h3>
+    <input type="number" id="pPrecioPersonalizado" step="0.50" placeholder="Precio personalizado (€/día o clase)">
+
+    <button onclick="testCrearPerro()"> Guardar Perro</button>
   </div>
 
   <div class="container">
     <h2>📋 Lista de Perros</h2>
     <button onclick="testObtenerPerros()">Cargar Todos</button>
     <button class="secondary" onclick="testEstadisticas()">Ver Estadísticas</button>
-    <input type="text" id="buscarTermino" placeholder="Buscar por nombre, raza, propietario o chip">
+    <input type="text" id="buscarTermino" placeholder="Buscar por nombre, dueño, microchip o raza">
     <button class="secondary" onclick="testBuscar()">Buscar</button>
     <div id="listaPerros"></div>
   </div>
@@ -170,12 +219,14 @@
       actualizarPerro, 
       eliminarPerro,
       buscarPerros,
-      obtenerEstadisticasPerros
+      obtenerEstadisticasPerros,
+      calcularEdad
     } from './js/perros.js';
 
-    // Auto-login para pruebas (cambia estos datos por los tuyos)
     const TEST_EMAIL = 'elantkan@gmail.com';
     const TEST_PASSWORD = 'elantkan2025';
+
+    let fotoBase64 = null;
 
     function mostrarResultado(mensaje, tipo = 'info') {
       const resultado = document.getElementById('resultado');
@@ -191,23 +242,51 @@
         return;
       }
 
-      contenedor.innerHTML = perros.map(p => `
+      contenedor.innerHTML = perros.map(p => {
+        const fotoSrc = p.fotoUrl || p.foto || '';
+        const fotoHtml = fotoSrc ? `<img src="${fotoSrc}" style="max-width:100px;max-height:100px;border-radius:8px;">` : '🐕';
+        const edad = p.fechaNacimiento ? calcularEdad(p.fechaNacimiento) : (p.edad || 'N/A');
+        
+        return `
         <div class="perro-card">
-          <h3>${p.nombre} ${p.foto ? '📷' : ''} ${p.activo === false ? '(eliminado)' : ''}</h3>
-          <p><strong>Raza:</strong> ${p.raza || 'N/A'} | <strong>Sexo:</strong> ${p.sexo || 'N/A'} | <strong>Edad:</strong> ${p.edad || 0} años | <strong>Peso:</strong> ${p.peso || 0} kg</p>
-          <p><strong>Chip:</strong> ${p.chip || 'Sin chip'} | <strong>Color:</strong> ${p.color || 'N/A'}</p>
-          <p><strong>Propietario:</strong> ${p.propietario || 'N/A'} | <strong>Tel:</strong> ${p.telefonoPropietario || 'N/A'}</p>
+          <h3>${fotoHtml} ${p.nombrePerro} ${p.tieneFoto ? '📷' : ''}</h3>
+          <p><strong>Raza:</strong> ${p.raza || 'N/A'} | <strong>Sexo:</strong> ${p.sexo || 'N/A'} | <strong>Edad:</strong> ${edad}</p>
+          <p><strong>Microchip:</strong> ${p.microchip || 'Sin chip'} | <strong>Pasaporte:</strong> ${p.pasaporte || 'N/A'}</p>
+          <p><strong>Dueño:</strong> ${p.nombreDueno} | <strong>DNI:</strong> ${p.dniDueno || 'N/A'}</p>
+          <p><strong>Tel:</strong> ${p.telefono || 'N/A'} | <strong>Email:</strong> ${p.email || 'N/A'}</p>
+          <p><strong>Dirección:</strong> ${p.direccion || 'N/A'} | <strong>Vet:</strong> ${p.veterinario || 'N/A'}</p>
+          ${p.notas ? `<p><strong>📝 Notas:</strong> ${p.notas}</p>` : ''}
+          <p><strong>✨ Pelo:</strong> ${p.estadoPelo || 'Bien'} | <strong>💊 Medicación:</strong> ${p.medicacion || 'No'}</p>
+          ${p.detallesMedicacion ? `<p><strong>📋 Detalles:</strong> ${p.detallesMedicacion}</p>` : ''}
           ${p.alergias ? `<p><strong>⚠️ Alergias:</strong> ${p.alergias}</p>` : ''}
-          ${p.medicacion ? `<p><strong>💊 Medicación:</strong> ${p.medicacion}</p>` : ''}
-          ${p.observaciones ? `<p><strong>📝 Observaciones:</strong> ${p.observaciones}</p>` : ''}
+          ${p.precioPersonalizado ? `<p><strong>💶 Tarifa Especial:</strong> ${p.precioPersonalizado}€</p>` : ''}
           <p><strong>ID:</strong> ${p.id}</p>
           <button onclick="testActualizar('${p.id}')">Editar</button>
           <button class="danger" onclick="testEliminar('${p.id}')">Eliminar</button>
         </div>
-      `).join('');
+      `}).join('');
     }
 
-    // Auto-login al cargar
+    window.previewFoto = (input) => {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          fotoBase64 = e.target.result;
+          document.getElementById('fotoPreview').src = fotoBase64;
+          document.getElementById('fotoPreview').style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    window.quitarFoto = () => {
+      fotoBase64 = null;
+      document.getElementById('fotoPreview').src = '';
+      document.getElementById('fotoPreview').style.display = 'none';
+      document.getElementById('pFoto').value = '';
+    };
+
+    // Auto-login
     initAuthListener(async (isAuth, user) => {
       if (!isAuth) {
         mostrarResultado('Iniciando sesión automáticamente...', 'info');
@@ -222,35 +301,47 @@
 
     window.testCrearPerro = async function() {
       const data = {
-        nombre: document.getElementById('pNombre').value,
+        nombrePerro: document.getElementById('pNombrePerro').value,
         raza: document.getElementById('pRaza').value,
-        edad: parseInt(document.getElementById('pEdad').value) || 0,
-        peso: parseFloat(document.getElementById('pPeso').value) || 0,
+        fechaNacimiento: document.getElementById('pFechaNacimiento').value,
+        edad: document.getElementById('pEdad').value,
         sexo: document.getElementById('pSexo').value,
-        color: document.getElementById('pColor').value,
-        chip: document.getElementById('pChip').value,
-        propietario: document.getElementById('pPropietario').value,
-        telefonoPropietario: document.getElementById('pTelefono').value,
-        emailPropietario: document.getElementById('pEmail').value,
-        observaciones: document.getElementById('pObservaciones').value,
+        microchip: document.getElementById('pMicrochip').value,
+        pasaporte: document.getElementById('pPasaporte').value,
+        nombreDueno: document.getElementById('pNombreDueno').value,
+        dniDueno: document.getElementById('pDniDueno').value,
+        telefono: document.getElementById('pTelefono').value,
+        email: document.getElementById('pEmail').value,
+        direccion: document.getElementById('pDireccion').value,
+        veterinario: document.getElementById('pVeterinario').value,
+        notas: document.getElementById('pNotas').value,
+        estadoPelo: document.getElementById('pEstadoPelo').value,
+        medicacion: document.getElementById('pMedicacion').value,
+        detallesMedicacion: document.getElementById('pDetallesMedicacion').value,
         alergias: document.getElementById('pAlergias').value,
-        medicacion: document.getElementById('pMedicacion').value
+        precioPersonalizado: parseFloat(document.getElementById('pPrecioPersonalizado').value) || 0,
+        foto: fotoBase64 || '',
+        tieneFoto: fotoBase64 ? true : false
       };
 
-      mostrarResultado('⏳ Creando perro...', 'info');
+      mostrarResultado(' Creando perro...', 'info');
       const result = await crearPerro(data);
 
       if (result.success) {
         mostrarResultado(`✅ ${result.message}\n\nID: ${result.id}`, 'success');
         // Limpiar formulario
-        document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+          if (el.type !== 'file') el.value = '';
+        });
+        fotoBase64 = null;
+        document.getElementById('fotoPreview').style.display = 'none';
       } else {
         mostrarResultado(`❌ Error: ${result.error}`, 'error');
       }
     };
 
     window.testObtenerPerros = async function() {
-      mostrarResultado(' Cargando perros...', 'info');
+      mostrarResultado('⏳ Cargando perros...', 'info');
       const result = await obtenerPerros();
 
       if (result.success) {
@@ -268,7 +359,7 @@
         return;
       }
 
-      mostrarResultado(`⏳ Buscando "${termino}"...`, 'info');
+      mostrarResultado(` Buscando "${termino}"...`, 'info');
       const result = await buscarPerros(termino);
 
       if (result.success) {
@@ -286,12 +377,14 @@
       if (result.success) {
         const e = result.estadisticas;
         mostrarResultado(
-          ` Estadísticas:\n\n` +
+          `📊 Estadísticas:\n\n` +
           `Total perros: ${e.total}\n` +
           `Machos: ${e.machos}\n` +
           `Hembras: ${e.hembras}\n` +
-          `Con chip: ${e.conChip}\n` +
-          `Con foto: ${e.conFoto}\n\n` +
+          `Con microchip: ${e.conMicrochip}\n` +
+          `Con foto: ${e.conFoto}\n` +
+          `Con medicación: ${e.conMedicacion}\n` +
+          `Con alergias: ${e.conAlergias}\n\n` +
           `Por raza:\n${JSON.stringify(e.porRaza, null, 2)}`,
           'success'
         );
@@ -304,8 +397,8 @@
       const nuevoNombre = prompt('Nuevo nombre del perro:');
       if (!nuevoNombre) return;
 
-      mostrarResultado(' Actualizando perro...', 'info');
-      const result = await actualizarPerro(id, { nombre: nuevoNombre });
+      mostrarResultado('⏳ Actualizando perro...', 'info');
+      const result = await actualizarPerro(id, { nombrePerro: nuevoNombre });
 
       if (result.success) {
         mostrarResultado(`✅ ${result.message}`, 'success');
@@ -316,7 +409,7 @@
     };
 
     window.testEliminar = async function(id) {
-      if (!confirm('¿Eliminar este perro? (se marcará como inactivo)')) return;
+      if (!confirm('¿Eliminar este perro permanentemente?')) return;
 
       mostrarResultado('⏳ Eliminando perro...', 'info');
       const result = await eliminarPerro(id);
