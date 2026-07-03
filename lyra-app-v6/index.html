@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lyra App v6 - Prueba Firebase</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="login-box" style="margin: 50px auto;">
+    <h1>🔥 Prueba de Firebase</h1>
+    <p id="estadoFirebase">Conectando...</p>
+    <button class="btn btn-primary" id="btnProbar">Probar Conexión</button>
+</div>
+
+<script type="module">
+    import { auth, db, storage } from './js/firebase.js';
+    
+    const estadoEl = document.getElementById('estadoFirebase');
+    const btnProbar = document.getElementById('btnProbar');
+    
+    btnProbar.addEventListener('click', async () => {
+        estadoEl.textContent = '⏳ Probando conexión...';
+        try {
+            // Verificar que los módulos se cargaron
+            if (auth && db && storage) {
+                estadoEl.innerHTML = '✅ <strong>Firebase conectado correctamente</strong><br><br>Auth: OK<br>Firestore: OK<br>Storage: OK';
+                estadoEl.style.color = '#166534';
+            } else {
+                estadoEl.textContent = '❌ Error: algún módulo no se cargó';
+                estadoEl.style.color = '#991b1b';
+            }
+        } catch (error) {
+            estadoEl.textContent = '❌ Error: ' + error.message;
+            estadoEl.style.color = '#991b1b';
+        }
+    });
+</script>
+</body>
+</html>
