@@ -23,32 +23,57 @@ function getPerrosPath() {
 }
 
 /**
- * Crea un nuevo perro
+ * Crea un nuevo perro con TODOS los campos de la v5.17
  * @param {Object} data - Datos del perro
  * @returns {Promise<Object>} Resultado de la operación
  */
 export async function crearPerro(data) {
   try {
-    if (!data.nombre) {
+    if (!data.nombrePerro) {
       throw new Error('El nombre del perro es obligatorio');
     }
 
+    if (!data.nombreDueno) {
+      throw new Error('El nombre del dueño es obligatorio');
+    }
+
     const perroData = {
-      nombre: data.nombre.trim(),
+      // Datos principales
+      nombrePerro: data.nombrePerro.trim(),
       raza: data.raza || 'Mestizo',
-      edad: data.edad || 0,
-      peso: data.peso || 0,
-      sexo: data.sexo || 'Macho',
-      color: data.color || '',
-      chip: data.chip || '',
-      observaciones: data.observaciones || '',
+      fechaNacimiento: data.fechaNacimiento || '',
+      edad: data.edad || '',
+      sexo: data.sexo || '',
+      microchip: data.microchip || '',
+      pasaporte: data.pasaporte || '',
+      
+      // Datos del dueño
+      nombreDueno: data.nombreDueno.trim(),
+      dniDueno: data.dniDueno || '',
+      telefono: data.telefono || '',
+      email: data.email || '',
+      direccion: data.direccion || '',
+      
+      // Veterinario y notas
+      veterinario: data.veterinario || '',
+      notas: data.notas || '',
+      
+      // Salud y cuidados
+      estadoPelo: data.estadoPelo || 'Bien',
+      medicacion: data.medicacion || 'No',
+      detallesMedicacion: data.detallesMedicacion || '',
       alergias: data.alergias || '',
-      medicacion: data.medicacion || '',
+      
+      // Tarifa especial
+      precioPersonalizado: data.precioPersonalizado || 0,
+      
+      // Foto
       foto: data.foto || '',
-      propietario: data.propietario || '',
-      telefonoPropietario: data.telefonoPropietario || '',
-      emailPropietario: data.emailPropietario || '',
-      fechaRegistro: new Date().toISOString(),
+      fotoUrl: data.fotoUrl || '',
+      tieneFoto: data.tieneFoto || false,
+      
+      // Sistema
+      fechaCreacion: new Date().toISOString(),
       activo: true
     };
 
@@ -62,7 +87,7 @@ export async function crearPerro(data) {
       success: true,
       id: perroId,
       data: perroData,
-      message: `Perro "${perroData.nombre}" registrado correctamente`
+      message: `Perro "${perroData.nombrePerro}" registrado correctamente`
     };
 
   } catch (error) {
@@ -81,7 +106,7 @@ export async function crearPerro(data) {
 export async function obtenerPerros() {
   try {
     const perrosPath = getPerrosPath();
-    const q = query(collection(db, perrosPath), orderBy('fechaRegistro', 'desc'));
+    const q = query(collection(db, perrosPath), orderBy('nombrePerro', 'asc'));
     const snapshot = await getDocs(q);
 
     const perros = [];
@@ -166,7 +191,7 @@ export async function actualizarPerro(perroId, data) {
     }
 
     // Actualizar solo los campos proporcionados
-    const updateData = { ...data, fechaModificacion: new Date().toISOString() };
+    const updateData = { ...data };
     await updateDoc(perroRef, updateData);
 
     return {
@@ -184,7 +209,7 @@ export async function actualizarPerro(perroId, data) {
 }
 
 /**
- * Elimina un perro (marcado como inactivo)
+ * Elimina un perro de Firestore
  * @param {string} perroId - ID del perro
  * @returns {Promise<Object>} Resultado de la operación
  */
@@ -196,21 +221,7 @@ export async function eliminarPerro(perroId) {
 
     const perrosPath = getPerrosPath();
     const perroRef = doc(db, perrosPath, perroId);
-    
-    // Verificar que existe
-    const perroDoc = await getDoc(perroRef);
-    if (!perroDoc.exists()) {
-      return {
-        success: false,
-        error: 'Perro no encontrado'
-      };
-    }
-
-    // Eliminación lógica (marcar como inactivo)
-    await updateDoc(perroRef, { 
-      activo: false, 
-      fechaEliminacion: new Date().toISOString() 
-    });
+    await deleteDoc(perroRef);
 
     return {
       success: true,
@@ -219,35 +230,6 @@ export async function eliminarPerro(perroId) {
 
   } catch (error) {
     console.error('Error al eliminar perro:', error);
-    return {
-      success: false,
-      error: 'Error al eliminar el perro'
-    };
-  }
-}
-
-/**
- * Elimina físicamente un perro de Firestore
- * @param {string} perroId - ID del perro
- * @returns {Promise<Object>} Resultado de la operación
- */
-export async function eliminarPerroFisico(perroId) {
-  try {
-    if (!perroId) {
-      throw new Error('ID de perro requerido');
-    }
-
-    const perrosPath = getPerrosPath();
-    const perroRef = doc(db, perrosPath, perroId);
-    await deleteDoc(perroRef);
-
-    return {
-      success: true,
-      message: 'Perro eliminado permanentemente'
-    };
-
-  } catch (error) {
-    console.error('Error al eliminar perro físicamente:', error);
     return {
       success: false,
       error: 'Error al eliminar el perro'
@@ -271,10 +253,10 @@ export async function buscarPerros(termino) {
     const terminoLower = termino.toLowerCase();
     const perrosFiltrados = resultado.perros.filter(perro => {
       return (
-        perro.nombre?.toLowerCase().includes(terminoLower) ||
-        perro.raza?.toLowerCase().includes(terminoLower) ||
-        perro.propietario?.toLowerCase().includes(terminoLower) ||
-        perro.chip?.toLowerCase().includes(terminoLower)
+        (perro.nombrePerro && perro.nombrePerro.toLowerCase().includes(terminoLower)) ||
+        (perro.raza && perro.raza.toLowerCase().includes(terminoLower)) ||
+        (perro.nombreDueno && perro.nombreDueno.toLowerCase().includes(terminoLower)) ||
+        (perro.microchip && perro.microchip.toLowerCase().includes(terminoLower))
       );
     });
 
@@ -313,8 +295,10 @@ export async function obtenerEstadisticasPerros() {
       machos: perros.filter(p => p.sexo === 'Macho').length,
       hembras: perros.filter(p => p.sexo === 'Hembra').length,
       porRaza: {},
-      conChip: perros.filter(p => p.chip && p.chip.trim() !== '').length,
-      conFoto: perros.filter(p => p.foto && p.foto.trim() !== '').length
+      conMicrochip: perros.filter(p => p.microchip && p.microchip.trim() !== '').length,
+      conFoto: perros.filter(p => (p.foto || p.fotoUrl) && p.tieneFoto).length,
+      conMedicacion: perros.filter(p => p.medicacion === 'Sí').length,
+      conAlergias: perros.filter(p => p.alergias && p.alergias.trim() !== '').length
     };
 
     // Agrupar por raza
@@ -333,6 +317,81 @@ export async function obtenerEstadisticasPerros() {
     return {
       success: false,
       error: 'Error al calcular estadísticas'
+    };
+  }
+}
+
+/**
+ * Calcula la edad a partir de la fecha de nacimiento
+ * @param {string} fechaNacimiento - Fecha de nacimiento (YYYY-MM-DD)
+ * @returns {string} Edad formateada
+ */
+export function calcularEdad(fechaNacimiento) {
+  if (!fechaNacimiento) return '';
+  
+  const hoy = new Date();
+  const nacimiento = new Date(fechaNacimiento);
+  
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const mes = hoy.getMonth() - nacimiento.getMonth();
+  
+  if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+    edad--;
+  }
+  
+  if (edad >= 1) {
+    return `${edad} año${edad > 1 ? 's' : ''}`;
+  } else {
+    const meses = (hoy.getMonth() - nacimiento.getMonth() + 12) % 12;
+    return `${meses} mes${meses !== 1 ? 'es' : ''}`;
+  }
+}
+
+/**
+ * Obtiene dueños únicos con sus perros
+ * @returns {Promise<Object>} Lista de dueños
+ */
+export async function obtenerDuenos() {
+  try {
+    const resultado = await obtenerPerros();
+    
+    if (!resultado.success) {
+      return resultado;
+    }
+
+    const dueñosMap = {};
+    
+    resultado.perros.forEach(perro => {
+      const nombreDueno = perro.nombreDueno;
+      if (!dueñosMap[nombreDueno]) {
+        dueñosMap[nombreDueno] = {
+          nombre: nombreDueno,
+          dni: perro.dniDueno,
+          telefono: perro.telefono,
+          email: perro.email,
+          direccion: perro.direccion,
+          perros: []
+        };
+      }
+      dueñosMap[nombreDueno].perros.push(perro);
+    });
+
+    const dueños = Object.values(dueñosMap).sort((a, b) => 
+      a.nombre.localeCompare(b.nombre)
+    );
+
+    return {
+      success: true,
+      dueños: dueños,
+      total: dueños.length
+    };
+
+  } catch (error) {
+    console.error('Error al obtener dueños:', error);
+    return {
+      success: false,
+      error: 'Error al cargar los dueños',
+      dueños: []
     };
   }
 }
