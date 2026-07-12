@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Reservas y Training - Lyra v6</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1000px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #333; text-align: center; }
+    .container { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    h2 { color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+    h3 { color: #475569; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+    button { padding: 12px 20px; margin: 5px; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #1b5e20; }
+    button.danger { background: #c62828; }
+    button.secondary { background: #1565c0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #resultado { padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    .item-card { background: #f1f8e9; border: 1px solid #c5e1a5; padding: 15px; border-radius: 6px; margin: 10px 0; }
+    .alert-box { padding: 15px; border-radius: 6px; margin: 10px 0; font-weight: bold; }
+    .alert-hoy { background: #f59e0b; color: white; }
+    .alert-manana { background: #fbbf24; color: #78350f; }
+  </style>
+</head>
+<body>
+  <h1> Test Reservas y Adiestramiento - Lyra v6</h1>
+
+  <div class="container">
+    <h2> Paso 1: Cargar Perros (Necesario para crear reservas)</h2>
+    <button onclick="cargarPerros()">Cargar Perros de Firestore</button>
+    <div id="listaPerrosSelect"></div>
+  </div>
+
+  <div class="container">
+    <h2> Crear Reserva (Hotel/Guardería/Pack)</h2>
+    <div class="grid-2">
+      <select id="rPerro"><option value="">Selecciona un perro...</option></select>
+      <select id="rTipo">
+        <option value="hotel">🏨 Hotel</option>
+        <option value="guarderia">🏠 Guardería</option>
+        <option value="clase-suelta">🎓 Clase Suelta</option>
+        <option value="pack-10">📚 Pack 10 Clases</option>
+        <option value="pack-20">📖 Pack 20 Clases</option>
+      </select>
+      <input type="date" id="rInicio" placeholder="Inicio">
+      <input type="date" id="rFin" placeholder="Fin (Hotel/Guardería)">
+      <input type="number" id="rPrecio" step="0.01" placeholder="Precio (Dejar vacío para auto)">
+      <input type="text" id="rNotas" placeholder="Notas">
+    </div>
+    <h3> Grupo (Perros en misma caseta)</h3>
+    <select id="rGrupoPerro"><option value="">Añadir perro al grupo...</option></select>
+    <button class="secondary" onclick="añadirAlGrupo()">Añadir al Grupo</button>
+    <div id="listaGrupo"></div>
+    
+    <button onclick="crearReservaTest()" style="width:100%; margin-top:15px;">✅ Crear Reserva</button>
+  </div>
+
+  <div class="container">
+    <h2>🎓 Programar Clase de Adiestramiento</h2>
+    <div class="grid-2">
+      <select id="tPerro"><option value="">Selecciona un perro...</option></select>
+      <input type="date" id="tFecha">
+      <input type="time" id="tHora">
+      <select id="tTipo">
+        <option value="Sesión Individual">Sesión Individual</option>
+        <option value="Clase Grupal">Clase Grupal</option>
+        <option value="Evaluación">Evaluación</option>
+      </select>
+      <input type="number" id="tPrecio" step="0.50" value="35">
+      <input type="number" id="tSesiones" value="1" min="1">
+    </div>
+    <button onclick="crearClaseTest()">✅ Programar Clase</button>
+  </div>
+
+  <div class="container">
+    <h2>📋 Listas y Acciones</h2>
+    <button onclick="cargarReservas()">Ver Reservas</button>
+    <button onclick="cargarClases()">Ver Clases</button>
+    <button class="secondary" onclick="verAvisos()">🔔 Ver Avisos (Hoy/Mañana)</button>
+    <div id="listasContenido"></div>
+  </div>
+
+  <div id="resultado">Esperando acciones...</div>
+
+  <script type="module">
+    import { initAuthListener, loginUser } from './js/auth.js';
+    import { obtenerPerros } from './js/perros.js';
+    import { crearReserva, obtenerReservas, eliminarReserva, marcarCompletada } from './js/reservas.js';
+    import { crearClase, obtenerClases, eliminarClase, comprobarAvisosClases } from './js/training.js';
+
+    const TEST_EMAIL = 'elantkan@gmail.com';
+    const TEST_PASSWORD = 'elantkan2025';
+    
+    let perrosGlobales = [];
+    let perrosEnGrupo = [];
+
+    function mostrarResultado(msg, tipo = 'info') {
+      const res = document.getElementById('resultado');
+      res.textContent = msg;
+      res.style.background = tipo === 'error' ? '#ffebee' : tipo === 'success' ? '#e8f5e9' : '#e3f2fd';
+      res.style.color = tipo === 'error' ? '#c62828' : tipo === 'success' ? '#2e7d32' : '#0d47a1';
+    }
+
+    initAuthListener(async (isAuth, user) => {
+      if (!isAuth) {
+        mostrarResultado('Iniciando sesión...', 'info');
+        await loginUser(TEST_EMAIL, TEST_PASSWORD);
+      } else {
+        mostrarResultado(`✅ Conectado como ${user.email}`, 'success');
+      }
+    });
+
+    window.cargarPerros = async () => {
+      mostrarResultado('Cargando perros...', 'info');
+      const res = await obtenerPerros();
+      if (res.success) {
+        perrosGlobales = res.perros;
+        const selects = ['rPerro', 'rGrupoPerro', 'tPerro'];
+        selects.forEach(id => {
+          const sel = document.getElementById(id);
+          sel.innerHTML = '<option value="">Selecciona un perro...</option>';
+          res.perros.forEach(p => {
+            sel.innerHTML += `<option value="${p.id}">${p.nombrePerro} (${p.nombreDueno})</option>`;
+          });
+        });
+        mostrarResultado(`✅ ${res.total} perros cargados`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.añadirAlGrupo = () => {
+      const id = document.getElementById('rGrupoPerro').value;
+      if (!id) return;
+      const perro = perrosGlobales.find(p => p.id === id);
+      if (perro && !perrosEnGrupo.find(p => p.id === id)) {
+        perrosEnGrupo.push(perro);
+        document.getElementById('listaGrupo').innerHTML = perrosEnGrupo.map(p => 
+          `<div style="background:#f1f5f9;padding:8px;margin:4px 0;border-radius:4px;"> ${p.nombrePerro} (${p.nombreDueno})</div>`
+        ).join('');
+      }
+      document.getElementById('rGrupoPerro').value = '';
+    };
+
+    window.crearReservaTest = async () => {
+      const data = {
+        idPerro: document.getElementById('rPerro').value,
+        tipo: document.getElementById('rTipo').value,
+        inicio: document.getElementById('rInicio').value,
+        fin: document.getElementById('rFin').value,
+        precio: parseFloat(document.getElementById('rPrecio').value) || 0,
+        notas: document.getElementById('rNotas').value
+      };
+      
+      if (!data.idPerro || !data.tipo || !data.inicio) {
+        mostrarResultado('⚠️ Faltan campos obligatorios', 'error');
+        return;
+      }
+
+      mostrarResultado('Creando reserva...', 'info');
+      const res = await crearReserva(data, perrosEnGrupo.map(p => p.id));
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        perrosEnGrupo = [];
+        document.getElementById('listaGrupo').innerHTML = '';
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.crearClaseTest = async () => {
+      const data = {
+        idPerro: document.getElementById('tPerro').value,
+        fecha: document.getElementById('tFecha').value,
+        hora: document.getElementById('tHora').value,
+        tipo: document.getElementById('tTipo').value,
+        precio: document.getElementById('tPrecio').value,
+        sesiones: document.getElementById('tSesiones').value
+      };
+
+      if (!data.idPerro || !data.fecha || !data.hora) {
+        mostrarResultado('⚠️ Faltan campos obligatorios', 'error');
+        return;
+      }
+
+      mostrarResultado('Programando clase...', 'info');
+      const res = await crearClase(data);
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.cargarReservas = async () => {
+      mostrarResultado('Cargando reservas...', 'info');
+      const res = await obtenerReservas();
+      if (res.success) {
+        let html = `<h3> Reservas (${res.reservas.length})</h3>`;
+        res.reservas.forEach(r => {
+          html += `<div class="item-card">
+            <strong>${r.nombrePerro}</strong> (${r.nombreDueno}) - ${r.tipo}<br>
+            📅 ${r.inicio} a ${r.fin} | 🏪 Caseta: ${r.caseta || '-'} | 💰 ${r.precio}€ | Progreso: ${r.completadas}/${r.total}
+            ${r.grupoId ? '<br><small>🔗 Parte de un grupo</small>' : ''}
+            <br><button class="danger" onclick="eliminarReservaTest('${r.id}')">Eliminar</button>
+            <button class="secondary" onclick="marcarCompletadaTest('${r.id}')">+1 Completada</button>
+          </div>`;
+        });
+        document.getElementById('listasContenido').innerHTML = html;
+        mostrarResultado(`✅ ${res.reservas.length} reservas cargadas`, 'success');
+      }
+    };
+
+    window.cargarClases = async () => {
+      mostrarResultado('Cargando clases...', 'info');
+      const res = await obtenerClases();
+      if (res.success) {
+        let html = `<h3>🎓 Clases (${res.clases.length})</h3>`;
+        res.clases.forEach(c => {
+          html += `<div class="item-card">
+            <strong>${c.nombrePerro}</strong> (${c.nombreDueno})<br>
+            📅 ${c.fecha} a las ${c.hora} | 📝 ${c.tipo} |  ${c.precio}€
+            <br><button class="danger" onclick="eliminarClaseTest('${c.id}')">Eliminar</button>
+          </div>`;
+        });
+        document.getElementById('listasContenido').innerHTML = html;
+        mostrarResultado(`✅ ${res.clases.length} clases cargadas`, 'success');
+      }
+    };
+
+    window.verAvisos = async () => {
+      mostrarResultado('Comprobando avisos...', 'info');
+      const avisos = await comprobarAvisosClases();
+      let html = '';
+      if (avisos.hoy.length > 0) {
+        html += `<div class="alert-box alert-hoy">🔔 HOY (${avisos.hoy.length} clases):<br>`;
+        avisos.hoy.forEach(c => html += `- ${c.hora}: ${c.nombrePerro}<br>`);
+        html += `</div>`;
+      }
+      if (avisos.manana.length > 0) {
+        html += `<div class="alert-box alert-manana">⚠️ MAÑANA (${avisos.manana.length} clases):<br>`;
+        avisos.manana.forEach(c => html += `- ${c.hora}: ${c.nombrePerro}<br>`);
+        html += `</div>`;
+      }
+      if (!html) html = '<p>No hay clases para hoy ni mañana.</p>';
+      document.getElementById('listasContenido').innerHTML = html;
+      mostrarResultado('Avisos actualizados', 'success');
+    };
+
+    window.eliminarReservaTest = async (id) => {
+      if(!confirm('¿Eliminar?')) return;
+      const res = await eliminarReserva(id);
+      if(res.success) cargarReservas();
+    };
+
+    window.eliminarClaseTest = async (id) => {
+      if(!confirm('¿Eliminar?')) return;
+      const res = await eliminarClase(id);
+      if(res.success) cargarClases();
+    };
+
+    window.marcarCompletadaTest = async (id) => {
+      const res = await marcarCompletada(id, 1);
+      if(res.success) cargarReservas();
+    };
+  </script>
+</body>
+</html>
