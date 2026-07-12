@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Facturas - Lyra v6</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #333; text-align: center; }
+    .container { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    h2 { color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+    h3 { color: #475569; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+    button { padding: 12px 20px; margin: 5px; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #1b5e20; }
+    button.danger { background: #c62828; }
+    button.danger:hover { background: #b71c1c; }
+    button.secondary { background: #1565c0; }
+    button.secondary:hover { background: #0d47a1; }
+    button.warning { background: #f59e0b; }
+    button.warning:hover { background: #d97706; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #resultado { padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    .factura-card { background: #f1f8e9; border: 1px solid #c5e1a5; padding: 15px; border-radius: 6px; margin: 10px 0; }
+    .factura-card h3 { margin: 0 0 10px 0; color: #33691e; }
+    .factura-card p { margin: 5px 0; font-size: 14px; }
+    .conceptos-table { width: 100%; margin-top: 15px; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; }
+    .conceptos-table th { background: #f1f5f9; color: #475569; font-size: 12px; padding: 12px; }
+    .conceptos-table td { padding: 8px; border-bottom: 1px solid #f1f5f9; }
+    .conceptos-table input, .conceptos-table select { padding: 8px; font-size: 13px; border-radius: 4px; border: 1px solid #cbd5e1; }
+    .total-factura-box { background: #fff; border: 2px solid #334155; border-radius: 6px; padding: 15px; margin-top: 20px; text-align: right; }
+    .total-factura-box h4 { margin: 5px 0; color: #64748b; }
+    .total-factura-box h2 { color: #334155; margin: 0; font-size: 22px; }
+    .buscador-perros-resultados { max-height: 350px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 5px; background: white; display: none; position: absolute; z-index: 100; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .buscador-perros-item { padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+    .buscador-perros-item:hover { background: #f8fafc; }
+    .perro-seleccionado-info, .dueño-seleccionado-info { background: #f0fdf4; padding: 10px; border-radius: 6px; margin-top: 10px; display: none; border: 1px solid #bbf7d0; color: #166534; }
+    .toolbar-facturas { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
+    .toolbar-facturas .info-seleccion { font-weight: 700; color: #334155; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #334155; color: white; padding: 12px; text-align: left; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+    tr:hover { background: #f8fafc; }
+    .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); overflow: auto; }
+    .modal-content { background: white; margin: 30px auto; padding: 35px; width: 90%; max-width: 600px; border-radius: 8px; }
+    .close { float: right; font-size: 28px; cursor: pointer; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <h1>🧾 Test Facturas - Lyra v6</h1>
+
+  <div class="container">
+    <h2>➕ Nueva Factura Multi-Concepto</h2>
+    
+    <h3>👤 Buscar Dueño</h3>
+    <div style="position: relative;">
+      <input type="text" id="buscadorDuenosFactura" placeholder=" Escribe nombre..." onkeyup="buscarDuenoParaFactura()">
+      <div id="buscadorDuenosResultados" class="buscador-perros-resultados"></div>
+    </div>
+    <div id="duenoSeleccionadoInfo" class="dueño-seleccionado-info">
+      <strong>✅ Dueño:</strong> <span id="duenoSeleccionadoNombre"></span>
+      <input type="hidden" id="facturaDueno">
+      <input type="hidden" id="facturaDuenoDNI">
+      <input type="hidden" id="facturaDuenoDireccion">
+      <input type="hidden" id="facturaDuenoTelefono">
+      <input type="hidden" id="facturaDuenoEmail">
+    </div>
+
+    <h3>🐕 Buscar Perro</h3>
+    <div style="position: relative;">
+      <input type="text" id="buscadorPerrosFactura" placeholder="🔍 Escribe nombre..." onkeyup="buscarPerroParaFactura()">
+      <div id="buscadorPerrosFacturaResultados" class="buscador-perros-resultados"></div>
+    </div>
+    <div id="perroFacturaSeleccionadoInfo" class="perro-seleccionado-info">
+      <strong>✅ Perro:</strong> <span id="perroFacturaNombre"></span>
+      <input type="hidden" id="facturaPerroId">
+    </div>
+
+    <hr style="margin: 20px 0; border: 1px solid #e2e8f0;">
+    
+    <h3>🛒 Conceptos de la Factura</h3>
+    <table class="conceptos-table" id="tablaConceptos">
+      <thead>
+        <tr>
+          <th style="width: 40%;">Servicio</th>
+          <th style="width: 15%;">Cantidad/Días</th>
+          <th style="width: 15%;">Precio Unit.</th>
+          <th style="width: 20%;">Subtotal</th>
+          <th style="width: 10%;">Acción</th>
+        </tr>
+      </thead>
+      <tbody id="listaConceptos"></tbody>
+    </table>
+    <button class="secondary" onclick="añadirConcepto()" style="margin-top: 10px;">➕ Añadir Línea</button>
+    
+    <div class="total-factura-box">
+      <h4>Base Imponible: <span id="totalBase">0.00</span> €</h4>
+      <h4>IVA (21%): <span id="totalIVA">0.00</span> €</h4>
+      <h2>TOTAL: <span id="totalFinal">0.00</span> €</h2>
+    </div>
+    
+    <button onclick="generarFacturaTest()" style="width: 100%; margin-top: 20px; padding: 15px; font-size: 16px;">🧾 GENERAR FACTURA</button>
+  </div>
+
+  <div class="container">
+    <h2>📚 Historial de Facturas</h2>
+    <button onclick="cargarFacturas()">🔄 Cargar Facturas</button>
+    <button class="secondary" onclick="imprimirSeleccionadas()">🖨️ Imprimir Seleccionadas</button>
+    <button class="secondary" onclick="imprimirTodas()">🖨️ Imprimir Todas</button>
+    
+    <div class="toolbar-facturas">
+      <span class="info-seleccion" id="facturasSeleccionadasCount">0 seleccionadas</span>
+    </div>
+    
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 40px;"><input type="checkbox" id="selectAllFacturas" onchange="toggleSelectAll(this)"></th>
+            <th>Nº</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaFacturas"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="resultado">Esperando acciones...</div>
+
+  <!-- Modal de edición -->
+  <div id="modalEditarFactura" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal('modalEditarFactura')">&times;</span>
+      <h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Factura</h2>
+      <input type="hidden" id="editFacturaId">
+      <div class="form-group">
+        <label>Cliente:</label>
+        <input type="text" id="editFacturaCliente" readonly>
+      </div>
+      <div class="form-group">
+        <label>Servicio:</label>
+        <input type="text" id="editFacturaServicio">
+      </div>
+      <div class="form-group">
+        <label>Total (€):</label>
+        <input type="number" id="editFacturaTotal" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Fecha:</label>
+        <input type="text" id="editFacturaFecha" readonly>
+      </div>
+      <button onclick="guardarEdicionFactura()" style="width: 100%;">💾 Guardar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initAuthListener, loginUser } from './js/auth.js';
+    import { 
+      crearFactura, 
+      obtenerFacturas, 
+      obtenerFactura,
+      actualizarFactura, 
+      eliminarFactura,
+      buscarDuenos,
+      buscarPerros,
+      obtenerPrecioServicio,
+      calcularTotalesFactura,
+      imprimirFactura,
+      formatearFecha
+    } from './js/facturas.js';
+
+    const TEST_EMAIL = 'elantkan@gmail.com';
+    const TEST_PASSWORD = 'elantkan2025';
+    
+    let facturasGlobales = [];
+    let facturasSeleccionadas = [];
+
+    function mostrarResultado(msg, tipo = 'info') {
+      const res = document.getElementById('resultado');
+      res.textContent = msg;
+      res.style.background = tipo === 'error' ? '#ffebee' : tipo === 'success' ? '#e8f5e9' : '#e3f2fd';
+      res.style.color = tipo === 'error' ? '#c62828' : tipo === 'success' ? '#2e7d32' : '#0d47a1';
+    }
+
+    initAuthListener(async (isAuth, user) => {
+      if (!isAuth) {
+        mostrarResultado('Iniciando sesión...', 'info');
+        await loginUser(TEST_EMAIL, TEST_PASSWORD);
+      } else {
+        mostrarResultado(`✅ Conectado como ${user.email}`, 'success');
+      }
+    });
+
+    // Búsqueda de dueño
+    window.buscarDuenoParaFactura = async () => {
+      const texto = document.getElementById('buscadorDuenosFactura').value.toLowerCase().trim();
+      const resultados = document.getElementById('buscadorDuenosResultados');
+      
+      if (texto.length < 2) {
+        resultados.style.display = 'none';
+        return;
+      }
+
+      const res = await buscarDuenos(texto);
+      if (res.success && res.dueños.length > 0) {
+        resultados.innerHTML = res.dueños.map(d => 
+          `<div class="buscador-perros-item" onclick="seleccionarDuenoParaFactura('${d.nombre}')"> <strong>${d.nombre}</strong></div>`
+        ).join('');
+        resultados.style.display = 'block';
+      } else {
+        resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
+        resultados.style.display = 'block';
+      }
+    };
+
+    window.seleccionarDuenoParaFactura = async (dueno) => {
+      const res = await buscarDuenos(dueno);
+      if (res.success && res.dueños.length > 0) {
+        const d = res.dueños[0];
+        document.getElementById('facturaDueno').value = d.nombre;
+        document.getElementById('facturaDuenoDNI').value = d.dni;
+        document.getElementById('facturaDuenoDireccion').value = d.direccion;
+        document.getElementById('facturaDuenoTelefono').value = d.telefono;
+        document.getElementById('facturaDuenoEmail').value = d.email;
+        document.getElementById('duenoSeleccionadoNombre').textContent = d.nombre;
+        document.getElementById('duenoSeleccionadoInfo').style.display = 'block';
+        document.getElementById('buscadorDuenosResultados').style.display = 'none';
+        document.getElementById('buscadorDuenosFactura').value = d.nombre;
+        document.getElementById('buscadorPerrosFactura').focus();
+        document.getElementById('perroFacturaSeleccionadoInfo').style.display = 'none';
+        document.getElementById('facturaPerroId').value = '';
+      }
+    };
+
+    // Búsqueda de perro
+    window.buscarPerroParaFactura = async () => {
+      const texto = document.getElementById('buscadorPerrosFactura').value.toLowerCase().trim();
+      const resultados = document.getElementById('buscadorPerrosFacturaResultados');
+      const dueno = document.getElementById('facturaDueno').value;
+      
+      if (texto.length < 2) {
+        resultados.style.display = 'none';
+        return;
+      }
+
+      const res = await buscarPerros(texto, dueno || null);
+      if (res.success && res.perros.length > 0) {
+        resultados.innerHTML = res.perros.map(p => 
+          `<div class="buscador-perros-item" onclick="seleccionarPerroParaFactura('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}')">🐕 <strong>${p.nombrePerro}</strong> - 👤 ${p.nombreDueno}</div>`
+        ).join('');
+        resultados.style.display = 'block';
+      } else {
+        resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
+        resultados.style.display = 'block';
+      }
+    };
+
+    window.seleccionarPerroParaFactura = async (id, nombre, dueno) => {
+      document.getElementById('facturaPerroId').value = id;
+      document.getElementById('perroFacturaNombre').textContent = nombre;
+      document.getElementById('perroFacturaSeleccionadoInfo').style.display = 'block';
+      document.getElementById('buscadorPerrosFacturaResultados').style.display = 'none';
+      document.getElementById('buscadorPerrosFactura').value = nombre;
+      
+      // Si no hay dueño seleccionado, rellenar automáticamente
+      if (dueno && !document.getElementById('facturaDueno').value) {
+        const res = await buscarDuenos(dueno);
+        if (res.success && res.dueños.length > 0) {
+          const d = res.dueños[0];
+          document.getElementById('facturaDueno').value = d.nombre;
+          document.getElementById('facturaDuenoDNI').value = d.dni;
+          document.getElementById('facturaDuenoDireccion').value = d.direccion;
+          document.getElementById('facturaDuenoTelefono').value = d.telefono;
+          document.getElementById('facturaDuenoEmail').value = d.email;
+          document.getElementById('duenoSeleccionadoNombre').textContent = d.nombre;
+          document.getElementById('duenoSeleccionadoInfo').style.display = 'block';
+        }
+      }
+    };
+
+    // Gestión de conceptos
+    window.añadirConcepto = () => {
+      const tbody = document.getElementById('listaConceptos');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>
+          <select class="servicio-select" onchange="actualizarPreciosFila(this.closest('tr'))">
+            <option value="hotel"> Hotel</option>
+            <option value="guarderia">🏠 Guardería</option>
+            <option value="clase-suelta">🎓 Clase Suelta</option>
+            <option value="pack-10">📚 Pack 10 Clases</option>
+            <option value="pack-20">📖 Pack 20 Clases</option>
+            <option value="otro">📝 Otro (Manual)</option>
+          </select>
+        </td>
+        <td><input type="number" class="cantidad-input" value="1" min="1" oninput="calcularTotales()"></td>
+        <td><input type="number" class="precio-input" step="0.01" oninput="calcularTotales()"></td>
+        <td class="subtotal-cell">0.00 €</td>
+        <td><button class="danger" onclick="this.closest('tr').remove(); calcularTotales()" style="padding: 8px;">🗑️</button></td>
+      `;
+      tbody.appendChild(row);
+      actualizarPreciosFila(row);
+    };
+
+    window.actualizarPreciosFila = async (row) => {
+      const servicio = row.querySelector('.servicio-select').value;
+      const precioInput = row.querySelector('.precio-input');
+      const precio = await obtenerPrecioServicio(servicio);
+      precioInput.value = precio;
+      calcularTotales();
+    };
+
+    window.calcularTotales = () => {
+      const filas = document.querySelectorAll('#listaConceptos tr');
+      const conceptos = [];
+      
+      filas.forEach(row => {
+        const servicioText = row.querySelector('.servicio-select option:checked').text;
+        const cantidad = row.querySelector('.cantidad-input').value;
+        const precio = row.querySelector('.precio-input').value;
+        conceptos.push({ servicio: servicioText, cantidad, precio });
+      });
+      
+      const totales = calcularTotalesFactura(conceptos);
+      
+      // Actualizar subtotales en la tabla
+      filas.forEach((row, index) => {
+        if (conceptos[index]) {
+          row.querySelector('.subtotal-cell').textContent = conceptos[index].subtotal + ' €';
+        }
+      });
+      
+      document.getElementById('totalBase').textContent = totales.baseImponible;
+      document.getElementById('totalIVA').textContent = totales.iva;
+      document.getElementById('totalFinal').textContent = totales.total;
+    };
+
+    // Generar factura
+    window.generarFacturaTest = async () => {
+      const cliente = document.getElementById('facturaDueno').value;
+      const idPerro = document.getElementById('facturaPerroId').value;
+      
+      if (!cliente) {
+        mostrarResultado('❌ Selecciona un dueño', 'error');
+        return;
+      }
+      
+      const filas = document.querySelectorAll('#listaConceptos tr');
+      if (filas.length === 0) {
+        mostrarResultado('️ Añade al menos un concepto', 'error');
+        return;
+      }
+      
+      const conceptos = [];
+      filas.forEach(row => {
+        const servicioText = row.querySelector('.servicio-select option:checked').text;
+        const cantidad = row.querySelector('.cantidad-input').value;
+        const precio = row.querySelector('.precio-input').value;
+        const subtotal = (parseFloat(cantidad) * parseFloat(precio)).toFixed(2);
+        conceptos.push({ servicio: servicioText, cantidad, precio, subtotal });
+      });
+      
+      const data = {
+        cliente: cliente,
+        idPerro: idPerro,
+        clienteDNI: document.getElementById('facturaDuenoDNI').value,
+        clienteDireccion: document.getElementById('facturaDuenoDireccion').value,
+        clienteTelefono: document.getElementById('facturaDuenoTelefono').value,
+        clienteEmail: document.getElementById('facturaDuenoEmail').value,
+        conceptos: conceptos
+      };
+      
+      mostrarResultado('⏳ Generando factura...', 'info');
+      const res = await crearFactura(data);
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        // Limpiar formulario
+        document.getElementById('listaConceptos').innerHTML = '';
+        añadirConcepto();
+        document.getElementById('buscadorDuenosFactura').value = '';
+        document.getElementById('duenoSeleccionadoInfo').style.display = 'none';
+        document.getElementById('buscadorPerrosFactura').value = '';
+        document.getElementById('perroFacturaSeleccionadoInfo').style.display = 'none';
+        cargarFacturas();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    // Cargar facturas
+    window.cargarFacturas = async () => {
+      mostrarResultado('⏳ Cargando facturas...', 'info');
+      const res = await obtenerFacturas();
+      
+      if (res.success) {
+        facturasGlobales = res.facturas;
+        const tbody = document.getElementById('tablaFacturas');
+        tbody.innerHTML = '';
+        
+        if (res.facturas.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">No hay facturas generadas</td></tr>';
+        } else {
+          res.facturas.forEach(f => {
+            const seleccionado = facturasSeleccionadas.includes(f.id) ? 'checked' : '';
+            const totalNum = parseFloat(f.total) || 0;
+            tbody.innerHTML += `
+              <tr>
+                <td><input type="checkbox" class="factura-checkbox" data-id="${f.id}" ${seleccionado} onchange="toggleSeleccionFactura('${f.id}')" style="width: 20px; height: 20px; cursor: pointer;"></td>
+                <td><strong>#${f.numero}</strong></td>
+                <td>${f.fecha || '-'}</td>
+                <td>${f.cliente}</td>
+                <td><strong>${totalNum.toFixed(2)}€</strong></td>
+                <td class="actions">
+                  <button class="secondary" onclick="verFactura('${f.id}')" style="padding: 8px;">👁️</button>
+                  <button class="warning" onclick="editarFactura('${f.id}')" style="padding: 8px;">✏️</button>
+                  <button class="danger" onclick="eliminarFacturaTest('${f.id}')" style="padding: 8px;">️</button>
+                </td>
+              </tr>
+            `;
+          });
+        }
+        
+        actualizarContadorFacturas();
+        mostrarResultado(`✅ ${res.total} factura(s) cargada(s)`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.toggleSeleccionFactura = (id) => {
+      if (facturasSeleccionadas.includes(id)) {
+        facturasSeleccionadas = facturasSeleccionadas.filter(f => f !== id);
+      } else {
+        facturasSeleccionadas.push(id);
+      }
+      actualizarContadorFacturas();
+    };
+
+    window.toggleSelectAll = (checkbox) => {
+      document.querySelectorAll('.factura-checkbox').forEach(cb => {
+        cb.checked = checkbox.checked;
+        const id = cb.dataset.id;
+        if (checkbox.checked) {
+          if (!facturasSeleccionadas.includes(id)) {
+            facturasSeleccionadas.push(id);
+          }
+        } else {
+          facturasSeleccionadas = facturasSeleccionadas.filter(f => f !== id);
+        }
+      });
+      actualizarContadorFacturas();
+    };
+
+    function actualizarContadorFacturas() {
+      const count = document.getElementById('facturasSeleccionadasCount');
+      if (count) {
+        count.textContent = `${facturasSeleccionadas.length} seleccionada${facturasSeleccionadas.length !== 1 ? 's' : ''}`;
+      }
+    }
+
+    window.verFactura = async (id) => {
+      const res = await obtenerFactura(id);
+      if (res.success) {
+        const f = res.factura;
+        const baseNum = parseFloat(f.baseImponible) || 0;
+        const ivaNum = parseFloat(f.iva) || 0;
+        const totalNum = parseFloat(f.total) || 0;
+        mostrarResultado(
+          `Factura #${f.numero}\n` +
+          `Fecha: ${f.fecha}\n` +
+          `Cliente: ${f.cliente}\n` +
+          `Perro: ${f.nombrePerro || '-'}\n` +
+          `Base: ${baseNum.toFixed(2)}€\n` +
+          `IVA: ${ivaNum.toFixed(2)}€\n` +
+          `Total: ${totalNum.toFixed(2)}€\n\n` +
+          `Conceptos:\n${f.conceptos.map(c => `- ${c.servicio}: ${c.cantidad} x ${c.precio}€ = ${c.subtotal}€`).join('\n')}`,
+          'success'
+        );
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.editarFactura = (id) => {
+      const f = facturasGlobales.find(x => x.id === id);
+      if (!f) return;
+      document.getElementById('editFacturaId').value = id;
+      document.getElementById('editFacturaCliente').value = f.cliente || '';
+      document.getElementById('editFacturaServicio').value = f.conceptos && f.conceptos.length > 0 ? f.conceptos.map(c => c.servicio).join(', ') : '';
+      document.getElementById('editFacturaTotal').value = f.total || '';
+      document.getElementById('editFacturaFecha').value = f.fecha || '';
+      document.getElementById('modalEditarFactura').style.display = 'block';
+    };
+
+    window.guardarEdicionFactura = async () => {
+      const id = document.getElementById('editFacturaId').value;
+      if (!id) return;
+      
+      const total = parseFloat(document.getElementById('editFacturaTotal').value) || 0;
+      const servicio = document.getElementById('editFacturaServicio').value.trim();
+      
+      const data = {
+        servicio: servicio,
+        total: total
+      };
+      
+      mostrarResultado('⏳ Actualizando factura...', 'info');
+      const res = await actualizarFactura(id, data);
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        cerrarModal('modalEditarFactura');
+        cargarFacturas();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.eliminarFacturaTest = async (id) => {
+      if (!confirm('¿Eliminar esta factura?')) return;
+      
+      mostrarResultado('⏳ Eliminando factura...', 'info');
+      const res = await eliminarFactura(id);
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        cargarFacturas();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.imprimirSeleccionadas = async () => {
+      if (facturasSeleccionadas.length === 0) {
+        mostrarResultado('⚠️ Selecciona al menos una factura para imprimir', 'error');
+        return;
+      }
+      
+      for (const id of facturasSeleccionadas) {
+        await imprimirFactura(id);
+      }
+    };
+
+    window.imprimirTodas = async () => {
+      if (facturasGlobales.length === 0) {
+        mostrarResultado('❌ No hay facturas para imprimir', 'error');
+        return;
+      }
+      
+      const todasIds = facturasGlobales.map(f => f.id);
+      for (const id of todasIds) {
+        await imprimirFactura(id);
+      }
+    };
+
+    window.cerrarModal = (id) => {
+      document.getElementById(id).style.display = 'none';
+    };
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = (event) => {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    };
+
+    // Cerrar resultados de búsqueda al hacer clic fuera
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.buscador-perros-resultados') && !e.target.closest('input')) {
+        document.querySelectorAll('.buscador-perros-resultados').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    });
+
+    // Añadir un concepto inicial al cargar
+    añadirConcepto();
+  </script>
+</body>
+</html>
