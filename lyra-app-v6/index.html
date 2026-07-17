@@ -1232,6 +1232,18 @@ function setupEventListeners() {
       if (sug) sug.style.display = 'none';
     }
   });
+  // === CONEXIÓN DE BOTONES DE IMPRESIÓN ===
+  const btnImprimirHistSel = document.getElementById('btnImprimirHistorialSel');
+  if (btnImprimirHistSel) btnImprimirHistSel.addEventListener('click', window.imprimirHistorialSeleccionado);
+
+  const btnImprimirTodoHist = document.getElementById('btnImprimirTodoHistorial');
+  if (btnImprimirTodoHist) btnImprimirTodoHist.addEventListener('click', window.imprimirTodoHistorial);
+
+  const btnImprimirFactSel = document.getElementById('btnImprimirFacturasSel');
+  if (btnImprimirFactSel) btnImprimirFactSel.addEventListener('click', window.imprimirFacturasSeleccionadas);
+
+  const btnImprimirTodasFact = document.getElementById('btnImprimirTodasFacturas');
+  if (btnImprimirTodasFact) btnImprimirTodasFact.addEventListener('click', window.imprimirTodasFacturas);
 }
 
 // ================= LOGIN/REGISTRO =================
@@ -2816,47 +2828,68 @@ window.imprimirReservaIndividual = () => {
 };
 
 window.imprimirHistorialSeleccionado = () => {
+// Función auxiliar infalible para impresión
+function abrirVentanaImpresion(contenidoHTML) {
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('⚠️ El navegador bloqueó la ventana de impresión. Por favor, permite las ventanas emergentes (pop-ups) para este sitio (icono con una X roja en la barra de dirección).');
+    return;
+  }
+  win.document.write(contenidoHTML);
+  win.document.close();
+  setTimeout(() => {
+    win.focus();
+    win.print();
+  }, 500);
+}
+
+window.imprimirHistorialSeleccionado = () => {
   const seleccionados = Array.from(document.querySelectorAll('.history-checkbox:checked'));
   if (seleccionados.length === 0) { alert('⚠️ Selecciona al menos un registro'); return; }
   
-  let contenido = `<meta charset="UTF-8"><h1>Lyra App - Historial Seleccionado</h1><table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;"><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
+  let contenido = `<meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:8px;text-align:left;}</style><h1>Lyra App - Historial Seleccionado</h1><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
   
   seleccionados.forEach(cb => {
     const row = cb.closest('tr');
     const celdas = row.querySelectorAll('td');
-    // Índices correctos según la tabla HTML: 1=Fecha, 2=Cliente, 3=Perro, 4=Servicio, 5=Duración, 6=Total, 7=Estado
-    contenido += `<tr>
-      <td>${celdas[1].innerText}</td>
-      <td>${celdas[2].innerText}</td>
-      <td>${celdas[3].innerText}</td>
-      <td>${celdas[4].innerText}</td>
-      <td>${celdas[5].innerText}</td>
-      <td>${celdas[6].innerText}</td>
-      <td>${celdas[7].innerText}</td>
-    </tr>`;
+    contenido += `<tr><td>${celdas[1].innerText}</td><td>${celdas[2].innerText}</td><td>${celdas[3].innerText}</td><td>${celdas[4].innerText}</td><td>${celdas[5].innerText}</td><td>${celdas[6].innerText}</td><td>${celdas[7].innerText}</td></tr>`;
   });
   
   contenido += `</tbody></table>`;
-  const blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const win = window.open(url, '_blank');
-  if (win) { win.document.close(); setTimeout(() => { win.print(); }, 300); }
+  abrirVentanaImpresion(contenido);
 };
+
 window.imprimirTodoHistorial = () => {
   const filas = document.querySelectorAll('#tablaHistorial tr');
-  if (filas.length === 0) { alert(' No hay datos para imprimir'); return; }
-  let contenido = `<meta charset="UTF-8"><h1>Lyra App - Historial Completo</h1><table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;"><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Precio</th></tr></thead><tbody>`;
+  if (filas.length === 0) { alert('❌ No hay datos para imprimir'); return; }
+  
+  let contenido = `<meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:8px;text-align:left;}</style><h1>Lyra App - Historial Completo</h1><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
+  
   filas.forEach(row => {
     const celdas = row.querySelectorAll('td');
     if (celdas.length > 1) {
-      contenido += `<tr><td>${celdas[1].innerText}</td><td>${celdas[2].innerText}</td><td>${celdas[3].innerText}</td><td>${celdas[4].innerText}</td><td>${celdas[6].innerText}</td></tr>`;
+      contenido += `<tr><td>${celdas[1].innerText}</td><td>${celdas[2].innerText}</td><td>${celdas[3].innerText}</td><td>${celdas[4].innerText}</td><td>${celdas[5].innerText}</td><td>${celdas[6].innerText}</td><td>${celdas[7].innerText}</td></tr>`;
     }
   });
+  
   contenido += `</tbody></table>`;
-  const blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const win = window.open(url, '_blank');
-  if (win) { win.document.close(); setTimeout(() => { win.print(); }, 300); }
+  abrirVentanaImpresion(contenido);
+};
+
+window.imprimirFacturasSeleccionadas = () => {
+  if (facturasSeleccionadas.length === 0) { alert('️ Selecciona al menos una factura para imprimir'); return; }
+  facturasSeleccionadas.forEach(id => { imprimirFacturaIndividual(id); });
+};
+
+window.imprimirTodasFacturas = () => {
+  if (facturasDB.length === 0) { alert('❌ No hay facturas para imprimir'); return; }
+  const todasIds = facturasDB.map(f => f.id);
+  todasIds.forEach(id => { imprimirFacturaIndividual(id); });
+};
+
+window.imprimirFacturaIndividual = async (id) => {
+  const res = await imprimirFactura(id);
+  if (!res.success) alert('️ ' + res.error);
 };
 
 // ================= UTILIDADES =================
