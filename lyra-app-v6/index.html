@@ -2818,19 +2818,30 @@ window.imprimirReservaIndividual = () => {
 window.imprimirHistorialSeleccionado = () => {
   const seleccionados = Array.from(document.querySelectorAll('.history-checkbox:checked'));
   if (seleccionados.length === 0) { alert('⚠️ Selecciona al menos un registro'); return; }
-  let contenido = `<meta charset="UTF-8"><h1>Lyra App - Historial Seleccionado</h1><table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;"><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Precio</th></tr></thead><tbody>`;
+  
+  let contenido = `<meta charset="UTF-8"><h1>Lyra App - Historial Seleccionado</h1><table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;"><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
+  
   seleccionados.forEach(cb => {
     const row = cb.closest('tr');
     const celdas = row.querySelectorAll('td');
-    contenido += `<tr><td>${celdas[1].innerText}</td><td>${celdas[2].innerText}</td><td>${celdas[3].innerText}</td><td>${celdas[4].innerText}</td><td>${celdas[6].innerText}</td></tr>`;
+    // Índices correctos según la tabla HTML: 1=Fecha, 2=Cliente, 3=Perro, 4=Servicio, 5=Duración, 6=Total, 7=Estado
+    contenido += `<tr>
+      <td>${celdas[1].innerText}</td>
+      <td>${celdas[2].innerText}</td>
+      <td>${celdas[3].innerText}</td>
+      <td>${celdas[4].innerText}</td>
+      <td>${celdas[5].innerText}</td>
+      <td>${celdas[6].innerText}</td>
+      <td>${celdas[7].innerText}</td>
+    </tr>`;
   });
+  
   contenido += `</tbody></table>`;
   const blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
   if (win) { win.document.close(); setTimeout(() => { win.print(); }, 300); }
 };
-
 window.imprimirTodoHistorial = () => {
   const filas = document.querySelectorAll('#tablaHistorial tr');
   if (filas.length === 0) { alert(' No hay datos para imprimir'); return; }
