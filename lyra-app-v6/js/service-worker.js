@@ -1,8 +1,8 @@
 // lyra-app-v6/service-worker.js
-const CACHE_NAME = 'lyra-app-v6-cache';
+const CACHE_NAME = 'lyra-app-v6-cache-v2';
+
+// Lista de archivos a cachear (Hemos quitado ./index.html porque está en la raíz, no en lyra-app-v6/)
 const urlsToCache = [
-  './',
-  './index.html',
   './css/styles.css',
   './js/firebase.js',
   './js/auth.js',
@@ -19,19 +19,31 @@ const urlsToCache = [
   'https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png'
 ];
 
-// Instalar Service Worker y cachear recursos
+// Instalar Service Worker (cachear archivos individualmente para evitar fallos por 404)
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('✅ Cache abierto');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((err) => {
-        console.log('️ Error cacheando:', err);
-      })
+    caches.open(CACHE_NAME).then(async (cache) => {
+      console.log('✅ Cache abierto');
+      
+      // Cachear uno por uno. Si uno falla (404), no rompe la instalación de los demás
+      for (const url of urlsToCache) {
+        try {
+          const response = await fetch(url);
+          if (response.ok) {
+            await cache.put(url, response);
+            console.log('✅ Cacheado:', url);
+          } else {
+            console.warn('⚠️ Ignorado (no 200 OK):', url);
+          }
+        } catch (err) {
+          console.warn('⚠️ No se pudo cachear (probablemente no existe aún):', url, err);
+        }
+      }
+      
+      return true;
+    })
   );
-  self.skipWaiting();
+  self.skipWaiting(); // Forzar la activación inmediata
 });
 
 // Activar Service Worker y limpiar cachés antiguos
@@ -48,15 +60,16 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
+  self.clients.claim(); // Tomar el control de las páginas inmediatamente
 });
 
 // Interceptar peticiones y servir desde caché si no hay red
 self.addEventListener('fetch', (event) => {
-  // No cachear peticiones a Firebase (siempre necesitan red)
+  // No interceptar ni cachear peticiones a Firebase o Meta (siempre necesitan red y son dinámicas)
   if (event.request.url.includes('firebaseio.com') || 
       event.request.url.includes('googleapis.com') ||
-      event.request.url.includes('graph.facebook.com')) {
+      event.request.url.includes('graph.facebook.com') ||
+      event.request.url.includes('corsproxy.io')) {
     return;
   }
 
@@ -69,7 +82,7 @@ self.addEventListener('fetch', (event) => {
         }
         // Si no, hacer la petición a red
         return fetch(event.request).then((response) => {
-          // Si la respuesta es válida, cachearla
+          // Si la respuesta es válida, cachearla para el futuro
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
@@ -82,8 +95,8 @@ self.addEventListener('fetch', (event) => {
         });
       })
       .catch(() => {
-        // Si falla todo, mostrar página offline
-        return caches.match('./index.html');
+        // Si falla todo (sin red), mostrar página offline (opcional)
+        return new Response('Sin conexión a internet', { status: 503, statusText: 'Service Unavailable' });
       })
   );
 });
