@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Test PWA - Lyra v6</title>
+  <meta name="theme-color" content="#334155">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png" type="image/png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #333; text-align: center; }
+    .container { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    h2 { color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+    button { padding: 12px 20px; margin: 5px; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #1b5e20; }
+    button.danger { background: #c62828; }
+    button.secondary { background: #1565c0; }
+    #resultado { padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    .status-box { padding: 15px; border-radius: 6px; margin: 10px 0; }
+    .status-ok { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .status-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .status-info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .install-btn { background: #f59e0b; color: white; padding: 15px 30px; font-size: 16px; font-weight: bold; display: none; }
+    .install-btn:hover { background: #d97706; }
+  </style>
+</head>
+<body>
+  <h1> Test PWA - Lyra v6</h1>
+
+  <div class="container">
+    <h2>🔍 Estado del Service Worker</h2>
+    <div id="swStatus" class="status-box status-info">Comprobando...</div>
+    <button onclick="registrarSW()"> Registrar/Actualizar SW</button>
+    <button class="danger" onclick="desregistrarSW()">🗑️ Desregistrar SW</button>
+  </div>
+
+  <div class="container">
+    <h2>💾 Caché</h2>
+    <div id="cacheStatus" class="status-box status-info">Comprobando caché...</div>
+    <button onclick="limpiarCache()">🧹 Limpiar Caché</button>
+    <button class="secondary" onclick="verCache()">️ Ver Contenido Caché</button>
+  </div>
+
+  <div class="container">
+    <h2>📲 Instalación PWA</h2>
+    <div id="installStatus" class="status-box status-info">Comprobando instalación...</div>
+    <button id="installBtn" class="install-btn" onclick="instalarPWA()">📥 Instalar Lyra App</button>
+    <p style="font-size: 13px; color: #64748b; margin-top: 10px;">
+      💡 <strong>En móvil:</strong> Usa "Añadir a pantalla de inicio" desde el menú del navegador<br>
+      💡 <strong>En escritorio:</strong> Usa el icono de instalación en la barra de dirección
+    </p>
+  </div>
+
+  <div class="container">
+    <h2> Enlaces Rápidos</h2>
+    <button onclick="window.location.href='test-auth.html'">🔐 Test Auth</button>
+    <button onclick="window.location.href='test-perros.html'">🐕 Test Perros</button>
+    <button onclick="window.location.href='test-reservas.html'">📅 Test Reservas</button>
+    <button onclick="window.location.href='test-facturas.html'">🧾 Test Facturas</button>
+    <button onclick="window.location.href='test-whatsapp.html'">💬 Test WhatsApp</button>
+    <button onclick="window.location.href='test-configuracion.html'">⚙️ Test Configuración</button>
+  </div>
+
+  <div id="resultado">Esperando acciones...</div>
+
+  <script>
+    let deferredPrompt = null;
+
+    function mostrarResultado(msg, tipo = 'info') {
+      const res = document.getElementById('resultado');
+      res.textContent = msg;
+      res.style.background = tipo === 'error' ? '#fee2e2' : tipo === 'success' ? '#dcfce7' : '#dbeafe';
+      res.style.color = tipo === 'error' ? '#991b1b' : tipo === 'success' ? '#166534' : '#1e40af';
+    }
+
+    function actualizarEstadoSW() {
+      const statusDiv = document.getElementById('swStatus');
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          if (reg) {
+            statusDiv.className = 'status-box status-ok';
+            statusDiv.innerHTML = `✅ Service Worker registrado<br><small>Scope: ${reg.scope}</small>`;
+          } else {
+            statusDiv.className = 'status-box status-error';
+            statusDiv.textContent = '❌ Service Worker no registrado';
+          }
+        });
+      } else {
+        statusDiv.className = 'status-box status-error';
+        statusDiv.textContent = '❌ Tu navegador no soporta Service Workers';
+      }
+    }
+
+    function actualizarEstadoCache() {
+      const cacheDiv = document.getElementById('cacheStatus');
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          if (names.length > 0) {
+            cacheDiv.className = 'status-box status-ok';
+            cacheDiv.innerHTML = `✅ Caché activo: ${names.join(', ')}<br><small>${names.length} caché(s)</small>`;
+          } else {
+            cacheDiv.className = 'status-box status-info';
+            cacheDiv.textContent = 'ℹ️ No hay caché almacenado';
+          }
+        });
+      } else {
+        cacheDiv.className = 'status-box status-error';
+        cacheDiv.textContent = '❌ Tu navegador no soporta Cache API';
+      }
+    }
+
+    function actualizarEstadoInstalacion() {
+      const installDiv = document.getElementById('installStatus');
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        installDiv.className = 'status-box status-ok';
+        installDiv.textContent = '✅ La app ya está instalada y funcionando en modo standalone';
+      } else if (deferredPrompt) {
+        installDiv.className = 'status-box status-ok';
+        installDiv.textContent = '✅ La app está lista para instalarse';
+        document.getElementById('installBtn').style.display = 'inline-block';
+      } else {
+        installDiv.className = 'status-box status-info';
+        installDiv.textContent = '️ Usa el menú del navegador para añadir a pantalla de inicio';
+      }
+    }
+
+    window.registrarSW = async () => {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.register('./service-worker.js');
+          mostrarResultado(`✅ Service Worker registrado correctamente\nScope: ${registration.scope}`, 'success');
+          actualizarEstadoSW();
+          actualizarEstadoCache();
+        } catch (error) {
+          mostrarResultado(`❌ Error al registrar: ${error.message}`, 'error');
+        }
+      } else {
+        mostrarResultado('❌ Service Workers no soportados en este navegador', 'error');
+      }
+    };
+
+    window.desregistrarSW = async () => {
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          await registration.unregister();
+          mostrarResultado('✅ Service Worker desregistrado', 'success');
+          actualizarEstadoSW();
+        } else {
+          mostrarResultado('ℹ️ No hay Service Worker registrado', 'info');
+        }
+      }
+    };
+
+    window.limpiarCache = async () => {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        for (const key of keys) {
+          await caches.delete(key);
+        }
+        mostrarResultado(`✅ Caché limpiado (${keys.length} eliminados)`, 'success');
+        actualizarEstadoCache();
+      }
+    };
+
+    window.verCache = async () => {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        let contenido = 'Cachés disponibles:\n\n';
+        for (const key of keys) {
+          const cache = await caches.open(key);
+          const requests = await cache.keys();
+          contenido += `${key}:\n`;
+          requests.forEach(req => {
+            contenido += `  - ${req.url}\n`;
+          });
+          contenido += '\n';
+        }
+        mostrarResultado(contenido, 'info');
+      }
+    };
+
+    window.instalarPWA = () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            mostrarResultado('✅ App instalada correctamente', 'success');
+          } else {
+            mostrarResultado('❌ Instalación cancelada', 'error');
+          }
+          deferredPrompt = null;
+          document.getElementById('installBtn').style.display = 'none';
+          actualizarEstadoInstalacion();
+        });
+      }
+    };
+
+    // Escuchar evento de instalación
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      actualizarEstadoInstalacion();
+    });
+
+    // Escuchar cuando la app se instala
+    window.addEventListener('appinstalled', () => {
+      mostrarResultado('✅ Lyra App instalada correctamente', 'success');
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+      actualizarEstadoInstalacion();
+    });
+
+    // Inicializar al cargar
+    actualizarEstadoSW();
+    actualizarEstadoCache();
+    actualizarEstadoInstalacion();
+  </script>
+</body>
+</html>
