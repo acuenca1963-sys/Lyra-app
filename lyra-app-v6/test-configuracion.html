@@ -8,69 +8,79 @@
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
     h1 { color: #333; text-align: center; }
     .container { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-    h2 { color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
-    h3 { color: #475569; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
-    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-    button { padding: 12px 20px; margin: 5px; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
-    button:hover { background: #1b5e20; }
-    button.danger { background: #c62828; }
-    button.secondary { background: #1565c0; }
+    h2 { color: #334155; margin-bottom: 15px; font-size: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    h3 { color: #334155; margin: 20px 0 10px; font-size: 15px; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    button { padding: 12px 20px; margin: 5px; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
+    button:hover { background: #1e293b; }
+    button.danger { background: #ef4444; }
+    button.secondary { background: #64748b; }
     button.warning { background: #f59e0b; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     #resultado { padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
     .config-section { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
     .logo-preview { max-width: 150px; max-height: 100px; border-radius: 8px; border: 2px solid #e2e8f0; margin: 10px auto; display: block; }
     .backup-section { background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 14px; }
+    hr { margin: 15px 0; border: 1px solid #e2e8f0; }
   </style>
 </head>
 <body>
   <h1>⚙️ Test Configuración - Lyra v6</h1>
 
   <div class="container">
-    <h2>🏢 Datos de la Empresa (Para Facturas)</h2>
+    <h2>⚙️ Configuración del Hotel</h2>
     
     <div class="config-section">
-      <h3>️ Logo de la Empresa</h3>
-      <img id="logoPreview" class="logo-preview" style="display:none;" src="" alt="Logo">
-      <div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
-        <button onclick="document.getElementById('logoInput').click()">📁 Subir Logo</button>
-        <input type="file" id="logoInput" accept="image/*" onchange="procesarLogo(this)" style="display: none;">
-        <button class="danger" onclick="eliminarLogo()" id="btnEliminarLogo" style="display:none;">🗑️ Quitar</button>
+      <h3>🏢 Datos de Tu Empresa (Para Facturas)</h3>
+      <div class="form-group">
+        <label>🖼️ Logo de Tu Empresa:</label>
+        <img id="logoPreview" class="logo-preview" style="display:none;" src="" alt="Logo">
+        <div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
+          <button class="secondary" onclick="document.getElementById('logoInput').click()">📁 Subir Logo</button>
+          <input type="file" id="logoInput" accept="image/*" onchange="procesarLogo(this)" style="display: none;">
+          <button class="danger" onclick="eliminarLogo()" id="btnEliminarLogo" style="display:none;">️ Quitar</button>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:10px;">
+        <div class="form-group"><label>📛 Nombre Comercial:</label><input type="text" id="clientName" placeholder="Ej: Hotel Canino Patitas"></div>
+        <div class="form-group"><label>🆔 CIF/NIF:</label><input type="text" id="clientCIF" placeholder="B12345678"></div>
+        <div class="form-group full-width"><label>📍 Dirección:</label><input type="text" id="clientAddress" placeholder="Calle, Nº, Ciudad, CP"></div>
+        <div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="clientPhone" placeholder="600 000 000"></div>
       </div>
     </div>
 
-    <div class="grid-2">
-      <input type="text" id="clientName" placeholder="Nombre Comercial (Ej: Hotel Canino Patitas)">
-      <input type="text" id="clientCIF" placeholder="CIF/NIF (Ej: B12345678)">
-      <input type="text" id="clientAddress" placeholder="Dirección completa" style="grid-column: 1 / -1;">
-      <input type="tel" id="clientPhone" placeholder="Teléfono">
+    <div class="form-group">
+      <label>🏷️ Nombre de la App (Interno):</label>
+      <input type="text" id="hotelName" value="Lyra App">
     </div>
-
-    <h3> Configuración del Hotel</h3>
+    
     <div class="grid-2">
-      <input type="text" id="hotelName" placeholder="Nombre de la App (Interno)" value="Lyra App">
-      <input type="number" id="totalKennels" placeholder="Número de Casetas" min="1" max="500" value="15">
-      <input type="text" id="kennelPrefix" placeholder="Prefijo de Casetas" maxlength="5" value="C-">
+      <div class="form-group"><label>🏠 Número de Casetas:</label><input type="number" id="totalKennels" value="15" min="1" max="500"></div>
+      <div class="form-group"><label>🔖 Prefijo de Casetas:</label><input type="text" id="kennelPrefix" value="C-" maxlength="5"></div>
     </div>
 
     <h3>💰 Precios Generales</h3>
     <div class="grid-2">
-      <input type="number" id="precioHotel" step="0.50" placeholder="Hotel (€/día)" value="15">
-      <input type="number" id="precioGuarderia" step="0.50" placeholder="Guardería (€/día)" value="10">
-      <input type="number" id="precioClase" step="1" placeholder="Clase Suelta (€)" value="35">
+      <div class="form-group"><label>🏨 Hotel (€):</label><input type="number" id="precioHotel" value="15" step="0.50"></div>
+      <div class="form-group"><label>🏠 Guardería (€):</label><input type="number" id="precioGuarderia" value="10" step="0.50"></div>
+      <div class="form-group"><label>🎓 Clase Suelta (€):</label><input type="number" id="precioClase" value="35" step="1"></div>
     </div>
 
-    <h3>📄 Facturación</h3>
-    <input type="number" id="nextInvoice" placeholder="Próximo Nº Factura" min="1" value="1">
+    <h3> Facturación</h3>
+    <div class="form-group">
+      <label> Próximo Nº Factura:</label>
+      <input type="number" id="nextInvoice" value="1" min="1">
+    </div>
 
     <h3>💬 WhatsApp API (Meta)</h3>
-    <div class="config-section" style="background: #f0fdf4; border-color: #bbf7d0;">
+    <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #bbf7d0; margin-bottom: 15px;">
       <p style="font-size: 13px; margin-bottom: 10px; color:#166534;">Configura la API para envío automático:</p>
       <div class="grid-2">
-        <input type="text" id="metaPhoneNumberId" placeholder="Phone Number ID">
-        <input type="text" id="metaAccessToken" placeholder="Access Token">
-        <input type="text" id="metaBusinessId" placeholder="Business Account ID">
-        <input type="text" id="metaTemplateName" placeholder="Plantilla (Opcional)">
+        <div class="form-group"><label>📱 Phone Number ID:</label><input type="text" id="metaPhoneNumberId" placeholder="Ej: 1229155380276087"></div>
+        <div class="form-group"><label>🔑 Access Token:</label><input type="text" id="metaAccessToken" placeholder="Ej: EAA..."></div>
+        <div class="form-group"><label>🏢 Business Account ID:</label><input type="text" id="metaBusinessId" placeholder="Ej: 1007246542271286"></div>
+        <div class="form-group"><label>📝 Plantilla (Opcional):</label><input type="text" id="metaTemplateName" placeholder="Dejar vacío para texto libre"></div>
       </div>
     </div>
 
@@ -78,11 +88,11 @@
   </div>
 
   <div class="container">
-    <h2> Copias de Seguridad</h2>
+    <h2>💾 Copia de Seguridad</h2>
     <div class="backup-section">
       <p style="font-size: 13px; margin-bottom: 10px;">Guarda una copia de todos tus datos (perros, reservas, facturas) en un archivo seguro.</p>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button onclick="exportarBackupTest()">⬇️ Descargar Backup</button>
+        <button onclick="exportarBackupTest()">️ Descargar Backup</button>
         <button class="warning" onclick="document.getElementById('importBackupInput').click()">⬆️ Restaurar Backup</button>
         <input type="file" id="importBackupInput" accept=".json" onchange="importarBackupTest(this)" style="display: none;">
       </div>
@@ -124,7 +134,7 @@
     });
 
     async function cargarConfiguracion() {
-      mostrarResultado('⏳ Cargando configuración...', 'info');
+      mostrarResultado(' Cargando configuración...', 'info');
       const res = await obtenerConfiguracion();
       
       if (res.success) {
