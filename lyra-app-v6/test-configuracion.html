@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Configuración - Lyra v6</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #333; text-align: center; }
+    .container { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    h2 { color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+    h3 { color: #475569; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+    button { padding: 12px 20px; margin: 5px; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #1b5e20; }
+    button.danger { background: #c62828; }
+    button.secondary { background: #1565c0; }
+    button.warning { background: #f59e0b; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #resultado { padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    .config-section { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+    .logo-preview { max-width: 150px; max-height: 100px; border-radius: 8px; border: 2px solid #e2e8f0; margin: 10px auto; display: block; }
+    .backup-section { background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d; }
+  </style>
+</head>
+<body>
+  <h1>⚙️ Test Configuración - Lyra v6</h1>
+
+  <div class="container">
+    <h2>🏢 Datos de la Empresa (Para Facturas)</h2>
+    
+    <div class="config-section">
+      <h3>️ Logo de la Empresa</h3>
+      <img id="logoPreview" class="logo-preview" style="display:none;" src="" alt="Logo">
+      <div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
+        <button onclick="document.getElementById('logoInput').click()">📁 Subir Logo</button>
+        <input type="file" id="logoInput" accept="image/*" onchange="procesarLogo(this)" style="display: none;">
+        <button class="danger" onclick="eliminarLogo()" id="btnEliminarLogo" style="display:none;">🗑️ Quitar</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <input type="text" id="clientName" placeholder="Nombre Comercial (Ej: Hotel Canino Patitas)">
+      <input type="text" id="clientCIF" placeholder="CIF/NIF (Ej: B12345678)">
+      <input type="text" id="clientAddress" placeholder="Dirección completa" style="grid-column: 1 / -1;">
+      <input type="tel" id="clientPhone" placeholder="Teléfono">
+    </div>
+
+    <h3> Configuración del Hotel</h3>
+    <div class="grid-2">
+      <input type="text" id="hotelName" placeholder="Nombre de la App (Interno)" value="Lyra App">
+      <input type="number" id="totalKennels" placeholder="Número de Casetas" min="1" max="500" value="15">
+      <input type="text" id="kennelPrefix" placeholder="Prefijo de Casetas" maxlength="5" value="C-">
+    </div>
+
+    <h3>💰 Precios Generales</h3>
+    <div class="grid-2">
+      <input type="number" id="precioHotel" step="0.50" placeholder="Hotel (€/día)" value="15">
+      <input type="number" id="precioGuarderia" step="0.50" placeholder="Guardería (€/día)" value="10">
+      <input type="number" id="precioClase" step="1" placeholder="Clase Suelta (€)" value="35">
+    </div>
+
+    <h3>📄 Facturación</h3>
+    <input type="number" id="nextInvoice" placeholder="Próximo Nº Factura" min="1" value="1">
+
+    <h3>💬 WhatsApp API (Meta)</h3>
+    <div class="config-section" style="background: #f0fdf4; border-color: #bbf7d0;">
+      <p style="font-size: 13px; margin-bottom: 10px; color:#166534;">Configura la API para envío automático:</p>
+      <div class="grid-2">
+        <input type="text" id="metaPhoneNumberId" placeholder="Phone Number ID">
+        <input type="text" id="metaAccessToken" placeholder="Access Token">
+        <input type="text" id="metaBusinessId" placeholder="Business Account ID">
+        <input type="text" id="metaTemplateName" placeholder="Plantilla (Opcional)">
+      </div>
+    </div>
+
+    <button onclick="guardarConfigTest()" style="width: 100%; padding: 15px; font-size: 16px; margin-top: 20px;">💾 Guardar Configuración</button>
+  </div>
+
+  <div class="container">
+    <h2> Copias de Seguridad</h2>
+    <div class="backup-section">
+      <p style="font-size: 13px; margin-bottom: 10px;">Guarda una copia de todos tus datos (perros, reservas, facturas) en un archivo seguro.</p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button onclick="exportarBackupTest()">⬇️ Descargar Backup</button>
+        <button class="warning" onclick="document.getElementById('importBackupInput').click()">⬆️ Restaurar Backup</button>
+        <input type="file" id="importBackupInput" accept=".json" onchange="importarBackupTest(this)" style="display: none;">
+      </div>
+    </div>
+  </div>
+
+  <div id="resultado">Esperando acciones...</div>
+
+  <script type="module">
+    import { initAuthListener, loginUser } from './js/auth.js';
+    import { 
+      obtenerConfiguracion, 
+      guardarConfiguracion,
+      exportarBackup,
+      importarBackup,
+      compressImage
+    } from './js/configuracion.js';
+
+    const TEST_EMAIL = 'elantkan@gmail.com';
+    const TEST_PASSWORD = 'elantkan2025';
+    
+    let clientLogoBase64 = null;
+
+    function mostrarResultado(msg, tipo = 'info') {
+      const res = document.getElementById('resultado');
+      res.textContent = msg;
+      res.style.background = tipo === 'error' ? '#ffebee' : tipo === 'success' ? '#e8f5e9' : '#e3f2fd';
+      res.style.color = tipo === 'error' ? '#c62828' : tipo === 'success' ? '#2e7d32' : '#0d47a1';
+    }
+
+    initAuthListener(async (isAuth, user) => {
+      if (!isAuth) {
+        mostrarResultado('Iniciando sesión...', 'info');
+        await loginUser(TEST_EMAIL, TEST_PASSWORD);
+      } else {
+        mostrarResultado(`✅ Conectado como ${user.email}`, 'success');
+        cargarConfiguracion();
+      }
+    });
+
+    async function cargarConfiguracion() {
+      mostrarResultado('⏳ Cargando configuración...', 'info');
+      const res = await obtenerConfiguracion();
+      
+      if (res.success) {
+        const config = res.config;
+        document.getElementById('hotelName').value = config.hotelName || '';
+        document.getElementById('totalKennels').value = config.totalKennels || 15;
+        document.getElementById('kennelPrefix').value = config.kennelPrefix || 'C-';
+        document.getElementById('precioHotel').value = config.prices?.hotel || 15;
+        document.getElementById('precioGuarderia').value = config.prices?.guarderia || 10;
+        document.getElementById('precioClase').value = config.prices?.claseSuelta || 35;
+        document.getElementById('nextInvoice').value = config.nextInvoiceNumber || 1;
+        document.getElementById('clientName').value = config.clientName || '';
+        document.getElementById('clientCIF').value = config.clientCIF || '';
+        document.getElementById('clientAddress').value = config.clientAddress || '';
+        document.getElementById('clientPhone').value = config.clientPhone || '';
+        document.getElementById('metaPhoneNumberId').value = config.metaPhoneNumberId || '';
+        document.getElementById('metaAccessToken').value = config.metaAccessToken || '';
+        document.getElementById('metaBusinessId').value = config.metaBusinessId || '';
+        document.getElementById('metaTemplateName').value = config.metaTemplateName || '';
+        
+        if (config.clientLogo) {
+          document.getElementById('logoPreview').src = config.clientLogo;
+          document.getElementById('logoPreview').style.display = 'block';
+          document.getElementById('btnEliminarLogo').style.display = 'inline-block';
+          clientLogoBase64 = config.clientLogo;
+        }
+        
+        mostrarResultado('✅ Configuración cargada', 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    }
+
+    window.procesarLogo = (input) => {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          compressImage(e.target.result, 300000, (compressedBase64) => {
+            clientLogoBase64 = compressedBase64;
+            document.getElementById('logoPreview').src = compressedBase64;
+            document.getElementById('logoPreview').style.display = 'block';
+            document.getElementById('btnEliminarLogo').style.display = 'inline-block';
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    window.eliminarLogo = () => {
+      clientLogoBase64 = null;
+      document.getElementById('logoPreview').src = '';
+      document.getElementById('logoPreview').style.display = 'none';
+      document.getElementById('btnEliminarLogo').style.display = 'none';
+      document.getElementById('logoInput').value = '';
+    };
+
+    window.guardarConfigTest = async () => {
+      const configData = {
+        hotelName: document.getElementById('hotelName').value.trim(),
+        totalKennels: parseInt(document.getElementById('totalKennels').value) || 15,
+        kennelPrefix: document.getElementById('kennelPrefix').value.trim() || 'C-',
+        prices: {
+          hotel: parseFloat(document.getElementById('precioHotel').value) || 15,
+          guarderia: parseFloat(document.getElementById('precioGuarderia').value) || 10,
+          claseSuelta: parseFloat(document.getElementById('precioClase').value) || 35,
+          pack10: (parseFloat(document.getElementById('precioClase').value) || 35) * 10,
+          pack20: (parseFloat(document.getElementById('precioClase').value) || 35) * 20
+        },
+        nextInvoiceNumber: parseInt(document.getElementById('nextInvoice').value) || 1,
+        clientName: document.getElementById('clientName').value.trim(),
+        clientCIF: document.getElementById('clientCIF').value.trim(),
+        clientAddress: document.getElementById('clientAddress').value.trim(),
+        clientPhone: document.getElementById('clientPhone').value.trim(),
+        clientLogo: clientLogoBase64,
+        metaPhoneNumberId: document.getElementById('metaPhoneNumberId').value.trim(),
+        metaAccessToken: document.getElementById('metaAccessToken').value.trim(),
+        metaBusinessId: document.getElementById('metaBusinessId').value.trim(),
+        metaTemplateName: document.getElementById('metaTemplateName').value.trim()
+      };
+
+      if (!configData.hotelName) {
+        mostrarResultado('❌ El nombre de la app es obligatorio', 'error');
+        return;
+      }
+
+      mostrarResultado('⏳ Guardando configuración...', 'info');
+      const res = await guardarConfiguracion(configData);
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.exportarBackupTest = async () => {
+      mostrarResultado('⏳ Exportando backup...', 'info');
+      const res = await exportarBackup();
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.importarBackupTest = async (input) => {
+      if (!input.files || !input.files[0]) return;
+      
+      const file = input.files[0];
+      
+      if (!confirm(`⚠️ ¿Estás seguro de restaurar la copia de seguridad? Esto REEMPLAZARÁ todos los datos actuales.`)) {
+        input.value = '';
+        return;
+      }
+      
+      mostrarResultado('⏳ Importando backup...', 'info');
+      const res = await importarBackup(file);
+      
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}. Recarga la página para ver los cambios.`, 'success');
+        setTimeout(() => {
+          if (confirm('¿Recargar la página ahora?')) {
+            location.reload();
+          }
+        }, 2000);
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+      
+      input.value = '';
+    };
+  </script>
+</body>
+</html>
