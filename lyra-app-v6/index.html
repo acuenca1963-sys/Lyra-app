@@ -280,6 +280,7 @@ body * { visibility: hidden; }
       <button class="tab" data-section="estadisticas">📈 Estadísticas</button>
       <button class="tab" data-section="historial"> Historial</button>
       <button class="tab" data-section="facturas">📄 Facturas</button>
+      <button class="tab" data-section="empleados">👥 Empleados</button>
       <button class="tab" data-section="contactos">💬 WhatsApp</button>
     </div>
 
@@ -632,7 +633,77 @@ body * { visibility: hidden; }
         </table>
       </div>
     </div>
+    <!-- SECCIÓN EMPLEADOS -->
+    <div id="empleados" class="section">
+      <div class="form-section">
+        <h3>➕ Nuevo Empleado <button class="btn btn-print" id="btnImprimirEmpleados" style="float:right;">🖨️ Imprimir Lista</button></h3>
+        <div class="form-grid">
+          <div class="form-group"><label> Nombre *:</label><input type="text" id="empNombre"></div>
+          <div class="form-group"><label>📝 Apellidos:</label><input type="text" id="empApellidos"></div>
+          <div class="form-group"><label>📧 Email *:</label><input type="email" id="empEmail"></div>
+          <div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="empTelefono"></div>
+          <div class="form-group"><label>🔒 Contraseña * (mín 6):</label><input type="password" id="empPassword"></div>
+          <div class="form-group"><label> Rol *:</label>
+            <select id="empRol">
+              <option value="">Seleccionar...</option>
+              <option value="admin"> Admin (Acceso total)</option>
+              <option value="recepcion">📋 Recepción (Gestión diaria)</option>
+              <option value="adiestrador">🎓 Adiestrador (Solo clases)</option>
+            </select>
+          </div>
+          <div class="form-group full-width"><label>📝 Notas:</label><textarea id="empNotas" rows="2"></textarea></div>
+        </div>
+        <button class="btn btn-success" id="btnCrearEmpleado" style="width:100%;">✅ Crear Empleado</button>
+      </div>
 
+      <div class="table-container">
+        <h3>👥 Lista de Empleados</h3>
+        <input type="text" id="buscarEmpleado" placeholder=" Buscar por nombre o email..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaEmpleados"></tbody>
+        </table>
+      </div>
+
+      <div class="form-section" style="margin-top: 30px;">
+        <h3>📜 Historial de Acciones (Auditoría)</h3>
+        <div class="history-toolbar">
+          <div class="history-filters">
+            <select id="filtroModuloHistorial" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+              <option value="">Todos los módulos</option>
+              <option value="perros">🐕 Perros</option>
+              <option value="reservas"> Reservas</option>
+              <option value="facturas">📄 Facturas</option>
+              <option value="training">🎓 Adiestramiento</option>
+              <option value="empleados">👥 Empleados</option>
+            </select>
+            <button class="filter-btn active" onclick="cargarHistorialEmpleados()">🔄 Actualizar</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Módulo</th>
+                <th>Acción</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody id="tablaHistorialEmpleados"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
     <!-- SECCIÓN CONTACTOS -->
     <div id="contactos" class="section">
       <div class="form-section">
@@ -864,6 +935,7 @@ body * { visibility: hidden; }
 
 <script type="module">
 import { initAuthListener, loginUser, registerUser, logoutUser, getCurrentUser, updateUserData } from './js/auth.js';
+import { obtenerEmpleados, crearEmpleado, actualizarEmpleado, eliminarEmpleado, toggleEmpleadoActivo, obtenerHistorial } from './js/empleados.js';
 import { crearPerro, obtenerPerros, obtenerPerro, actualizarPerro, eliminarPerro, buscarPerros, calcularEdad, obtenerDuenos } from './js/perros.js';
 import { crearReserva, obtenerReservas, actualizarReserva, eliminarReserva, marcarCompletada, obtenerOcupacion, calcularPrecioReserva as calcPrecioReserva, encontrarCasetaLibre } from './js/reservas.js';
 import { crearClase, obtenerClases, eliminarClase, comprobarAvisosClases } from './js/training.js';
@@ -2819,6 +2891,120 @@ window.enviarMasivoUI = window.enviarMasivo;
 window.enviarWhatsAppIndividualUI = window.enviarWhatsAppIndividual;
 window.exportarBackupUI = window.exportarBackup;
 window.importarBackupUI = window.importarBackup;
+// ================= MÓDULO EMPLEADOS =================
+let empleadosDB = [];
+let historialEmpleadosDB = [];
+
+// Cargar empleados al iniciar
+async function cargarEmpleadosUI() {
+  const res = await obtenerEmpleados();
+  if (res.success) {
+    empleadosDB = res.empleados;
+    mostrarTablaEmpleados(res.empleados);
+  }
+}
+
+function mostrarTablaEmpleados(empleados) {
+  const tbody = document.getElementById('tablaEmpleados');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (empleados.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">No hay empleados</td></tr>';
+    return;
+  }
+  empleados.forEach(emp => {
+    const rolLabel = emp.rol === 'admin' ? '👑 Admin' : emp.rol === 'recepcion' ? '📋 Recepción' : '🎓 Adiestrador';
+    const estadoBadge = emp.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>';
+    tbody.innerHTML += `<tr>
+      <td><strong>${emp.nombre}</strong> ${emp.apellidos || ''}</td>
+      <td>${emp.email}</td>
+      <td>${rolLabel}</td>
+      <td>${estadoBadge}</td>
+      <td class="actions">
+        <button class="btn btn-warning" onclick="toggleActivoUI('${emp.id}', ${!emp.activo})">${emp.activo ? '⏸️' : '▶️'}</button>
+        <button class="btn btn-danger" onclick="eliminarEmpleadoUI('${emp.id}')">🗑️</button>
+      </td>
+    </tr>`;
+  });
+}
+
+window.crearEmpleadoUI = async () => {
+  const data = {
+    nombre: document.getElementById('empNombre').value.trim(),
+    apellidos: document.getElementById('empApellidos').value.trim(),
+    email: document.getElementById('empEmail').value.trim(),
+    telefono: document.getElementById('empTelefono').value.trim(),
+    password: document.getElementById('empPassword').value,
+    rol: document.getElementById('empRol').value,
+    notas: document.getElementById('empNotas').value.trim()
+  };
+  if (!data.nombre || !data.email || !data.password || !data.rol) { alert('❌ Nombre, email, contraseña y rol son obligatorios'); return; }
+  if (data.password.length < 6) { alert('❌ La contraseña debe tener al menos 6 caracteres'); return; }
+  
+  const res = await crearEmpleado(data);
+  if (res.success) {
+    alert('✅ ' + res.message);
+    document.getElementById('empNombre').value = ''; document.getElementById('empApellidos').value = '';
+    document.getElementById('empEmail').value = ''; document.getElementById('empTelefono').value = '';
+    document.getElementById('empPassword').value = ''; document.getElementById('empRol').value = '';
+    document.getElementById('empNotas').value = '';
+    cargarEmpleadosUI();
+  } else { alert('❌ Error: ' + res.error); }
+};
+
+window.toggleActivoUI = async (id, activo) => {
+  if (!confirm(`¿${activo ? 'Activar' : 'Desactivar'} este empleado?`)) return;
+  const res = await toggleEmpleadoActivo(id, activo);
+  if (res.success) { alert('✅ ' + res.message); cargarEmpleadosUI(); } 
+  else { alert('❌ Error: ' + res.error); }
+};
+
+window.eliminarEmpleadoUI = async (id) => {
+  if (!confirm('¿Eliminar este empleado? Esta acción no se puede deshacer.')) return;
+  const res = await eliminarEmpleado(id);
+  if (res.success) { alert('✅ ' + res.message); cargarEmpleadosUI(); } 
+  else { alert('❌ Error: ' + res.error); }
+};
+
+window.filtrarEmpleadosUI = () => {
+  const texto = document.getElementById('buscarEmpleado').value.toLowerCase();
+  const filtrados = empleadosDB.filter(e => e.nombre.toLowerCase().includes(texto) || e.email.toLowerCase().includes(texto));
+  mostrarTablaEmpleados(filtrados);
+};
+
+window.cargarHistorialEmpleados = async () => {
+  const modulo = document.getElementById('filtroModuloHistorial').value;
+  const filtros = modulo ? { modulo } : {};
+  const res = await obtenerHistorial(filtros);
+  if (res.success) {
+    historialEmpleadosDB = res.historial;
+    const tbody = document.getElementById('tablaHistorialEmpleados');
+    tbody.innerHTML = '';
+    if (res.historial.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">Sin registros</td></tr>';
+      return;
+    }
+    res.historial.forEach(h => {
+      const fecha = h.fechaISO ? new Date(h.fechaISO).toLocaleString('es-ES') : '-';
+      const icono = { perros: '', reservas: '📅', facturas: '📄', training: '🎓', empleados: '👥', configuracion: '️' }[h.modulo] || '📋';
+      const accionIcono = { crear: '➕', editar: '✏️', eliminar: '️', activar: '▶️', desactivar: '⏸️' }[h.accion] || '📝';
+      tbody.innerHTML += `<tr><td>${fecha}</td><td>${h.userEmail || '-'}</td><td>${icono} ${h.modulo}</td><td>${accionIcono} ${h.accion}</td><td>${h.descripcion || '-'}</td></tr>`;
+    });
+  }
+};
+
+// Event Listeners Empleados
+document.getElementById('btnCrearEmpleado').addEventListener('click', window.crearEmpleadoUI);
+document.getElementById('buscarEmpleado').addEventListener('keyup', window.filtrarEmpleadosUI);
+
+// Cargar empleados cuando se cambia a la pestaña
+const tabEmpleados = document.querySelector('.tab[data-section="empleados"]');
+if (tabEmpleados) {
+  tabEmpleados.addEventListener('click', () => {
+    cargarEmpleadosUI();
+    cargarHistorialEmpleados();
+  });
+}
 </script>
 </body>
 </html>
