@@ -946,6 +946,7 @@ import { obtenerConfiguracion, guardarConfiguracion, exportarBackup, importarBac
 import { db } from './js/firebase.js';
 import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+import { obtenerEmpleados, crearEmpleado, actualizarEmpleado, eliminarEmpleado, toggleEmpleadoActivo, obtenerHistorial, obtenerPermisosUsuario, cambiarPasswordEmpleado } from './js/empleados.js';
 
 const storage = getStorage();
 
@@ -2894,31 +2895,43 @@ window.exportarBackupUI = window.exportarBackup;
 window.importarBackupUI = window.importarBackup;
 // Función para ocultar/mostrar pestañas según el rol
 window.aplicarPermisosUI = async () => {
-  const res = await obtenerPermisosUsuario();
-  if (!res || !res.permisos) return; // Si es admin principal, no oculta nada
-  const p = res.permisos;
-  
-  const secciones = {
-    'perros': p.perros && p.perros.ver,
-    'hotel': p.reservas && p.reservas.ver,
-    'reservas': p.reservas && p.reservas.ver,
-    'adiestramiento': p.training && p.training.ver,
-    'estadisticas': p.estadisticas && p.estadisticas.ver,
-    'historial': p.historial && p.historial.ver,
-    'facturas': p.facturas && p.facturas.ver,
-    'contactos': p.whatsapp && p.whatsapp.ver,
-    'empleados': p.empleados && p.empleados.ver
-  };
+  try {
+    const res = await obtenerPermisosUsuario();
+    // Si no hay respuesta o no hay permisos, es el admin principal → no ocultamos nada
+    if (!res || !res.permisos) {
+      console.log('✅ Admin principal detectado. Todos los permisos activos.');
+      return;
+    }
+    
+    const p = res.permisos;
+    console.log('🔐 Rol detectado:', res.rol, 'Permisos:', p);
+    
+    const secciones = {
+      'perros': p.perros && p.perros.ver,
+      'hotel': p.reservas && p.reservas.ver,
+      'reservas': p.reservas && p.reservas.ver,
+      'adiestramiento': p.training && p.training.ver,
+      'estadisticas': p.estadisticas && p.estadisticas.ver,
+      'historial': p.historial && p.historial.ver,
+      'facturas': p.facturas && p.facturas.ver,
+      'contactos': p.whatsapp && p.whatsapp.ver,
+      'empleados': p.empleados && p.empleados.ver
+    };
 
-  document.querySelectorAll('.tab').forEach(tab => {
-    const sectionId = tab.getAttribute('data-section');
-    tab.style.display = secciones[sectionId] === false ? 'none' : '';
-  });
+    document.querySelectorAll('.tab').forEach(tab => {
+      const sectionId = tab.getAttribute('data-section');
+      tab.style.display = secciones[sectionId] === false ? 'none' : '';
+    });
 
-  const btnConfig = document.getElementById('btnConfig');
-  if (btnConfig && (!p.configuracion || !p.configuracion.ver)) btnConfig.style.display = 'none';
-};
-// ================= MÓDULO EMPLEADOS =================
+    const btnConfig = document.getElementById('btnConfig');
+    if (btnConfig && (!p.configuracion || !p.configuracion.ver)) {
+      btnConfig.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('️ Error aplicando permisos (no crítico):', error);
+    // Si falla, no bloqueamos la app: el usuario ve todo por defecto
+  }
+};// ================= MÓDULO EMPLEADOS =================
 let empleadosDB = [];
 let historialEmpleadosDB = [];
 
