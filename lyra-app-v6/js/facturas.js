@@ -14,7 +14,6 @@ import {
   addDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-const LOGO_URL_LYRA = "https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png";
 
 function getFacturasPath() {
   const user = getCurrentUser();
@@ -491,132 +490,256 @@ export async function eliminarFactura(id) {
 /**
  * Genera el HTML de impresión de una factura
  */
+/**
+ * Genera el HTML de impresión de una factura (solo datos de la empresa del cliente)
+ */
 export async function generarHTMLFactura(factura) {
-  try {
-    const config = await obtenerConfiguracion();
-    
-    const clientLogoHtml = config.clientLogo 
-      ? `<img src="${config.clientLogo}" alt="Logo Cliente">` 
-      : '';
-    const clientName = config.clientName || 'Nombre de Tu Empresa';
-    const clientCIF = config.clientCIF 
-      ? `<p><strong>CIF/NIF:</strong> ${config.clientCIF}</p>` 
-      : '';
-    const clientAddress = config.clientAddress 
-      ? `<p><strong>Dirección:</strong> ${config.clientAddress}</p>` 
-      : '';
-    const clientPhone = config.clientPhone 
-      ? `<p><strong>Teléfono:</strong> ${config.clientPhone}</p>` 
-      : '';
-    const lyraLogoHtml = `<img src="${LOGO_URL_LYRA}" alt="Lyra App">`;
-    
-    const conceptosHTML = factura.conceptos && factura.conceptos.length > 0
-      ? factura.conceptos.map(c => `
-        <tr>
-          <td>${c.servicio}</td>
-          <td>${c.cantidad}</td>
-          <td>${parseFloat(c.precio).toFixed(2)} €</td>
-          <td>${c.subtotal} €</td>
-        </tr>
-      `).join('')
-      : `
-        <tr>
-          <td>${factura.servicio || 'Servicio General'}</td>
-          <td>1</td>
-          <td>${(factura.total/1.21).toFixed(2)} €</td>
-          <td>${(factura.total/1.21).toFixed(2)} €</td>
-        </tr>
-      `;
-    
-    const htmlContent = `<!DOCTYPE html>
-<html>
+    try {
+        const config = await obtenerConfiguracion();
+        
+        // Datos de la empresa del cliente (desde configuración)
+        const clientLogoHtml = config.clientLogo 
+            ? `<img src="${config.clientLogo}" alt="Logo Empresa">` 
+            : '';
+        const clientName = config.clientName || 'Nombre de Tu Empresa';
+        const clientCIF = config.clientCIF 
+            ? `<p><strong>CIF/NIF:</strong> ${config.clientCIF}</p>` 
+            : '';
+        const clientAddress = config.clientAddress 
+            ? `<p><strong>Dirección:</strong> ${config.clientAddress}</p>` 
+            : '';
+        const clientPhone = config.clientPhone 
+            ? `<p><strong>Teléfono:</strong> ${config.clientPhone}</p>` 
+            : '';
+        const clientEmail = config.clientEmail 
+            ? `<p><strong>Email:</strong> ${config.clientEmail}</p>` 
+            : '';
+
+        // Generar filas de conceptos
+        const conceptosHTML = factura.conceptos && factura.conceptos.length > 0
+            ? factura.conceptos.map(c => `
+                <tr>
+                    <td>${c.servicio}</td>
+                    <td style="text-align:center;">${c.cantidad}</td>
+                    <td style="text-align:right;">${parseFloat(c.precio).toFixed(2)} €</td>
+                    <td style="text-align:right;">${c.subtotal} €</td>
+                </tr>
+            `).join('')
+            : `<tr>
+                    <td>${factura.servicio || 'Servicio General'}</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:right;">${(factura.total/1.21).toFixed(2)} €</td>
+                    <td style="text-align:right;">${(factura.total/1.21).toFixed(2)} €</td>
+               </tr>`;
+
+        const htmlContent = `<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Factura ${factura.numero}</title>
-<style>
-body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
-.factura-header { display: flex; justify-content: space-between; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #334155; }
-.factura-logo-cliente { text-align: left; width: 45%; }
-.factura-logo-cliente img { max-width: 150px; max-height: 100px; object-fit: contain; margin-bottom: 10px; }
-.factura-logo-cliente h2 { color: #333; font-size: 20px; margin: 5px 0; }
-.factura-logo-lyra { text-align: right; width: 45%; }
-.factura-logo-lyra img { max-width: 80px; max-height: 80px; object-fit: contain; margin-bottom: 5px; }
-.factura-info { display: flex; justify-content: space-between; margin-bottom: 30px; }
-.factura-cliente, .factura-detalles { flex: 1; padding: 15px; background: #f8fafc; border-radius: 8px; }
-.factura-cliente h4, .factura-detalles h4 { color: #334155; margin-bottom: 10px; border-bottom: 2px solid #334155; padding-bottom: 5px; }
-.factura-cliente p, .factura-detalles p { margin: 5px 0; font-size: 13px; }
-.factura-tabla { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-.factura-tabla th { background: #334155; color: white; padding: 12px; text-align: left; }
-.factura-tabla td { padding: 12px; border-bottom: 1px solid #ddd; }
-.factura-totales { width: 100%; max-width: 300px; margin-left: auto; }
-.factura-totales .fila { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #eee; }
-.factura-totales .fila.total { background: #334155; color: white; font-weight: bold; font-size: 16px; border-radius: 5px; }
-.factura-footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #334155; text-align: center; font-size: 12px; color: #666; }
-@media print { body { padding: 20px; } }
-</style>
+    <meta charset="UTF-8">
+    <title>Factura ${factura.numero}</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 40px; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            color: #333;
+        }
+        .factura-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            margin-bottom: 30px; 
+            padding-bottom: 20px; 
+            border-bottom: 3px solid #334155; 
+        }
+        .factura-empresa { 
+            text-align: left; 
+            flex: 1;
+        }
+        .factura-empresa img { 
+            max-width: 150px; 
+            max-height: 100px; 
+            object-fit: contain; 
+            margin-bottom: 10px; 
+            display: block;
+        }
+        .factura-empresa h2 { 
+            color: #334155; 
+            font-size: 22px; 
+            margin: 5px 0; 
+        }
+        .factura-empresa p { 
+            margin: 4px 0; 
+            font-size: 14px; 
+        }
+        .factura-numero {
+            text-align: right;
+            min-width: 200px;
+        }
+        .factura-numero h1 {
+            color: #f59e0b;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+            letter-spacing: 2px;
+        }
+        .factura-numero p {
+            margin: 4px 0;
+            font-size: 14px;
+        }
+        .factura-info { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 30px; 
+            gap: 20px;
+        }
+        .factura-cliente, .factura-detalles { 
+            flex: 1; 
+            padding: 15px; 
+            background: #f8fafc; 
+            border-radius: 8px; 
+            border-left: 4px solid #f59e0b;
+        }
+        .factura-cliente h4, .factura-detalles h4 { 
+            color: #334155; 
+            margin: 0 0 10px 0; 
+            border-bottom: 2px solid #334155; 
+            padding-bottom: 5px; 
+        }
+        .factura-cliente p, .factura-detalles p { 
+            margin: 5px 0; 
+            font-size: 13px; 
+        }
+        .factura-tabla { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
+        .factura-tabla th { 
+            background: #334155; 
+            color: white; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        .factura-tabla td { 
+            padding: 12px; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .factura-totales { 
+            width: 100%; 
+            max-width: 300px; 
+            margin-left: auto; 
+        }
+        .factura-totales .fila { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px 15px; 
+            border-bottom: 1px solid #eee; 
+        }
+        .factura-totales .fila.total { 
+            background: #334155; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            margin-top: 5px;
+        }
+        .factura-footer { 
+            margin-top: 40px; 
+            padding-top: 20px; 
+            border-top: 2px solid #334155; 
+            text-align: center; 
+            font-size: 12px; 
+            color: #666; 
+        }
+        @media print { 
+            body { padding: 20px; } 
+        }
+    </style>
 </head>
 <body>
-<div class="factura-header">
-  <div class="factura-logo-cliente">
-    ${clientLogoHtml}
-    <h2>${clientName}</h2>
-    ${clientCIF}
-    ${clientAddress}
-    ${clientPhone}
-  </div>
-  <div class="factura-logo-lyra">
-    ${lyraLogoHtml}
-  </div>
-</div>
-<div class="factura-info">
-  <div class="factura-cliente">
-    <h4>📋 Datos del Cliente</h4>
-    <p><strong>Nombre:</strong> ${factura.cliente || ''}</p>
-    <p><strong>DNI:</strong> ${factura.clienteDNI || '-'}</p>
-    <p><strong>Dirección:</strong> ${factura.clienteDireccion || '-'}</p>
-    <p><strong>Teléfono:</strong> ${factura.clienteTelefono || '-'}</p>
-    <p><strong>Email:</strong> ${factura.clienteEmail || '-'}</p>
-  </div>
-  <div class="factura-detalles">
-    <h4> Datos de la Factura</h4>
-    <p><strong>Nº Factura:</strong> ${factura.numero}</p>
-    <p><strong>Fecha:</strong> ${factura.fecha || ''}</p>
-    <p><strong>Perro:</strong> ${factura.nombrePerro || '-'}</p>
-    <p><strong>Servicio:</strong> ${factura.conceptos && factura.conceptos.length > 0 ? factura.conceptos.map(c => c.servicio).join(', ') : factura.servicio || ''}</p>
-  </div>
-</div>
-<table class="factura-tabla">
-  <thead><tr><th>Concepto</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead>
-  <tbody>
-    ${conceptosHTML}
-  </tbody>
-</table>
-<div class="factura-totales">
-  <div class="fila"><span>Base Imponible:</span><span>${factura.baseImponible.toFixed(2)} €</span></div>
-  <div class="fila"><span>IVA (21%):</span><span>${factura.iva.toFixed(2)} €</span></div>
-  <div class="fila total"><span>TOTAL:</span><span>${factura.total.toFixed(2)} €</span></div>
-</div>
-<div class="factura-footer">
-  <p>¡Gracias por confiar en ${clientName}!</p>
-  <p>Para cualquier consulta, contacte con el hotel.</p>
-</div>
-<script>window.onload = function() { setTimeout(() => { window.print(); }, 300); };<\/script>
+    <div class="factura-header">
+        <div class="factura-empresa">
+            ${clientLogoHtml}
+            <h2>${clientName}</h2>
+            ${clientCIF}
+            ${clientAddress}
+            ${clientPhone}
+            ${clientEmail}
+        </div>
+        <div class="factura-numero">
+            <h1>FACTURA</h1>
+            <p><strong>Nº:</strong> ${factura.numero}</p>
+            <p><strong>Fecha:</strong> ${factura.fecha || ''}</p>
+        </div>
+    </div>
+
+    <div class="factura-info">
+        <div class="factura-cliente">
+            <h4>📋 Datos del Cliente</h4>
+            <p><strong>Nombre:</strong> ${factura.cliente || ''}</p>
+            <p><strong>DNI:</strong> ${factura.clienteDNI || '-'}</p>
+            <p><strong>Dirección:</strong> ${factura.clienteDireccion || '-'}</p>
+            <p><strong>Teléfono:</strong> ${factura.clienteTelefono || '-'}</p>
+            <p><strong>Email:</strong> ${factura.clienteEmail || '-'}</p>
+        </div>
+        <div class="factura-detalles">
+            <h4>📝 Detalles del Servicio</h4>
+            <p><strong>Perro:</strong> ${factura.nombrePerro || '-'}</p>
+            <p><strong>Conceptos:</strong> ${factura.conceptos && factura.conceptos.length > 0 ? factura.conceptos.map(c => c.servicio).join(', ') : factura.servicio || ''}</p>
+        </div>
+    </div>
+
+    <table class="factura-tabla">
+        <thead>
+            <tr>
+                <th>Concepto</th>
+                <th style="text-align:center;">Cantidad</th>
+                <th style="text-align:right;">Precio Unit.</th>
+                <th style="text-align:right;">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${conceptosHTML}
+        </tbody>
+    </table>
+
+    <div class="factura-totales">
+        <div class="fila">
+            <span>Base Imponible:</span>
+            <span>${factura.baseImponible.toFixed(2)} €</span>
+        </div>
+        <div class="fila">
+            <span>IVA (21%):</span>
+            <span>${factura.iva.toFixed(2)} €</span>
+        </div>
+        <div class="fila total">
+            <span>TOTAL:</span>
+            <span>${factura.total.toFixed(2)} €</span>
+        </div>
+    </div>
+
+    <div class="factura-footer">
+        <p>¡Gracias por confiar en ${clientName}!</p>
+        <p>Para cualquier consulta, contacte con nosotros.</p>
+    </div>
+
+    <script>window.onload = function() { setTimeout(() => { window.print(); }, 300); };<\/script>
 </body>
 </html>`;
-    
-    return {
-      success: true,
-      html: htmlContent
-    };
-  } catch (error) {
-    console.error('Error generando HTML:', error);
-    return {
-      success: false,
-      error: 'Error al generar el HTML de la factura'
-    };
-  }
-}
 
+        return {
+            success: true,
+            html: htmlContent
+        };
+    } catch (error) {
+        console.error('Error generando HTML:', error);
+        return {
+            success: false,
+            error: 'Error al generar el HTML de la factura'
+        };
+    }
+}
 /**
  * Imprime una factura abriendo ventana nueva
  */
