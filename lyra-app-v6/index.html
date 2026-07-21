@@ -259,6 +259,7 @@ body * { visibility: hidden; }
       <div class="user-info">
         <button class="btn-config" id="btnConfig">⚙️ Configurar Hotel</button>
         <span id="userEmail" style="font-weight: 600; color: #cbd5e1;">usuario@email.com</span>
+        <button class="btn-config" id="btnCambiarPass" style="background:#10b981;">🔒 Cambiar Clave</button>
         <button class="btn-logout" id="btnLogout">🚪 Salir</button>
       </div>
     </div>
@@ -1011,6 +1012,7 @@ async function initApp() {
       document.getElementById('userEmail').textContent = user.email;
       
       await cargarConfiguracionInicial();
+      await aplicarPermisosUI();
       cargarDatos();
       cargarDatosTraining();
     } else {
@@ -2891,6 +2893,32 @@ window.enviarMasivoUI = window.enviarMasivo;
 window.enviarWhatsAppIndividualUI = window.enviarWhatsAppIndividual;
 window.exportarBackupUI = window.exportarBackup;
 window.importarBackupUI = window.importarBackup;
+// Función para ocultar/mostrar pestañas según el rol
+window.aplicarPermisosUI = async () => {
+  const res = await obtenerPermisosUsuario();
+  if (!res || !res.permisos) return; // Si es admin principal, no oculta nada
+  const p = res.permisos;
+  
+  const secciones = {
+    'perros': p.perros && p.perros.ver,
+    'hotel': p.reservas && p.reservas.ver,
+    'reservas': p.reservas && p.reservas.ver,
+    'adiestramiento': p.training && p.training.ver,
+    'estadisticas': p.estadisticas && p.estadisticas.ver,
+    'historial': p.historial && p.historial.ver,
+    'facturas': p.facturas && p.facturas.ver,
+    'contactos': p.whatsapp && p.whatsapp.ver,
+    'empleados': p.empleados && p.empleados.ver
+  };
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    const sectionId = tab.getAttribute('data-section');
+    tab.style.display = secciones[sectionId] === false ? 'none' : '';
+  });
+
+  const btnConfig = document.getElementById('btnConfig');
+  if (btnConfig && (!p.configuracion || !p.configuracion.ver)) btnConfig.style.display = 'none';
+};
 // ================= MÓDULO EMPLEADOS =================
 let empleadosDB = [];
 let historialEmpleadosDB = [];
@@ -3022,6 +3050,26 @@ window.guardarEdicionEmpleadoUI = async () => {
     cargarEmpleadosUI();
   } else { alert('❌ Error: ' + res.error); }
 };
+// Función para cambiar contraseña
+document.getElementById('btnCambiarPass').addEventListener('click', () => {
+  document.getElementById('nuevaPass').value = '';
+  document.getElementById('modalCambiarPass').style.display = 'block';
+});
+
+window.guardarNuevaPassUI = async () => {
+  const nuevaPass = document.getElementById('nuevaPass').value;
+  if (nuevaPass.length < 6) { alert('❌ La contraseña debe tener al menos 6 caracteres'); return; }
+  const user = getCurrentUser();
+  if (!user) return;
+  
+  const res = await cambiarPasswordEmpleado(user.uid, nuevaPass);
+  if (res.success) {
+    alert('✅ ' + res.message);
+    document.getElementById('modalCambiarPass').style.display = 'none';
+  } else {
+    alert('❌ Error: ' + res.error);
+  }
+};
 // Event Listeners Empleados
 document.getElementById('btnCrearEmpleado').addEventListener('click', window.crearEmpleadoUI);
 document.getElementById('buscarEmpleado').addEventListener('keyup', window.filtrarEmpleadosUI);
@@ -3054,6 +3102,15 @@ if (tabEmpleados) {
     </div>
     <div class="form-group"><label>Notas:</label><textarea id="editEmpNotas" rows="2"></textarea></div>
     <button class="btn btn-success" onclick="guardarEdicionEmpleadoUI()" style="width:100%;"> Guardar Cambios</button>
+  </div>
+</div>
+<!-- Modal Cambiar Contraseña -->
+<div id="modalCambiarPass" class="modal">
+  <div class="modal-content" style="max-width:400px;">
+    <span class="close" onclick="document.getElementById('modalCambiarPass').style.display='none'">&times;</span>
+    <h2 style="color:#334155;margin-bottom:20px;">🔒 Cambiar mi Contraseña</h2>
+    <div class="form-group"><label>Nueva contraseña (mín 6 caracteres):</label><input type="password" id="nuevaPass" placeholder="Escribe la nueva clave..."></div>
+    <button class="btn btn-success" onclick="guardarNuevaPassUI()" style="width:100%;margin-top:15px;">💾 Guardar Nueva Clave</button>
   </div>
 </div>
 </body>
