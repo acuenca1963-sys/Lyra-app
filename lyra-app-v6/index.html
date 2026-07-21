@@ -1011,8 +1011,7 @@ async function initApp() {
       document.getElementById('mainApp').style.display = 'block';
       document.getElementById('userEmail').textContent = user.email;
       
-      await cargarConfiguracionInicial();
-      await aplicarPermisosUI();
+      await cargarConfiguracionInicial();      
       cargarDatos();
       cargarDatosTraining();
     } else {
