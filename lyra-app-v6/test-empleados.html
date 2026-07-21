@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Empleados - Lyra v6</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #333; text-align: center; }
+    .container { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    h2 { color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+    h3 { color: #475569; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+    button { padding: 12px 20px; margin: 5px; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #1b5e20; }
+    button.danger { background: #c62828; }
+    button.secondary { background: #1565c0; }
+    button.warning { background: #f59e0b; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #resultado { padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #334155; color: white; padding: 12px; text-align: left; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+    tr:hover { background: #f8fafc; }
+    .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .badge { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .badge-admin { background: #dcfce7; color: #166534; }
+    .badge-recepcion { background: #dbeafe; color: #1e40af; }
+    .badge-adiestrador { background: #fef3c7; color: #92400e; }
+    .badge-activo { background: #dcfce7; color: #166534; }
+    .badge-inactivo { background: #fee2e2; color: #991b1b; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .stat-box { background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 4px solid #334155; }
+    .stat-box h4 { margin: 0 0 10px 0; color: #64748b; font-size: 14px; }
+    .stat-box .value { font-size: 24px; font-weight: 800; color: #1e293b; }
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); overflow: auto; }
+    .modal-content { background: white; margin: 30px auto; padding: 35px; width: 90%; max-width: 600px; border-radius: 8px; }
+    .close { float: right; font-size: 28px; cursor: pointer; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <h1>👥 Test Empleados - Lyra v6</h1>
+
+  <div class="container">
+    <h2>➕ Nuevo Empleado</h2>
+    <div class="grid-2">
+      <input type="text" id="empNombre" placeholder="Nombre *">
+      <input type="text" id="empApellidos" placeholder="Apellidos">
+      <input type="email" id="empEmail" placeholder="Email *">
+      <input type="tel" id="empTelefono" placeholder="Teléfono">
+      <input type="password" id="empPassword" placeholder="Contraseña * (mín 6 caracteres)">
+      <select id="empRol">
+        <option value="">Seleccionar rol *</option>
+        <option value="admin"> Admin (Acceso total)</option>
+        <option value="recepcion">📋 Recepción (Gestión diaria)</option>
+        <option value="adiestrador"> Adiestrador (Solo clases)</option>
+      </select>
+      <textarea id="empNotas" placeholder="Notas (opcional)" style="grid-column: 1 / -1; min-height: 60px;"></textarea>
+    </div>
+    <button onclick="crearEmpleadoTest()" style="width: 100%; margin-top: 10px;">👤 Crear Empleado</button>
+  </div>
+
+  <div class="container">
+    <h2> Lista de Empleados</h2>
+    <input type="text" id="buscarEmpleado" placeholder="🔍 Buscar por nombre o email..." onkeyup="filtrarEmpleados()">
+    <button onclick="cargarEmpleados()">🔄 Recargar</button>
+    
+    <table style="margin-top: 15px;">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha Alta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaEmpleados"></tbody>
+    </table>
+  </div>
+
+  <div class="container">
+    <h2>📊 Estadísticas de Actividad</h2>
+    <button onclick="cargarEstadisticas()"> Cargar Estadísticas</button>
+    <div id="statsContainer" class="stats-grid" style="margin-top: 15px;"></div>
+  </div>
+
+  <div class="container">
+    <h2>📜 Historial de Acciones</h2>
+    <div class="grid-2">
+      <select id="filtroModulo">
+        <option value="">Todos los módulos</option>
+        <option value="perros">🐕 Perros</option>
+        <option value="reservas">📅 Reservas</option>
+        <option value="facturas"> Facturas</option>
+        <option value="training">🎓 Adiestramiento</option>
+        <option value="empleados">👥 Empleados</option>
+        <option value="configuracion">⚙️ Configuración</option>
+      </select>
+      <select id="filtroAccion">
+        <option value="">Todas las acciones</option>
+        <option value="crear">Crear</option>
+        <option value="editar">Editar</option>
+        <option value="eliminar">Eliminar</option>
+        <option value="activar">Activar</option>
+        <option value="desactivar">Desactivar</option>
+      </select>
+    </div>
+    <button onclick="cargarHistorial()">📜 Cargar Historial</button>
+    
+    <table style="margin-top: 15px;">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Usuario</th>
+          <th>Módulo</th>
+          <th>Acción</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaHistorial"></tbody>
+    </table>
+  </div>
+
+  <div id="resultado">Esperando acciones...</div>
+
+  <!-- Modal de edición -->
+  <div id="modalEditarEmpleado" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal('modalEditarEmpleado')">&times;</span>
+      <h2 style="color:#334155;margin-bottom:20px;">️ Editar Empleado</h2>
+      <input type="hidden" id="editEmpId">
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input type="text" id="editEmpNombre">
+      </div>
+      <div class="form-group">
+        <label>Apellidos:</label>
+        <input type="text" id="editEmpApellidos">
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" id="editEmpEmail" readonly style="background: #f1f5f9;">
+      </div>
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input type="tel" id="editEmpTelefono">
+      </div>
+      <div class="form-group">
+        <label>Rol:</label>
+        <select id="editEmpRol">
+          <option value="admin">👑 Admin</option>
+          <option value="recepcion">📋 Recepción</option>
+          <option value="adiestrador">🎓 Adiestrador</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notas:</label>
+        <textarea id="editEmpNotas" rows="3"></textarea>
+      </div>
+      <button onclick="guardarEdicionEmpleado()" style="width: 100%;">💾 Guardar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initAuthListener, loginUser } from './js/auth.js';
+    import { 
+      obtenerEmpleados, 
+      crearEmpleado, 
+      actualizarEmpleado, 
+      eliminarEmpleado,
+      toggleEmpleadoActivo,
+      obtenerHistorial,
+      obtenerEstadisticasHistorial,
+      buscarEmpleados
+    } from './js/empleados.js';
+
+    const TEST_EMAIL = 'elantkan@gmail.com';
+    const TEST_PASSWORD = 'elantkan2025';
+    
+    let empleadosGlobales = [];
+    let historialGlobal = [];
+
+    function mostrarResultado(msg, tipo = 'info') {
+      const res = document.getElementById('resultado');
+      res.textContent = msg;
+      res.style.background = tipo === 'error' ? '#ffebee' : tipo === 'success' ? '#e8f5e9' : '#e3f2fd';
+      res.style.color = tipo === 'error' ? '#c62828' : tipo === 'success' ? '#2e7d32' : '#0d47a1';
+    }
+
+    initAuthListener(async (isAuth, user) => {
+      if (!isAuth) {
+        mostrarResultado('Iniciando sesión...', 'info');
+        await loginUser(TEST_EMAIL, TEST_PASSWORD);
+      } else {
+        mostrarResultado(`✅ Conectado como ${user.email}`, 'success');
+        cargarEmpleados();
+      }
+    });
+
+    window.crearEmpleadoTest = async () => {
+      const data = {
+        nombre: document.getElementById('empNombre').value.trim(),
+        apellidos: document.getElementById('empApellidos').value.trim(),
+        email: document.getElementById('empEmail').value.trim(),
+        telefono: document.getElementById('empTelefono').value.trim(),
+        password: document.getElementById('empPassword').value,
+        rol: document.getElementById('empRol').value,
+        notas: document.getElementById('empNotas').value.trim()
+      };
+
+      if (!data.nombre || !data.email || !data.password || !data.rol) {
+        mostrarResultado('❌ Nombre, email, contraseña y rol son obligatorios', 'error');
+        return;
+      }
+
+      if (data.password.length < 6) {
+        mostrarResultado('❌ La contraseña debe tener al menos 6 caracteres', 'error');
+        return;
+      }
+
+      mostrarResultado(' Creando empleado...', 'info');
+      const res = await crearEmpleado(data);
+
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        // Limpiar formulario
+        document.getElementById('empNombre').value = '';
+        document.getElementById('empApellidos').value = '';
+        document.getElementById('empEmail').value = '';
+        document.getElementById('empTelefono').value = '';
+        document.getElementById('empPassword').value = '';
+        document.getElementById('empRol').value = '';
+        document.getElementById('empNotas').value = '';
+        cargarEmpleados();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.cargarEmpleados = async () => {
+      mostrarResultado('⏳ Cargando empleados...', 'info');
+      const res = await obtenerEmpleados();
+
+      if (res.success) {
+        empleadosGlobales = res.empleados;
+        mostrarEmpleados(res.empleados);
+        mostrarResultado(`✅ ${res.total} empleado(s) cargado(s)`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    function mostrarEmpleados(empleados) {
+      const tbody = document.getElementById('tablaEmpleados');
+      tbody.innerHTML = '';
+
+      if (empleados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">No hay empleados</td></tr>';
+        return;
+      }
+
+      empleados.forEach(emp => {
+        const rolClass = emp.rol === 'admin' ? 'badge-admin' : emp.rol === 'recepcion' ? 'badge-recepcion' : 'badge-adiestrador';
+        const estadoClass = emp.activo ? 'badge-activo' : 'badge-inactivo';
+        const fechaAlta = emp.fechaAlta ? new Date(emp.fechaAlta).toLocaleDateString('es-ES') : '-';
+        
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${emp.nombre}</strong> ${emp.apellidos || ''}</td>
+            <td>${emp.email}</td>
+            <td><span class="badge ${rolClass}">${emp.rol}</span></td>
+            <td><span class="badge ${estadoClass}">${emp.activo ? 'Activo' : 'Inactivo'}</span></td>
+            <td>${fechaAlta}</td>
+            <td class="actions">
+              <button class="secondary" onclick="editarEmpleado('${emp.id}')" style="padding: 8px;">✏️</button>
+              <button class="warning" onclick="toggleActivo('${emp.id}', ${!emp.activo})" style="padding: 8px;">${emp.activo ? '⏸️' : '▶️'}</button>
+              <button class="danger" onclick="eliminarEmpleadoTest('${emp.id}')" style="padding: 8px;">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.editarEmpleado = async (id) => {
+      const res = await obtenerEmpleados();
+      if (!res.success) return;
+      
+      const emp = res.empleados.find(e => e.id === id);
+      if (!emp) return;
+
+      document.getElementById('editEmpId').value = id;
+      document.getElementById('editEmpNombre').value = emp.nombre || '';
+      document.getElementById('editEmpApellidos').value = emp.apellidos || '';
+      document.getElementById('editEmpEmail').value = emp.email || '';
+      document.getElementById('editEmpTelefono').value = emp.telefono || '';
+      document.getElementById('editEmpRol').value = emp.rol || 'recepcion';
+      document.getElementById('editEmpNotas').value = emp.notas || '';
+      
+      document.getElementById('modalEditarEmpleado').style.display = 'block';
+    };
+
+    window.guardarEdicionEmpleado = async () => {
+      const id = document.getElementById('editEmpId').value;
+      if (!id) return;
+
+      const data = {
+        nombre: document.getElementById('editEmpNombre').value.trim(),
+        apellidos: document.getElementById('editEmpApellidos').value.trim(),
+        telefono: document.getElementById('editEmpTelefono').value.trim(),
+        rol: document.getElementById('editEmpRol').value,
+        notas: document.getElementById('editEmpNotas').value.trim()
+      };
+
+      mostrarResultado('⏳ Actualizando empleado...', 'info');
+      const res = await actualizarEmpleado(id, data);
+
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        cerrarModal('modalEditarEmpleado');
+        cargarEmpleados();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.toggleActivo = async (id, activo) => {
+      const accion = activo ? 'activar' : 'desactivar';
+      if (!confirm(`¿${accion} este empleado?`)) return;
+
+      mostrarResultado(`⏳ ${accion === 'activar' ? 'Activando' : 'Desactivando'}...`, 'info');
+      const res = await toggleEmpleadoActivo(id, activo);
+
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        cargarEmpleados();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.eliminarEmpleadoTest = async (id) => {
+      if (!confirm('¿Eliminar este empleado? Esta acción no se puede deshacer.')) return;
+
+      mostrarResultado('⏳ Eliminando empleado...', 'info');
+      const res = await eliminarEmpleado(id);
+
+      if (res.success) {
+        mostrarResultado(`✅ ${res.message}`, 'success');
+        cargarEmpleados();
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.filtrarEmpleados = () => {
+      const texto = document.getElementById('buscarEmpleado').value.toLowerCase();
+      const filtrados = empleadosGlobales.filter(e => 
+        e.nombre.toLowerCase().includes(texto) ||
+        e.email.toLowerCase().includes(texto) ||
+        (e.apellidos && e.apellidos.toLowerCase().includes(texto))
+      );
+      mostrarEmpleados(filtrados);
+    };
+
+    window.cargarHistorial = async () => {
+      const modulo = document.getElementById('filtroModulo').value;
+      const accion = document.getElementById('filtroAccion').value;
+      
+      const filtros = {};
+      if (modulo) filtros.modulo = modulo;
+      if (accion) filtros.accion = accion;
+
+      mostrarResultado('⏳ Cargando historial...', 'info');
+      const res = await obtenerHistorial(filtros);
+
+      if (res.success) {
+        historialGlobal = res.historial;
+        mostrarHistorial(res.historial);
+        mostrarResultado(`✅ ${res.total} registro(s) cargado(s)`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    function mostrarHistorial(historial) {
+      const tbody = document.getElementById('tablaHistorial');
+      tbody.innerHTML = '';
+
+      if (historial.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">No hay registros en el historial</td></tr>';
+        return;
+      }
+
+      historial.forEach(h => {
+        const fecha = h.fechaISO ? new Date(h.fechaISO).toLocaleString('es-ES') : '-';
+        const moduloIcono = {
+          perros: '',
+          reservas: '📅',
+          facturas: '📄',
+          training: '🎓',
+          empleados: '👥',
+          configuracion: '️'
+        }[h.modulo] || '📋';
+        
+        const accionIcono = {
+          crear: '➕',
+          editar: '️',
+          eliminar: '🗑️',
+          activar: '▶️',
+          desactivar: '⏸️'
+        }[h.accion] || '📝';
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${fecha}</td>
+            <td>${h.userEmail || h.userId}</td>
+            <td>${moduloIcono} ${h.modulo}</td>
+            <td>${accionIcono} ${h.accion}</td>
+            <td>${h.descripcion}</td>
+          </tr>
+        `;
+      });
+    }
+
+    window.cargarEstadisticas = async () => {
+      mostrarResultado('⏳ Cargando estadísticas...', 'info');
+      const res = await obtenerEstadisticasHistorial();
+
+      if (res.success) {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = `
+          <div class="stat-box">
+            <h4>Total Acciones</h4>
+            <div class="value">${res.total}</div>
+          </div>
+          <div class="stat-box">
+            <h4>Por Módulo</h4>
+            <div class="value" style="font-size: 14px;">
+              ${Object.entries(res.porModulo).map(([k, v]) => `${k}: ${v}`).join('<br>')}
+            </div>
+          </div>
+          <div class="stat-box">
+            <h4>Por Acción</h4>
+            <div class="value" style="font-size: 14px;">
+              ${Object.entries(res.porAccion).map(([k, v]) => `${k}: ${v}`).join('<br>')}
+            </div>
+          </div>
+          <div class="stat-box">
+            <h4>Por Usuario</h4>
+            <div class="value" style="font-size: 14px;">
+              ${Object.entries(res.porUsuario).map(([k, v]) => `${k}: ${v}`).join('<br>')}
+            </div>
+          </div>
+        `;
+        mostrarResultado(`✅ Estadísticas cargadas`, 'success');
+      } else {
+        mostrarResultado(`❌ Error: ${res.error}`, 'error');
+      }
+    };
+
+    window.cerrarModal = (id) => {
+      document.getElementById(id).style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
