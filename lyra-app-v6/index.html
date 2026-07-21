@@ -2921,7 +2921,7 @@ function mostrarTablaEmpleados(empleados) {
       <td>${rolLabel}</td>
       <td>${estadoBadge}</td>
       <td class="actions">
-        <button class="btn btn-info" onclick="editarEmpleadoUI('${emp.id}')">️</button>  
+        <button class="btn btn-warning" onclick="editarEmpleadoUI('${emp.id}')" style="background:#f59e0b;color:white;">✏️ Editar</button> 
         <button class="btn btn-warning" onclick="toggleActivoUI('${emp.id}', ${!emp.activo})">${emp.activo ? '⏸️' : '▶️'}</button>
         <button class="btn btn-danger" onclick="eliminarEmpleadoUI('${emp.id}')">🗑️</button>
       </td>
