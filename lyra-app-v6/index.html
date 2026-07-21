@@ -2921,6 +2921,7 @@ function mostrarTablaEmpleados(empleados) {
       <td>${rolLabel}</td>
       <td>${estadoBadge}</td>
       <td class="actions">
+        <button class="btn btn-info" onclick="editarEmpleadoUI('${emp.id}')">️</button>  
         <button class="btn btn-warning" onclick="toggleActivoUI('${emp.id}', ${!emp.activo})">${emp.activo ? '⏸️' : '▶️'}</button>
         <button class="btn btn-danger" onclick="eliminarEmpleadoUI('${emp.id}')">🗑️</button>
       </td>
@@ -2992,7 +2993,35 @@ window.cargarHistorialEmpleados = async () => {
     });
   }
 };
+window.editarEmpleadoUI = async (id) => {
+  const emp = empleadosDB.find(e => e.id === id);
+  if (!emp) return;
+  document.getElementById('editEmpId').value = id;
+  document.getElementById('editEmpNombre').value = emp.nombre || '';
+  document.getElementById('editEmpApellidos').value = emp.apellidos || '';
+  document.getElementById('editEmpEmail').value = emp.email || '';
+  document.getElementById('editEmpTelefono').value = emp.telefono || '';
+  document.getElementById('editEmpRol').value = emp.rol || 'recepcion';
+  document.getElementById('editEmpNotas').value = emp.notas || '';
+  document.getElementById('modalEditarEmpleado').style.display = 'block';
+};
 
+window.guardarEdicionEmpleadoUI = async () => {
+  const id = document.getElementById('editEmpId').value;
+  const data = {
+    nombre: document.getElementById('editEmpNombre').value.trim(),
+    apellidos: document.getElementById('editEmpApellidos').value.trim(),
+    telefono: document.getElementById('editEmpTelefono').value.trim(),
+    rol: document.getElementById('editEmpRol').value,
+    notas: document.getElementById('editEmpNotas').value.trim()
+  };
+  const res = await actualizarEmpleado(id, data);
+  if (res.success) {
+    alert('✅ ' + res.message);
+    document.getElementById('modalEditarEmpleado').style.display = 'none';
+    cargarEmpleadosUI();
+  } else { alert('❌ Error: ' + res.error); }
+};
 // Event Listeners Empleados
 document.getElementById('btnCrearEmpleado').addEventListener('click', window.crearEmpleadoUI);
 document.getElementById('buscarEmpleado').addEventListener('keyup', window.filtrarEmpleadosUI);
@@ -3006,5 +3035,26 @@ if (tabEmpleados) {
   });
 }
 </script>
+<!-- Modal Editar Empleado -->
+<div id="modalEditarEmpleado" class="modal">
+  <div class="modal-content" style="max-width:500px;">
+    <span class="close" onclick="document.getElementById('modalEditarEmpleado').style.display='none'">&times;</span>
+    <h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Empleado</h2>
+    <input type="hidden" id="editEmpId">
+    <div class="form-group"><label>Nombre:</label><input type="text" id="editEmpNombre"></div>
+    <div class="form-group"><label>Apellidos:</label><input type="text" id="editEmpApellidos"></div>
+    <div class="form-group"><label>Email:</label><input type="email" id="editEmpEmail" readonly style="background:#f1f5f9;"></div>
+    <div class="form-group"><label>Teléfono:</label><input type="tel" id="editEmpTelefono"></div>
+    <div class="form-group"><label>Rol:</label>
+      <select id="editEmpRol">
+        <option value="admin">👑 Admin</option>
+        <option value="recepcion"> Recepción</option>
+        <option value="adiestrador">🎓 Adiestrador</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Notas:</label><textarea id="editEmpNotas" rows="2"></textarea></div>
+    <button class="btn btn-success" onclick="guardarEdicionEmpleadoUI()" style="width:100%;"> Guardar Cambios</button>
+  </div>
+</div>
 </body>
 </html>
