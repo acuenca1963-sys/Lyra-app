@@ -936,7 +936,7 @@ body * { visibility: hidden; }
 
 <script type="module">
 import { initAuthListener, loginUser, registerUser, logoutUser, getCurrentUser, updateUserData } from './js/auth.js';
-import { obtenerEmpleados, crearEmpleado, actualizarEmpleado, eliminarEmpleado, toggleEmpleadoActivo, obtenerHistorial, obtenerPermisosUsuario, cambiarPasswordEmpleado } from './js/empleados.js';./js/empleados.js';
+import { obtenerEmpleados, crearEmpleado, actualizarEmpleado, eliminarEmpleado, toggleEmpleadoActivo, obtenerHistorial, obtenerPermisosUsuario, cambiarPasswordEmpleado } from './js/empleados.js';
 import { crearPerro, obtenerPerros, obtenerPerro, actualizarPerro, eliminarPerro, buscarPerros, calcularEdad, obtenerDuenos } from './js/perros.js';
 import { crearReserva, obtenerReservas, actualizarReserva, eliminarReserva, marcarCompletada, obtenerOcupacion, calcularPrecioReserva as calcPrecioReserva, encontrarCasetaLibre } from './js/reservas.js';
 import { crearClase, obtenerClases, eliminarClase, comprobarAvisosClases } from './js/training.js';
@@ -946,7 +946,6 @@ import { obtenerConfiguracion, guardarConfiguracion, exportarBackup, importarBac
 import { db } from './js/firebase.js';
 import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
-import { obtenerEmpleados, crearEmpleado, actualizarEmpleado, eliminarEmpleado, toggleEmpleadoActivo, obtenerHistorial, obtenerPermisosUsuario, cambiarPasswordEmpleado } from './js/empleados.js';
 
 const storage = getStorage();
 
