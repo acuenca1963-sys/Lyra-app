@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Elantkan - Gestión Canina v6</title>
+<title>Lyra App - Gestión Canina v6</title>
 <meta name="theme-color" content="#334155">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -21,7 +21,7 @@ body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background
 .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); width: 100%; max-width: 450px; text-align:center; border-top: 5px solid #334155; }
 .login-logo-container { opacity: 0; animation: fadeInLogo 1.5s ease-out forwards; margin-bottom: 25px; }
 @keyframes fadeInLogo { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
-.login-box .logo-placeholder { width: 200px; height: 200px; margin: 0 auto 20px; background: #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 80px; color: white; }
+.login-box img { width: 280px !important; height: auto; object-fit: contain; display: block; margin-left: auto; margin-right: auto; }
 .login-box h1 { color: #334155; margin-bottom: 10px; font-weight: 700; letter-spacing: 1px; }
 .login-box p { color: #64748b; margin-bottom: 30px; font-size: 15px; }
 .login-box input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px; background: #f8fafc; }
@@ -35,8 +35,6 @@ body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background
 #mainApp { display: none; }
 .header { text-align: center; padding: 20px; background: #334155; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-bottom: 4px solid #f59e0b; }
 .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
-.header-brand { display: flex; align-items: center; gap: 15px; }
-.header-logo-placeholder { width: 70px; height: 70px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; }
 .user-info { display: flex; align-items: center; gap: 15px; }
 .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
 .btn-config { background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight:bold; font-size: 13px; }
@@ -115,7 +113,7 @@ tr:hover { background: #f8fafc; }
 .calendar-day-name { background: #f1f5f9; padding: 12px; text-align: center; font-weight: 700; border-radius: 4px; color: #64748b; font-size: 13px; }
 .calendar-day { background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; min-height: 100px; cursor: pointer; transition: all 0.2s; }
 .calendar-day:hover { border-color: #334155; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-.calendar-day.today { border-color: #f59e0b; background: #fffbeb; }
+.calendar-day.today { border-color: #334155; background: #f8fafc; }
 .calendar-day.empty { background: transparent; border-color: transparent; cursor: default; }
 .calendar-day-number { font-weight: 700; margin-bottom: 5px; color: #334155; }
 .calendar-day-ocupacion { font-size: 11px; padding: 3px 8px; border-radius: 10px; display: inline-block; margin: 2px 0; }
@@ -142,6 +140,7 @@ tr:hover { background: #f8fafc; }
 .reserva-info h4 { color: #1e293b; margin-bottom: 4px; font-weight: 700; }
 .reserva-info p { margin: 2px 0; font-size: 13px; color: #64748b; }
 .training-list-container { margin-top: 20px; }
+.training-list-container h3 { color: #334155; margin-bottom: 15px; font-weight: 700; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
 .training-list { display: flex; flex-direction: column; gap: 10px; }
 .training-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; border-left: 4px solid #334155; }
 .training-item.cancelada { border-left-color: #ef4444; opacity: 0.7; }
@@ -228,13 +227,13 @@ body * { visibility: hidden; }
 <body>
 <div class="training-alert-top" id="trainingAlertTop"></div>
 <div class="training-alert" id="trainingAlert"></div>
-<div class="loading" id="loadingScreen"><div class="spinner"></div><p style="margin-top:20px;color:#334155;font-weight:bold;">Cargando Elantkan...</p></div>
+<div class="loading" id="loadingScreen"><div class="spinner"></div><p style="margin-top:20px;color:#334155;font-weight:bold;">Cargando Lyra App...</p></div>
 <div id="loginScreen">
 <div class="login-box">
 <div class="login-logo-container">
-<div class="logo-placeholder">🐕</div>
+<img src="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png" alt="Lyra App Logo">
 </div>
-<h1>ELANTKAN</h1>
+<h1>LYRA APP</h1>
 <p>Hotel & Adiestramiento Canino</p>
 <div class="error" id="loginError"></div>
 <div class="success" id="loginSuccess"></div>
@@ -242,7 +241,7 @@ body * { visibility: hidden; }
 <form id="formLogin">
 <input type="email" id="loginEmail" placeholder="📧 Email" required>
 <input type="password" id="loginPassword" placeholder="🔒 Contraseña" required>
-<button type="submit"> Iniciar Sesión</button>
+<button type="submit">🔐 Iniciar Sesión</button>
 </form>
 <p style="margin:20px 0;color:#64748b;font-size:14px;text-align:center;">
 ¿No tienes cuenta? <a href="#" id="linkRegistro">Crear una aquí</a>
@@ -251,8 +250,8 @@ body * { visibility: hidden; }
 <div id="registerFormContainer" style="display:none;">
 <form id="formRegister">
 <input type="email" id="registerEmail" placeholder="📧 Email para registro" required>
-<input type="password" id="registerPassword" placeholder="🔒 Contraseña (mín 6 caracteres)" required>
-<button type="submit" class="secondary">📝 Crear Cuenta</button>
+<input type="password" id="registerPassword" placeholder=" Contraseña (mín 6 caracteres)" required>
+<button type="submit" class="secondary"> Crear Cuenta</button>
 </form>
 <p style="margin:20px 0;color:#64748b;font-size:14px;text-align:center;">
 ¿Ya tienes cuenta? <a href="#" id="linkLogin">Iniciar Sesión</a>
@@ -263,15 +262,15 @@ body * { visibility: hidden; }
 <div id="mainApp">
 <div class="header">
 <div class="header-top">
-<div class="header-brand">
-<div class="header-logo-placeholder">🐕</div>
-<div style="text-align: left;">
-<div style="font-weight: 800; color: white; font-size: 20px; letter-spacing: 2px;">ELANTKAN</div>
-<div style="font-size: 12px; color: #cbd5e1; font-weight: 600;">Gestión Canina v6.0</div>
+<div style="display: flex; align-items: center; gap: 20px;">
+<div style="text-align: center;">
+<img src="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png" alt="Lyra App" style="width: 120px; height: 120px; object-fit: contain; display: block; margin: 0 auto;">
+<div style="margin-top: 5px; font-weight: 800; color: white; font-size: 20px; letter-spacing: 2px;">LYRA APP</div>
+<div style="font-size: 12px; color: #cbd5e1; font-weight: 600;">v6.0</div>
 </div>
 </div>
 <div class="user-info">
-<button class="btn-config" id="btnConfig">️ Configurar Hotel</button>
+<button class="btn-config" id="btnConfig">⚙️ Configurar Hotel</button>
 <button class="btn-config" id="btnCambiarPass" style="background:#10b981;"> Cambiar Clave</button>
 <span id="userEmail" style="font-weight: 600; color: #cbd5e1;">usuario@email.com</span>
 <button class="btn-logout" id="btnLogout">🚪 Salir</button>
@@ -290,10 +289,10 @@ body * { visibility: hidden; }
 <button class="tab" data-section="hotel">🏨 Hotel</button>
 <button class="tab" data-section="reservas">📅 Reservas</button>
 <button class="tab" data-section="adiestramiento">🎓 Adiestramiento</button>
-<button class="tab" data-section="estadisticas"> Estadísticas</button>
-<button class="tab" data-section="historial">📚 Historial</button>
+<button class="tab" data-section="estadisticas">📈 Estadísticas</button>
+<button class="tab" data-section="historial"> Historial</button>
 <button class="tab" data-section="facturas">📄 Facturas</button>
-<button class="tab" data-section="empleados"> Empleados</button>
+<button class="tab" data-section="empleados">👥 Empleados</button>
 <button class="tab" data-section="contactos">💬 WhatsApp</button>
 </div>
 <!-- SECCIÓN PERROS -->
@@ -317,7 +316,7 @@ body * { visibility: hidden; }
 <button class="btn btn-danger hidden" id="btnEliminarFoto">🗑️ Quitar Foto</button>
 </div>
 </div>
-<div class="form-group"><label>🐕 Nombre:</label><input type="text" id="nombrePerro"></div>
+<div class="form-group"><label> Nombre:</label><input type="text" id="nombrePerro"></div>
 <div class="form-group">
 <label>🦴 Raza:</label>
 <input type="text" id="raza" list="lista-razas" placeholder="Escribe o elige..." autocomplete="off">
@@ -326,7 +325,7 @@ body * { visibility: hidden; }
 <div class="form-group"><label>🎂 Fecha Nacimiento:</label><input type="date" id="fechaNacimiento"></div>
 <div class="form-group"><label>📊 Edad:</label><input type="text" id="edad" readonly class="edad-calculada" placeholder="Auto"></div>
 <div class="form-group"><label>⚧ Sexo:</label><select id="sexo"><option value="">-</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div>
-<div class="form-group"><label> Microchip:</label><input type="text" id="microchip"></div>
+<div class="form-group"><label>🔖 Microchip:</label><input type="text" id="microchip"></div>
 <div class="form-group"><label>📕 Pasaporte:</label><input type="text" id="pasaporte"></div>
 <div class="form-group" style="position: relative;">
 <label>👤 Dueño:</label>
@@ -336,16 +335,16 @@ body * { visibility: hidden; }
 <div class="form-group"><label>🆔 DNI Dueño:</label><input type="text" id="dniDueno"></div>
 <div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="telefono"></div>
 <div class="form-group"><label>📧 Email:</label><input type="email" id="email"></div>
-<div class="form-group half-width"><label> Dirección:</label><input type="text" id="direccion"></div>
+<div class="form-group half-width"><label>📍 Dirección:</label><input type="text" id="direccion"></div>
 <div class="form-group"><label>🏥 Veterinario:</label><input type="text" id="veterinario"></div>
-<div class="form-group full-width"><label> Notas:</label><textarea id="notas" rows="2"></textarea></div>
+<div class="form-group full-width"><label>📝 Notas:</label><textarea id="notas" rows="2"></textarea></div>
 </div>
 <div class="salud-section">
-<h3> Salud y Cuidados</h3>
+<h3>🏥 Salud y Cuidados</h3>
 <div class="form-grid">
 <div class="form-group">
 <label>✨ Estado del Pelo:</label>
-<select id="estadoPelo"><option value="Bien">✅ Bien</option><option value="Regular">️ Regular</option><option value="Mal"> Mal</option></select>
+<select id="estadoPelo"><option value="Bien">✅ Bien</option><option value="Regular">⚠️ Regular</option><option value="Mal">❌ Mal</option></select>
 </div>
 <div class="form-group">
 <label>💊 ¿Necesita Medicación?:</label>
@@ -380,7 +379,7 @@ body * { visibility: hidden; }
 <h2 id="calendarMonthYear"></h2>
 <div class="calendar-nav">
 <button id="btnMesAnterior">◀ Anterior</button>
-<button id="btnMesActual"> Mes Actual</button>
+<button id="btnMesActual">📅 Mes Actual</button>
 <button id="btnMesSiguiente">Siguiente ▶</button>
 <button class="btn-print" id="btnImprimirCalendario" style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white;">🖨️ Imprimir</button>
 </div>
@@ -399,16 +398,16 @@ body * { visibility: hidden; }
 <div class="form-section" style="margin-top: 30px;">
 <h3>📅 Nueva Reserva Hotel</h3>
 <div class="form-grid">
-<div class="form-group"><label>🐕 Perro:</label><select id="hotelPerro"></select></div>
+<div class="form-group"><label> Perro:</label><select id="hotelPerro"></select></div>
 <div class="form-group"><label>📅 Entrada:</label><input type="date" id="hotelEntrada"></div>
 <div class="form-group"><label>📅 Salida:</label><input type="date" id="hotelSalida"></div>
 <div class="form-group"><label>💰 Precio/día:</label><input type="number" id="hotelPrecio" step="0.01" value="15"></div>
-<div class="form-group"><label> Días:</label><input type="number" id="hotelDias" readonly></div>
+<div class="form-group"><label>📊 Días:</label><input type="number" id="hotelDias" readonly></div>
 <div class="form-group"><label>💰 Total:</label><input type="number" id="hotelTotal" readonly></div>
 <div class="form-group full-width">
-<label>🏪 Caseta:</label>
+<label> Caseta:</label>
 <select id="hotelCasetaSelect" style="background: #f8fafc; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%;">
-<option value="">⚡ Auto-asignar la primera disponible</option>
+<option value=""> Auto-asignar la primera disponible</option>
 </select>
 <small id="kennelStatus" style="color:#64748b;display:block;margin-top:5px;">Configurando...</small>
 </div>
@@ -419,7 +418,7 @@ body * { visibility: hidden; }
 <!-- SECCIÓN RESERVAS -->
 <div id="reservas" class="section">
 <div class="form-section">
-<h3>📅 Nueva Reserva <button class="btn btn-print" id="btnImprimirReservas" style="float:right;">🖨️ Imprimir Lista</button></h3>
+<h3>📅 Nueva Reserva <button class="btn btn-print" id="btnImprimirReservas" style="float:right;">️ Imprimir Lista</button></h3>
 <div class="form-grid">
 <div class="form-group full-width">
 <label>🐕 Buscar Perro:</label>
@@ -434,24 +433,24 @@ body * { visibility: hidden; }
 <input type="hidden" id="reservaPerroTelefono">
 </div>
 </div>
-<div class="form-group"><label>📋 Tipo:</label>
+<div class="form-group"><label> Tipo:</label>
 <select id="reservaTipo">
 <option value="">Seleccionar...</option>
 <option value="hotel">🏨 Hotel</option>
 <option value="guarderia">🏠 Guardería</option>
 <option value="clase-suelta">🎓 Clase Suelta</option>
 <option value="pack-10">📚 Pack 10 Clases</option>
-<option value="pack-20"> Pack 20 Clases</option>
+<option value="pack-20">📖 Pack 20 Clases</option>
 </select>
 </div>
-<div class="form-group"><label>📅 Inicio:</label><input type="date" id="reservaInicio"></div>
-<div class="form-group"><label> Fin:</label><input type="date" id="reservaFin"></div>
+<div class="form-group"><label> Inicio:</label><input type="date" id="reservaInicio"></div>
+<div class="form-group"><label>📅 Fin:</label><input type="date" id="reservaFin"></div>
 <div class="form-group"><label>💰 Precio Total (Editable):</label><input type="number" id="reservaPrecio" step="0.01" placeholder="Calculado auto, pero puedes editar"></div>
-<div class="form-group full-width"><label>📝 Notas:</label><textarea id="reservaNotas" rows="2" placeholder="Instrucciones especiales..."></textarea></div>
+<div class="form-group full-width"><label> Notas:</label><textarea id="reservaNotas" rows="2" placeholder="Instrucciones especiales..."></textarea></div>
 <div class="form-group full-width">
 <button type="button" class="btn btn-info" id="btnMostrarAñadirPerroGrupo" style="width:100%;">➕ Añadir Perro al Grupo (misma caseta)</button>
 <div id="grupoPerrosSection" style="display:none;background:#f1f5f9;padding:12px;border-radius:6px;border:1px solid #cbd5e1;margin-top:10px;">
-<label style="color:#334155;font-weight:bold;display:block;margin-bottom:8px;">🐕 Buscar perro para añadir al grupo:</label>
+<label style="color:#334155;font-weight:bold;display:block;margin-bottom:8px;"> Buscar perro para añadir al grupo:</label>
 <input type="text" id="buscadorPerrosGrupo" placeholder="🔍 Escribe el nombre..." style="margin-bottom:8px;">
 <div id="buscadorPerrosGrupoResultados" class="buscador-perros-resultados"></div>
 <div id="grupoPerrosLista" style="margin-top:8px;"></div>
@@ -475,7 +474,7 @@ body * { visibility: hidden; }
 <h3>🎓 Programar Clase de Adiestramiento</h3>
 <div class="form-grid">
 <div class="form-group" style="position: relative;">
-<label>🐕 Buscar Perro:</label>
+<label> Buscar Perro:</label>
 <input type="text" id="trainDogSearch" placeholder="Escribe el nombre del perro...">
 <div id="trainDogResults" class="buscador-perros-resultados"></div>
 <input type="hidden" id="trainPerroId">
@@ -487,7 +486,7 @@ body * { visibility: hidden; }
 </div>
 </div>
 <div class="form-group"><label>📅 Día:</label><input type="date" id="trainDate"></div>
-<div class="form-group"><label>⏰ Hora:</label><input type="time" id="trainTime" class="time-input"></div>
+<div class="form-group"><label> Hora:</label><input type="time" id="trainTime" class="time-input"></div>
 <div class="form-group"><label>🎯 Tipo de Clase:</label>
 <select id="trainType">
 <option value="Sesión Individual">Sesión Individual</option>
@@ -495,7 +494,7 @@ body * { visibility: hidden; }
 <option value="Evaluación">Evaluación</option>
 </select>
 </div>
-<div class="form-group"><label> Precio Clase (€):</label><input type="number" id="trainPrice" step="0.50" value="35"></div>
+<div class="form-group"><label>💰 Precio Clase (€):</label><input type="number" id="trainPrice" step="0.50" value="35"></div>
 <div class="form-group"><label>🔢 Nº Sesiones Pack:</label><input type="number" id="trainSessions" value="1" min="1"></div>
 </div>
 <button class="btn btn-success" id="btnCrearClaseAdiestramiento">✅ Programar Clase</button>
@@ -525,7 +524,7 @@ body * { visibility: hidden; }
 <div class="subtext" id="topClienteCount">0 reservas</div>
 </div>
 <div class="stat-box">
-<h4> Ingresos Totales (Mes)</h4>
+<h4>💰 Ingresos Totales (Mes)</h4>
 <div class="value" id="ingresosMes">0.00 €</div>
 <div class="subtext">Suma de facturas emitidas</div>
 </div>
@@ -549,15 +548,15 @@ body * { visibility: hidden; }
 <input type="text" id="buscarHistorial" placeholder="🔍 Buscar por perro o dueño..." style="padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; min-width: 250px;">
 <button class="filter-btn active" data-filter="todos">Todos</button>
 <button class="filter-btn" data-filter="hotel">🏨 Hotel</button>
-<button class="filter-btn" data-filter="adiestramiento"> Adiestramiento</button>
-<button class="filter-btn" data-filter="guarderia"> Guardería</button>
+<button class="filter-btn" data-filter="adiestramiento">🎓 Adiestramiento</button>
+<button class="filter-btn" data-filter="guarderia">🏠 Guardería</button>
 </div>
 <div class="history-actions">
 <input type="date" id="historialDesde" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
 <span style="color: #64748b;">hasta</span>
 <input type="date" id="historialHasta" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
 <button class="btn btn-print" id="btnImprimirHistorialSel">🖨️ Imprimir Selección</button>
-<button class="btn btn-info" id="btnImprimirTodoHistorial">📄 Imprimir Todo</button>
+<button class="btn btn-info" id="btnImprimirTodoHistorial"> Imprimir Todo</button>
 </div>
 </div>
 <div class="table-container">
@@ -584,8 +583,8 @@ body * { visibility: hidden; }
 <h3>🧾 Nueva Factura Multi-Concepto</h3>
 <div class="form-grid">
 <div class="form-group full-width">
-<label> Buscar Dueño:</label>
-<input type="text" id="buscadorDuenosFactura" placeholder="🔍 Escribe nombre...">
+<label>👤 Buscar Dueño:</label>
+<input type="text" id="buscadorDuenosFactura" placeholder=" Escribe nombre...">
 <div id="buscadorDuenosResultados" class="buscador-perros-resultados"></div>
 <div id="duenoSeleccionadoInfo" class="dueño-seleccionado-info">
 <strong>✅ Dueño:</strong> <span id="duenoSeleccionadoNombre"></span>
@@ -597,7 +596,7 @@ body * { visibility: hidden; }
 </div>
 </div>
 <div class="form-group full-width">
-<label>🐕 Buscar Perro:</label>
+<label> Buscar Perro:</label>
 <input type="text" id="buscadorPerrosFactura" placeholder="🔍 Escribe nombre...">
 <div id="buscadorPerrosFacturaResultados" class="buscador-perros-resultados"></div>
 <div id="perroFacturaSeleccionadoInfo" class="perro-seleccionado-info">
@@ -650,24 +649,24 @@ body * { visibility: hidden; }
 <div class="form-grid">
 <div class="form-group"><label>👤 Nombre *:</label><input type="text" id="empNombre"></div>
 <div class="form-group"><label>📝 Apellidos:</label><input type="text" id="empApellidos"></div>
-<div class="form-group"><label>📧 Email *:</label><input type="email" id="empEmail"></div>
+<div class="form-group"><label> Email *:</label><input type="email" id="empEmail"></div>
 <div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="empTelefono"></div>
 <div class="form-group"><label>🔒 Contraseña * (mín 6):</label><input type="password" id="empPassword"></div>
 <div class="form-group"><label>👑 Rol *:</label>
 <select id="empRol">
 <option value="">Seleccionar...</option>
-<option value="admin"> Admin (Acceso total)</option>
+<option value="admin">👑 Admin (Acceso total)</option>
 <option value="recepcion">📋 Recepción (Gestión diaria)</option>
 <option value="adiestrador">🎓 Adiestrador (Solo clases)</option>
 </select>
 </div>
-<div class="form-group full-width"><label>📝 Notas:</label><textarea id="empNotas" rows="2"></textarea></div>
+<div class="form-group full-width"><label> Notas:</label><textarea id="empNotas" rows="2"></textarea></div>
 </div>
 <button class="btn btn-success" id="btnCrearEmpleado" style="width:100%;">✅ Crear Empleado</button>
 </div>
 <div class="table-container">
-<h3>📋 Lista de Empleados</h3>
-<input type="text" id="buscarEmpleado" placeholder="🔍 Buscar por nombre o email..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
+<h3> Lista de Empleados</h3>
+<input type="text" id="buscarEmpleado" placeholder=" Buscar por nombre o email..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
 <table>
 <thead>
 <tr>
@@ -691,7 +690,7 @@ body * { visibility: hidden; }
 <option value="reservas">📅 Reservas</option>
 <option value="facturas">📄 Facturas</option>
 <option value="training">🎓 Adiestramiento</option>
-<option value="empleados"> Empleados</option>
+<option value="empleados">👥 Empleados</option>
 </select>
 <button class="filter-btn active" onclick="cargarHistorialEmpleados()">🔄 Actualizar</button>
 </div>
@@ -715,10 +714,10 @@ body * { visibility: hidden; }
 <!-- SECCIÓN CONTACTOS -->
 <div id="contactos" class="section">
 <div class="form-section">
-<h3>📢 Envío Masivo de Mensajes</h3>
+<h3> Envío Masivo de Mensajes</h3>
 <div style="background: #25D366; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-<h4 style="margin: 0; font-weight: 700;"> Contactos Seleccionados</h4>
+<h4 style="margin: 0; font-weight: 700;">📱 Contactos Seleccionados</h4>
 <div style="background: white; color: #25D366; padding: 5px 15px; border-radius: 20px; font-weight: bold;" id="selectedCount">0 contactos</div>
 </div>
 <div style="margin-bottom: 15px;">
@@ -739,7 +738,7 @@ body * { visibility: hidden; }
 <input type="text" id="contactoNombre" readonly placeholder="Selecciona un contacto de la lista" style="width: 100%; padding: 10px; margin-bottom: 10px; background: #f1f5f9; border-radius: 6px; border: none;">
 <input type="text" id="contactoTelefono" readonly placeholder="Teléfono" style="width: 100%; padding: 10px; margin-bottom: 10px; background: #f1f5f9; border-radius: 6px; border: none;">
 <textarea id="mensajeIndividual" rows="4" placeholder="Mensaje personalizado..." style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
-<button class="btn btn-whatsapp" id="btnEnviarIndividual" style="width: 100%;">💬 Enviar Mensaje</button>
+<button class="btn btn-whatsapp" id="btnEnviarIndividual" style="width: 100%;"> Enviar Mensaje</button>
 </div>
 </div>
 </div>
@@ -827,7 +826,7 @@ body * { visibility: hidden; }
 </div>
 </div>
 <div class="form-group"><label>🐕 Nombre:</label><input type="text" id="editNombrePerro"></div>
-<div class="form-group"><label> Raza:</label><input type="text" id="editRaza"></div>
+<div class="form-group"><label>🦴 Raza:</label><input type="text" id="editRaza"></div>
 <div class="form-group"><label>🎂 Fecha Nacimiento:</label><input type="date" id="editFechaNacimiento"></div>
 <div class="form-group"><label>📊 Edad:</label><input type="text" id="editEdad" readonly class="edad-calculada"></div>
 <div class="form-group"><label>⚧ Sexo:</label><select id="editSexo"><option value="">-</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div>
@@ -841,7 +840,7 @@ body * { visibility: hidden; }
 <div class="form-group"><label>🏥 Vet:</label><input type="text" id="editVeterinario"></div>
 <div class="form-group full-width"><label>📝 Notas:</label><textarea id="editNotas" rows="2"></textarea></div>
 <div class="salud-section">
-<h3>🏥 Salud y Cuidados</h3>
+<h3> Salud y Cuidados</h3>
 <div class="form-grid">
 <div class="form-group"><label>✨ Estado del Pelo:</label><select id="editEstadoPelo"><option value="Bien">Bien</option><option value="Regular">Regular</option><option value="Mal">Mal</option></select></div>
 <div class="form-group"><label>💊 ¿Medicación?:</label><select id="editMedicacion"><option value="No">No</option><option value="Sí">Sí</option></select></div>
@@ -875,14 +874,14 @@ body * { visibility: hidden; }
 <div id="modalConfig" class="modal">
 <div class="modal-content" style="max-width:600px;">
 <span class="close" data-modal="modalConfig">&times;</span>
-<h2 style="color:#334155;margin-bottom:20px;">⚙️ Configuración del Hotel</h2>
+<h2 style="color:#334155;margin-bottom:20px;">️ Configuración del Hotel</h2>
 <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
 <h3 style="color:#334155; margin-bottom:10px; font-size:16px;">🏢 Datos de Tu Empresa (Para Facturas)</h3>
 <div class="form-group">
 <label>🖼️ Logo de Tu Empresa:</label>
 <img id="configClientLogoPreview" class="foto-perro-grande hidden" src="" alt="Logo Cliente" style="max-width: 120px; margin: 10px auto; display: block;">
 <div style="margin-top: 5px; display: flex; gap: 5px; justify-content: center;">
-<button class="btn btn-info" id="btnSubirLogoConfig">📁 Subir Logo</button>
+<button class="btn btn-info" id="btnSubirLogoConfig"> Subir Logo</button>
 <input type="file" id="configClientLogoInput" accept="image/*" style="display: none;">
 <button class="btn btn-danger hidden" id="configBtnEliminarClientLogo">🗑️ Quitar</button>
 </div>
@@ -894,7 +893,7 @@ body * { visibility: hidden; }
 <div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="configClientPhone" placeholder="600 000 000"></div>
 </div>
 </div>
-<div class="form-group"><label> Nombre de la App (Interno):</label><input type="text" id="configHotelName" value="Elantkan"></div>
+<div class="form-group"><label>🏨 Nombre de la App (Interno):</label><input type="text" id="configHotelName" value="Lyra App"></div>
 <div class="form-group"><label>🏠 Número de Casetas:</label><input type="number" id="configTotalKennels" value="15" min="1" max="500"></div>
 <div class="form-group"><label>🔖 Prefijo de Casetas:</label><input type="text" id="configKennelPrefix" value="C-" maxlength="5"></div>
 <hr style="margin:15px 0; border:1px solid #e2e8f0;">
@@ -921,7 +920,7 @@ body * { visibility: hidden; }
 <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d;">
 <p style="font-size: 13px; margin-bottom: 10px;">Guarda una copia de todos tus datos (perros, reservas, facturas) en un archivo seguro.</p>
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-<button class="btn btn-primary" id="btnExportarBackup">⬇️ Descargar Backup</button>
+<button class="btn btn-primary" id="btnExportarBackup">️ Descargar Backup</button>
 <button class="btn btn-warning" id="btnImportarBackupLabel">⬆️ Restaurar Backup</button>
 <input type="file" id="importBackupInput" accept=".json" style="display: none;">
 </div>
@@ -995,7 +994,7 @@ body * { visibility: hidden; }
 </div>
 <div class="form-row">
 <div class="form-group">
-<label>🔢 Sesiones:</label>
+<label> Sesiones:</label>
 <input type="number" id="editClassSessions" min="1" required>
 </div>
 <div class="form-group">
@@ -1016,8 +1015,8 @@ body * { visibility: hidden; }
 <textarea id="editClassCancelReason" rows="2"></textarea>
 </div>
 <div style="display: flex; justify-content: space-between; margin-top: 20px; gap: 10px;">
-<button type="button" id="btnCancelClass" class="btn btn-danger"> Cancelar Clase</button>
-<button type="submit" class="btn btn-success">💾 Guardar Cambios</button>
+<button type="button" id="btnCancelClass" class="btn btn-danger">❌ Cancelar Clase</button>
+<button type="submit" class="btn btn-success"> Guardar Cambios</button>
 </div>
 </form>
 </div>
@@ -1117,7 +1116,7 @@ const sel = document.getElementById('hotelCasetaSelect');
 const stat = document.getElementById('statHotel');
 const status = document.getElementById('kennelStatus');
 if (sel) {
-let opts = '<option value="">⚡ Auto-asignar la primera disponible</option>';
+let opts = '<option value=""> Auto-asignar la primera disponible</option>';
 for (let i = 1; i <= cfg.totalKennels; i++) opts += `<option value="${i}">${cfg.kennelPrefix}${i}</option>`;
 sel.innerHTML = opts;
 }
@@ -1210,7 +1209,7 @@ if (btnConfig && (!p.configuracion || !p.configuracion.ver)) {
 btnConfig.style.display = 'none';
 }
 } catch (error) {
-console.error('️ Error aplicando permisos (no crítico):', error);
+console.error('⚠️ Error aplicando permisos (no crítico):', error);
 }
 };
 function setupEventListeners() {
@@ -1567,7 +1566,7 @@ const edad = p.fechaNacimiento ? calcularEdad(p.fechaNacimiento) : (p.edad || '-
 const reservasPerro = reservasDB.filter(r => r.idPerro === id).sort((a, b) => new Date(b.inicio) - new Date(a.inicio));
 let reservasHTML = '';
 if (reservasPerro.length > 0) {
-reservasHTML = '<hr><h3 style="color:#334155;margin-top:15px;">📅 Historial de Reservas</h3>';
+reservasHTML = '<hr><h3 style="color:#334155;margin-top:15px;"> Historial de Reservas</h3>';
 reservasPerro.forEach(r => {
 const isPast = new Date(r.fin) < new Date();
 reservasHTML += `<div class="reservas-list-item ${isPast ? 'past' : ''}"><div><strong>${r.tipo.toUpperCase()}</strong> | ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)}</div><span class="badge ${isPast ? 'badge-completed' : 'badge-active'}">${isPast ? 'Finalizada' : 'Activa'}</span></div>`;
@@ -1582,7 +1581,7 @@ if (p.detallesMedicacion) saludHTML += `<p style="color:#64748b;font-style:itali
 if (p.alergias) saludHTML += `<p><strong>⚠️ Alergias:</strong> ${p.alergias}</p>`;
 }
 if (p.precioPersonalizado && p.precioPersonalizado > 0) {
-saludHTML += `<p style="color:#334155; font-weight:bold;"> Tarifa Especial: ${p.precioPersonalizado}€</p>`;
+saludHTML += `<p style="color:#334155; font-weight:bold;">💶 Tarifa Especial: ${p.precioPersonalizado}€</p>`;
 }
 document.getElementById('contenidoPerro').innerHTML = `<h2>🐕 ${p.nombrePerro}</h2><p><strong>Raza:</strong> ${p.raza || '-'}</p><p><strong>Edad:</strong> ${edad}</p><p><strong>Fecha Nacimiento:</strong> ${formatearFecha(p.fechaNacimiento)}</p><p><strong>Microchip:</strong> ${p.microchip || '-'}</p><p><strong>Pasaporte:</strong> ${p.pasaporte || '-'}</p><p><strong>Dueño:</strong> ${p.nombreDueno}</p><p><strong>Teléfono:</strong> ${p.telefono || '-'}</p><p><strong>Email:</strong> ${p.email || '-'}</p><p><strong>Dirección:</strong> ${p.direccion || '-'}</p><p><strong>DNI Dueño:</strong> ${p.dniDueno || '-'}</p><p><strong>Veterinario:</strong> ${p.veterinario || '-'}</p><p><strong>Notas:</strong> ${p.notas || '-'}</p>${saludHTML}${reservasHTML}`;
 document.getElementById('modalPerro').style.display = 'block';
@@ -1702,7 +1701,7 @@ const perrosDelDueño = perrosEncontrados.filter(p => p.nombreDueno === dueño);
 const perroDestacado = perrosDelDueño.find(p => p.nombrePerro && p.nombrePerro.toLowerCase().includes(texto));
 html += `<div class="perro-destacado"><h4 style="margin-bottom: 10px;">👤 ${dueño}</h4><p>📞 ${perrosDelDueño[0].telefono || 'Sin teléfono'} | 📧 ${perrosDelDueño[0].email || 'Sin email'}</p><p>🐕 Perros (${perrosDelDueño.length}): ${perrosDelDueño.map(p => p.nombrePerro).join(', ')}</p>`;
 if (perroDestacado) {
-html += `<p style="margin-top: 10px; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 5px;"><strong>🔍 Perro buscado:</strong> ${perroDestacado.nombrePerro} | 🦴 ${perroDestacado.raza || 'Sin raza'} |  ${perroDestacado.microchip || 'Sin microchip'}</p>`;
+html += `<p style="margin-top: 10px; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 5px;"><strong>🔍 Perro buscado:</strong> ${perroDestacado.nombrePerro} |  ${perroDestacado.raza || 'Sin raza'} | 🔖 ${perroDestacado.microchip || 'Sin microchip'}</p>`;
 }
 html += `<div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">`;
 perrosDelDueño.forEach(p => {
@@ -1869,12 +1868,12 @@ const proximaReserva = reservasActivas.sort((a, b) => new Date(a.inicio) - new D
 let proximaInfo = '';
 if (proximaReserva) {
 const tipoLabel = proximaReserva.tipo === 'hotel' ? '🏨' : proximaReserva.tipo === 'guarderia' ? '🏠' : '🎓';
-proximaInfo = `<div class="proxima-reserva-info">📅 Próxima: ${formatearFecha(proximaReserva.inicio)} (${tipoLabel} ${proximaReserva.tipo})</div>`;
+proximaInfo = `<div class="proxima-reserva-info"> Próxima: ${formatearFecha(proximaReserva.inicio)} (${tipoLabel} ${proximaReserva.tipo})</div>`;
 } else {
 proximaInfo = `<div class="proxima-reserva-info sin-activas">Sin reservas activas</div>`;
 }
 const countBadge = totalReservas > 1 ? `<span class="reservas-count-badge multiple">${totalReservas} reservas</span>` : `<span class="reservas-count-badge">1 reserva</span>`;
-t.innerHTML += `<tr class="perro-row-clickable" onclick="verReservasDePerro('${grupo.id}')"><td><strong>${grupo.nombre}</strong> ${countBadge}<br>${proximaInfo}</td><td>${grupo.dueno || '-'}</td><td>${grupo.telefono || '-'}</td><td class="actions"><button class="btn btn-info" onclick="event.stopPropagation(); verReservasDePerro('${grupo.id}')">👁️ Ver todas</button><button class="btn btn-warning" onclick="event.stopPropagation(); editarPerro('${grupo.id}')">✏️ Editar perro</button><button class="btn btn-whatsapp" onclick="event.stopPropagation(); whatsapp('${grupo.telefono}','${grupo.dueno}')">💬</button></td></tr>`;
+t.innerHTML += `<tr class="perro-row-clickable" onclick="verReservasDePerro('${grupo.id}')"><td><strong>${grupo.nombre}</strong> ${countBadge}<br>${proximaInfo}</td><td>${grupo.dueno || '-'}</td><td>${grupo.telefono || '-'}</td><td class="actions"><button class="btn btn-info" onclick="event.stopPropagation(); verReservasDePerro('${grupo.id}')">👁️ Ver todas</button><button class="btn btn-warning" onclick="event.stopPropagation(); editarPerro('${grupo.id}')">️ Editar perro</button><button class="btn btn-whatsapp" onclick="event.stopPropagation(); whatsapp('${grupo.telefono}','${grupo.dueno}')">💬</button></td></tr>`;
 });
 }
 window.verReservasDePerro = (idPerro) => {
@@ -1883,7 +1882,7 @@ if (!perro) return;
 const reservas = reservasDB.filter(r => r.idPerro === idPerro).sort((a, b) => new Date(b.inicio) - new Date(a.inicio));
 const hoy = new Date().toISOString().split('T')[0];
 document.getElementById('modalReservasPerroTitle').innerHTML = `🐕 ${perro.nombrePerro} - <small style="color:#64748b;">${reservas.length} reserva(s)</small>`;
-let html = `<div style="background:#f8fafc;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #e2e8f0;"><p><strong>👤 Dueño:</strong> ${perro.nombreDueno}</p><p><strong>📞 Teléfono:</strong> ${perro.telefono || '-'}</p><p><strong>🦴 Raza:</strong> ${perro.raza || '-'}</p><div style="margin-top:10px;"><button class="btn btn-warning" onclick="editarPerro('${perro.id}')">✏️ Editar Perro</button><button class="btn btn-whatsapp" onclick="whatsapp('${perro.telefono}','${perro.nombreDueno}')">💬 WhatsApp</button></div></div>`;
+let html = `<div style="background:#f8fafc;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #e2e8f0;"><p><strong> Dueño:</strong> ${perro.nombreDueno}</p><p><strong>📞 Teléfono:</strong> ${perro.telefono || '-'}</p><p><strong>🦴 Raza:</strong> ${perro.raza || '-'}</p><div style="margin-top:10px;"><button class="btn btn-warning" onclick="editarPerro('${perro.id}')">✏️ Editar Perro</button><button class="btn btn-whatsapp" onclick="whatsapp('${perro.telefono}','${perro.nombreDueno}')">💬 WhatsApp</button></div></div>`;
 html += `<h3 style="margin-bottom:15px;color:#334155;">📅 Todas las Reservas (${reservas.length})</h3>`;
 if (reservas.length === 0) {
 html += '<p style="text-align:center;color:#64748b;padding:20px;">No hay reservas</p>';
@@ -1895,8 +1894,8 @@ if (r.completadas >= r.total) { estado = 'Completada'; claseEstado = 'completada
 else if (diasRestantes < 0) { estado = 'Vencida'; claseEstado = 'vencida'; }
 else if (diasRestantes <= 3) { estado = `Próxima (${diasRestantes}d)`; claseEstado = 'proxima'; }
 else { estado = 'Activa'; claseEstado = 'activa'; }
-const tipoLabel = r.tipo === 'hotel' ? '🏨' : r.tipo === 'guarderia' ? '' : r.tipo === 'clase-suelta' ? '🎓' : r.tipo === 'pack-10' ? '📚' : r.tipo === 'pack-20' ? '' : '📅';
-html += `<div class="reserva-list-item ${claseEstado}"><div class="reserva-list-item-info"><h4>${tipoLabel} ${r.tipo} - <span class="badge ${claseEstado === 'activa' || claseEstado === 'proxima' ? 'badge-active' : claseEstado === 'vencida' ? 'badge-danger' : 'badge-completed'}">${estado}</span></h4><p>📅 ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)} | 🏪 ${r.caseta || '-'} | 💰 ${r.precio}€</p><p>📝 ${r.notas || 'Sin notas'}</p></div><div class="actions"><button class="btn btn-info" onclick="verReserva('${r.id}')">👁️ Ver</button><button class="btn btn-warning" onclick="editarReserva('${r.id}')">✏️ Editar</button><button class="btn btn-whatsapp" onclick="whatsapp('${r.telefono}','${r.nombreDueno}')">💬</button><button class="btn btn-danger" onclick="if(confirm('¿Eliminar esta reserva?')){eliminarReserva('${r.id}').then(()=>verReservasDePerro('${idPerro}'))}">️</button></div></div>`;
+const tipoLabel = r.tipo === 'hotel' ? '🏨' : r.tipo === 'guarderia' ? '🏠' : r.tipo === 'clase-suelta' ? '🎓' : r.tipo === 'pack-10' ? '' : r.tipo === 'pack-20' ? '📖' : '📅';
+html += `<div class="reserva-list-item ${claseEstado}"><div class="reserva-list-item-info"><h4>${tipoLabel} ${r.tipo} - <span class="badge ${claseEstado === 'activa' || claseEstado === 'proxima' ? 'badge-active' : claseEstado === 'vencida' ? 'badge-danger' : 'badge-completed'}">${estado}</span></h4><p> ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)} | 🏪 ${r.caseta || '-'} | 💰 ${r.precio}€</p><p>📝 ${r.notas || 'Sin notas'}</p></div><div class="actions"><button class="btn btn-info" onclick="verReserva('${r.id}')">👁️ Ver</button><button class="btn btn-warning" onclick="editarReserva('${r.id}')">✏️ Editar</button><button class="btn btn-whatsapp" onclick="whatsapp('${r.telefono}','${r.nombreDueno}')">💬</button><button class="btn btn-danger" onclick="if(confirm('¿Eliminar esta reserva?')){eliminarReserva('${r.id}').then(()=>verReservasDePerro('${idPerro}'))}">️</button></div></div>`;
 });
 }
 document.getElementById('modalReservasPerroContent').innerHTML = html;
@@ -1907,7 +1906,7 @@ const r = reservasDB.find(x => x.id === id);
 if (!r) return;
 reservaIndividualActual = r;
 const dias = r.dias || Math.ceil((new Date(r.fin) - new Date(r.inicio)) / (1000 * 60 * 60 * 24)) + 1;
-document.getElementById('contenidoReserva').innerHTML = `<h2>🐕 ${r.nombrePerro}</h2><p><strong>Tipo:</strong> ${r.tipo}</p><p><strong>Inicio:</strong> ${formatearFecha(r.inicio)}</p><p><strong>Fin:</strong> ${formatearFecha(r.fin)}</p><p><strong>Días:</strong> ${dias}</p><p><strong>Precio:</strong> ${r.precio}€</p><p><strong>Progreso:</strong> ${r.completadas}/${r.total}</p><p><strong>Dueño:</strong> ${r.nombreDueno}</p><p><strong>Teléfono:</strong> ${r.telefono || '-'}</p><p><strong>Caseta:</strong> ${r.caseta || '-'}</p><p><strong>Notas:</strong> ${r.notas || '-'}</p>${r.grupoId ? '<p style="color:#334155;font-weight:bold;"> Parte de un grupo de perros</p>' : ''}`;
+document.getElementById('contenidoReserva').innerHTML = `<h2>🐕 ${r.nombrePerro}</h2><p><strong>Tipo:</strong> ${r.tipo}</p><p><strong>Inicio:</strong> ${formatearFecha(r.inicio)}</p><p><strong>Fin:</strong> ${formatearFecha(r.fin)}</p><p><strong>Días:</strong> ${dias}</p><p><strong>Precio:</strong> ${r.precio}€</p><p><strong>Progreso:</strong> ${r.completadas}/${r.total}</p><p><strong>Dueño:</strong> ${r.nombreDueno}</p><p><strong>Teléfono:</strong> ${r.telefono || '-'}</p><p><strong>Caseta:</strong> ${r.caseta || '-'}</p><p><strong>Notas:</strong> ${r.notas || '-'}</p>${r.grupoId ? '<p style="color:#334155;font-weight:bold;">🔗 Parte de un grupo de perros</p>' : ''}`;
 window.reservaActualId = id;
 document.getElementById('modalReserva').style.display = 'block';
 };
@@ -1977,7 +1976,7 @@ contenido.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20
 } else {
 contenido.innerHTML = `<p style="margin-bottom: 15px; font-weight: bold; color: #334155;">${reservasDelDia.length} reserva(s) activa(s)</p>`;
 reservasDelDia.forEach(r => {
-contenido.innerHTML += `<div class="dia-reserva-item" style="background:#f8fafc;padding:10px;margin:8px 0;border-radius:8px;"><h4>🐕 ${r.nombrePerro} - 🏪 Caseta ${r.caseta || '?'}</h4><p><strong>👤 Dueño:</strong> ${r.nombreDueno}</p><p><strong>📞 Teléfono:</strong> ${r.telefono || '-'}</p><p><strong>📅 Estancia:</strong> ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)}</p><p><strong>💰 Precio:</strong> ${r.precio}€</p><div class="actions" style="margin-top: 10px;"><button class="btn btn-info" onclick="cerrarModal('modalDia'); verReserva('${r.id}')">👁️ Ver Detalles</button><button class="btn btn-whatsapp" onclick="whatsapp('${r.telefono}','${r.nombreDueno}')">💬 WhatsApp</button></div></div>`;
+contenido.innerHTML += `<div class="dia-reserva-item" style="background:#f8fafc;padding:10px;margin:8px 0;border-radius:8px;"><h4>🐕 ${r.nombrePerro} -  Caseta ${r.caseta || '?'}</h4><p><strong>👤 Dueño:</strong> ${r.nombreDueno}</p><p><strong>📞 Teléfono:</strong> ${r.telefono || '-'}</p><p><strong>📅 Estancia:</strong> ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)}</p><p><strong>💰 Precio:</strong> ${r.precio}€</p><div class="actions" style="margin-top: 10px;"><button class="btn btn-info" onclick="cerrarModal('modalDia'); verReserva('${r.id}')">👁️ Ver Detalles</button><button class="btn btn-whatsapp" onclick="whatsapp('${r.telefono}','${r.nombreDueno}')">💬 WhatsApp</button></div></div>`;
 });
 }
 document.getElementById('modalDia').style.display = 'block';
@@ -1998,7 +1997,7 @@ return;
 reservasDelMes.forEach(r => {
 const inicio = formatearFecha(r.inicio);
 const fin = formatearFecha(r.fin);
-container.innerHTML += `<div class="reserva-card ${r.grupoId ? 'grupo' : ''}"><div class="reserva-info"><h4>🐕 ${r.nombrePerro} ${r.grupoId ? '<span class="grupo-badge">🔗 Grupo</span>' : ''} - 🏪 Caseta ${r.caseta || '?'}</h4><p> ${r.nombreDueno} | 📞 ${r.telefono || '-'}</p><p> ${inicio} → ${fin}</p></div><div class="actions"><button class="btn btn-info" onclick="verReserva('${r.id}')">👁️</button><button class="btn btn-whatsapp" onclick="whatsapp('${r.telefono}','${r.nombreDueno}')"></button></div></div>`;
+container.innerHTML += `<div class="reserva-card ${r.grupoId ? 'grupo' : ''}"><div class="reserva-info"><h4>🐕 ${r.nombrePerro} ${r.grupoId ? '<span class="grupo-badge">🔗 Grupo</span>' : ''} -  Caseta ${r.caseta || '?'}</h4><p>👤 ${r.nombreDueno} | 📞 ${r.telefono || '-'}</p><p>📅 ${inicio} → ${fin}</p></div><div class="actions"><button class="btn btn-info" onclick="verReserva('${r.id}')">👁️</button><button class="btn btn-whatsapp" onclick="whatsapp('${r.telefono}','${r.nombreDueno}')">💬</button></div></div>`;
 });
 }
 window.mesAnterior = () => { calendarDate.setMonth(calendarDate.getMonth() - 1); mostrarCalendario(); mostrarReservasActivas(); };
@@ -2015,8 +2014,8 @@ const entrada = document.getElementById('hotelEntrada').value;
 const salida = document.getElementById('hotelSalida').value;
 const casetaManual = document.getElementById('hotelCasetaSelect').value;
 const precioDia = parseFloat(document.getElementById('hotelPrecio').value) || currentConfig?.prices.hotel || 15;
-if (!idPerro || !entrada || !salida) { alert(' Completa todos los campos'); return; }
-if (new Date(salida) <= new Date(entrada)) { alert('⚠️ La salida debe ser después de la entrada'); return; }
+if (!idPerro || !entrada || !salida) { alert('❌ Completa todos los campos'); return; }
+if (new Date(salida) <= new Date(entrada)) { alert('️ La salida debe ser después de la entrada'); return; }
 let casetaInfo;
 if (casetaManual) {
 const casetaNum = parseInt(casetaManual);
@@ -2063,20 +2062,20 @@ return;
 const hoy = new Date().toISOString().split('T')[0];
 let html = '';
 perrosEncontrados.forEach(p => {
-html += `<div class="buscador-perros-item" style="cursor: pointer; border-bottom: 2px solid #334155; display: flex; justify-content: space-between; align-items: center; padding: 12px 10px;"><div onclick="seleccionarPerroParaReserva('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}', '${p.telefono || ''}')" style="flex: 1;">🐕 <strong>${p.nombrePerro}</strong> - 👤 ${p.nombreDueno}</div><button class="btn btn-warning" onclick="event.stopPropagation(); editarPerro('${p.id}')" style="padding: 5px 10px; font-size: 12px; white-space: nowrap;">✏️ Editar Perro</button></div>`;
+html += `<div class="buscador-perros-item" style="cursor: pointer; border-bottom: 2px solid #334155; display: flex; justify-content: space-between; align-items: center; padding: 12px 10px;"><div onclick="seleccionarPerroParaReserva('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}', '${p.telefono || ''}')" style="flex: 1;">🐕 <strong>${p.nombrePerro}</strong> -  ${p.nombreDueno}</div><button class="btn btn-warning" onclick="event.stopPropagation(); editarPerro('${p.id}')" style="padding: 5px 10px; font-size: 12px; white-space: nowrap;">✏️ Editar Perro</button></div>`;
 const reservasDelPerro = reservasDB.filter(r => r.idPerro === p.id).sort((a, b) => new Date(b.inicio) - new Date(a.inicio));
 if (reservasDelPerro.length > 0) {
-html += `<div style="background: #f1f5f9; padding: 12px; margin: 5px 0; border-radius: 5px; border-left: 3px solid #334155;"><p style="font-size: 12px; color: #334155; font-weight: bold; margin-bottom: 10px;">📅 ${reservasDelPerro.length} reserva(s) en total:</p>`;
+html += `<div style="background: #f1f5f9; padding: 12px; margin: 5px 0; border-radius: 5px; border-left: 3px solid #334155;"><p style="font-size: 12px; color: #334155; font-weight: bold; margin-bottom: 10px;"> ${reservasDelPerro.length} reserva(s) en total:</p>`;
 reservasDelPerro.forEach(r => {
 const inicio = formatearFecha(r.inicio);
 const fin = formatearFecha(r.fin);
 let estadoBadge = '';
 let colorEstado = '#64748b';
 if (r.completadas >= r.total) { estadoBadge = '✅ Completada'; colorEstado = '#94a3b8'; }
-else if (r.fin < hoy) { estadoBadge = '⚠️ Caducada'; colorEstado = '#ef4444'; }
+else if (r.fin < hoy) { estadoBadge = '️ Caducada'; colorEstado = '#ef4444'; }
 else if (r.inicio <= hoy && r.fin >= hoy) { estadoBadge = '🟢 Activa'; colorEstado = '#10b981'; }
-else { estadoBadge = ' Futura'; colorEstado = '#3b82f6'; }
-const tipoIcono = r.tipo === 'hotel' ? '🏨' : r.tipo === 'guarderia' ? '' : r.tipo === 'clase-suelta' ? '🎓' : r.tipo === 'pack-10' ? '📚' : r.tipo === 'pack-20' ? '' : '';
+else { estadoBadge = '🔵 Futura'; colorEstado = '#3b82f6'; }
+const tipoIcono = r.tipo === 'hotel' ? '🏨' : r.tipo === 'guarderia' ? '🏠' : r.tipo === 'clase-suelta' ? '🎓' : r.tipo === 'pack-10' ? '' : r.tipo === 'pack-20' ? '📖' : '';
 html += `<div style="background: white; padding: 10px; margin: 6px 0; border-radius: 6px; border-left: 4px solid ${colorEstado}; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"><div style="flex: 1; min-width: 200px;"><div style="font-size: 13px; font-weight: bold; color: #1e293b;">${tipoIcono} ${r.tipo}</div><div style="font-size: 11px; color: #64748b; margin-top: 3px;">📅 ${inicio} → ${fin} | 🏪 ${r.caseta || '-'} | 💰 ${r.precio}€</div><div style="font-size: 11px; color: ${colorEstado}; font-weight: bold; margin-top: 3px;">${estadoBadge}</div></div><div style="display: flex; gap: 5px; flex-wrap: wrap;"><button class="btn btn-info" onclick="event.stopPropagation(); verReserva('${r.id}')" style="padding: 4px 8px; font-size: 11px;">👁️ Ver</button><button class="btn btn-warning" onclick="event.stopPropagation(); editarReserva('${r.id}')" style="padding: 4px 8px; font-size: 11px;">✏️ Editar</button></div></div>`;
 });
 html += `</div>`;
@@ -2116,7 +2115,7 @@ resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div
 resultados.style.display = 'block';
 return;
 }
-resultados.innerHTML = perrosEncontrados.map(p => `<div class="buscador-perros-item" onclick="añadirPerroAGrupo('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}')">🐕 <strong>${p.nombrePerro}</strong> - 👤 ${p.nombreDueno}</div>`).join('');
+resultados.innerHTML = perrosEncontrados.map(p => `<div class="buscador-perros-item" onclick="añadirPerroAGrupo('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}')">🐕 <strong>${p.nombrePerro}</strong> -  ${p.nombreDueno}</div>`).join('');
 resultados.style.display = 'block';
 };
 window.añadirPerroAGrupo = (id, nombre, dueno) => {
@@ -2130,7 +2129,7 @@ document.getElementById('buscadorPerrosGrupo').value = '';
 function actualizarListaGrupo() {
 const lista = document.getElementById('grupoPerrosLista');
 if (perrosGrupoReserva.length === 0) { lista.innerHTML = ''; return; }
-lista.innerHTML = perrosGrupoReserva.map((p, index) => `<div style="display:flex;justify-content:space-between;align-items:center;background:white;padding:8px;margin:4px 0;border-radius:5px;"><span>🐕 ${p.nombre} (${p.dueno})</span><button type="button" class="btn btn-danger btn-sm" onclick="eliminarPerroDeGrupo(${index})">🗑️</button></div>`).join('');
+lista.innerHTML = perrosGrupoReserva.map((p, index) => `<div style="display:flex;justify-content:space-between;align-items:center;background:white;padding:8px;margin:4px 0;border-radius:5px;"><span> ${p.nombre} (${p.dueno})</span><button type="button" class="btn btn-danger btn-sm" onclick="eliminarPerroDeGrupo(${index})">🗑️</button></div>`).join('');
 }
 window.eliminarPerroDeGrupo = (index) => {
 perrosGrupoReserva.splice(index, 1);
@@ -2142,7 +2141,7 @@ const resultados = document.getElementById('trainDogResults');
 if (texto.length < 2) { resultados.style.display = 'none'; return; }
 const perrosEncontrados = perrosDB.filter(p => p.nombrePerro.toLowerCase().includes(texto) || p.nombreDueno.toLowerCase().includes(texto));
 if (perrosEncontrados.length === 0) {
-resultados.innerHTML = '<div class="buscador-perros-item"> No encontrado</div>';
+resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
 resultados.style.display = 'block';
 return;
 }
@@ -2236,7 +2235,7 @@ monthClasses.forEach(clase => {
 const estado = clase.estado || 'programada';
 const item = document.createElement('div');
 item.className = `training-item ${estado}`;
-const estadoLabel = estado === 'completada' ? '✅ Completada' : estado === 'cancelada' ? '❌ Cancelada' : ' Programada';
+const estadoLabel = estado === 'completada' ? '✅ Completada' : estado === 'cancelada' ? '❌ Cancelada' : '📅 Programada';
 item.innerHTML = `
 <div class="training-info">
 <strong>${clase.fecha}</strong> a las ${clase.hora || '--:--'} <br>
@@ -2267,7 +2266,7 @@ document.getElementById('modalEditarClase').style.display = 'block';
 window.verClasesDelDia = (fecha) => {
 const clasesDia = trainingDB.filter(t => t.fecha === fecha).sort((a, b) => (a.hora || '').localeCompare(b.hora || ''));
 const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-document.getElementById('modalTrainingDayTitle').textContent = ` Clases del ${fechaFormateada}`;
+document.getElementById('modalTrainingDayTitle').textContent = `🎓 Clases del ${fechaFormateada}`;
 const contenido = document.getElementById('modalTrainingDayContent');
 if (clasesDia.length === 0) {
 contenido.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No hay clases de adiestramiento para este día</p>';
@@ -2276,7 +2275,7 @@ contenido.innerHTML = `<p style="margin-bottom: 15px; font-weight: bold; color: 
 clasesDia.forEach(c => {
 const estado = c.estado || 'programada';
 const estadoBadge = estado === 'completada' ? '<span class="badge badge-active">Completada</span>' : estado === 'cancelada' ? '<span class="badge badge-danger">Cancelada</span>' : '<span class="badge badge-warning">Programada</span>';
-contenido.innerHTML += `<div class="reserva-card" style="border-left-color: #f59e0b;"><div class="reserva-info"><h4>⏰ ${c.hora} - ${c.nombrePerro} ${estadoBadge}</h4><p><strong> Dueño:</strong> ${c.nombreDueno} | <strong>📞 Tel:</strong> ${c.telefono || '-'}</p><p><strong>🎯 Tipo:</strong> ${c.tipo} | <strong>💰 Precio:</strong> ${c.precio}€ | <strong>🔢 Sesiones:</strong> ${c.sesiones}</p>${c.motivoCancelacion ? `<p style="color:#ef4444;"><strong>Motivo:</strong> ${c.motivoCancelacion}</p>` : ''}</div><div class="actions"><button class="btn btn-whatsapp" onclick="whatsapp('${c.telefono}','${c.nombreDueno}')">💬</button><button class="btn btn-warning" onclick="openEditClassModal('${c.id}')">✏️ Editar</button><button class="btn btn-danger" onclick="eliminarClaseTraining('${c.id}')">🗑️</button></div></div>`;
+contenido.innerHTML += `<div class="reserva-card" style="border-left-color: #f59e0b;"><div class="reserva-info"><h4>⏰ ${c.hora} - ${c.nombrePerro} ${estadoBadge}</h4><p><strong>👤 Dueño:</strong> ${c.nombreDueno} | <strong>📞 Tel:</strong> ${c.telefono || '-'}</p><p><strong>🎯 Tipo:</strong> ${c.tipo} | <strong>💰 Precio:</strong> ${c.precio}€ | <strong>🔢 Sesiones:</strong> ${c.sesiones}</p>${c.motivoCancelacion ? `<p style="color:#ef4444;"><strong>Motivo:</strong> ${c.motivoCancelacion}</p>` : ''}</div><div class="actions"><button class="btn btn-whatsapp" onclick="whatsapp('${c.telefono}','${c.nombreDueno}')">💬</button><button class="btn btn-warning" onclick="openEditClassModal('${c.id}')">✏️ Editar</button><button class="btn btn-danger" onclick="eliminarClaseTraining('${c.id}')">🗑️</button></div></div>`;
 });
 }
 document.getElementById('modalTrainingDay').style.display = 'block';
@@ -2332,7 +2331,7 @@ reservasDB.forEach(r => {
 todosEventos.push({
 id: r.id, tipo: 'reserva', subtipo: r.tipo, fecha: r.inicio,
 cliente: r.nombreDueno, perro: r.nombrePerro,
-servicio: r.tipo === 'hotel' ? '🏨 Hotel' : r.tipo === 'guarderia' ? '🏠 Guardería' : ' Clase',
+servicio: r.tipo === 'hotel' ? '🏨 Hotel' : r.tipo === 'guarderia' ? '🏠 Guardería' : '🎓 Clase',
 duracion: r.dias + (r.tipo.includes('clase') ? ' ses' : ' días'),
 precio: r.precio,
 estado: r.fin < new Date().toISOString().split('T')[0] ? 'Completada' : 'Activa'
@@ -2344,7 +2343,7 @@ const estadoLabel = estado === 'completada' ? 'Completada' : estado === 'cancela
 todosEventos.push({
 id: t.id, tipo: 'training', subtipo: 'adiestramiento', fecha: t.fecha,
 cliente: t.nombreDueno, perro: t.nombrePerro,
-servicio: ' ' + t.tipo, duracion: t.sesiones + ' ses',
+servicio: '🎓 ' + t.tipo, duracion: t.sesiones + ' ses',
 precio: t.precio, estado: estadoLabel
 });
 });
@@ -2384,7 +2383,7 @@ if (res.success && res.dueños.length > 0) {
 resultados.innerHTML = res.dueños.map(d => `<div class="buscador-perros-item" onclick="seleccionarDuenoParaFactura('${d.nombre}')">👤 <strong>${d.nombre}</strong></div>`).join('');
 resultados.style.display = 'block';
 } else {
-resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
+resultados.innerHTML = '<div class="buscador-perros-item"> No encontrado</div>';
 resultados.style.display = 'block';
 }
 };
@@ -2510,7 +2509,7 @@ document.getElementById('duenoSeleccionadoInfo').style.display = 'none';
 document.getElementById('buscadorPerrosFactura').value = '';
 document.getElementById('perroFacturaSeleccionadoInfo').style.display = 'none';
 } else {
-alert(' Error: ' + res.error);
+alert('❌ Error: ' + res.error);
 }
 } catch (e) {
 alert('❌ Error: ' + e.message);
@@ -2651,7 +2650,7 @@ if (count) count.textContent = `${contactosSeleccionados.length} contacto${conta
 window.whatsapp = (tel, nombre) => {
 if (!tel) { alert('❌ Sin teléfono'); return; }
 const telefonoLimpio = formatearTelefonoWhatsApp(tel);
-const msg = `Hola ${nombre}, te contacto desde Elantkan.`;
+const msg = `Hola ${nombre}, te contacto desde Lyra App.`;
 const url = `https://api.whatsapp.com/send?phone=${telefonoLimpio}&text=${encodeURIComponent(msg)}`;
 window.open(url, '_blank');
 };
@@ -2663,7 +2662,7 @@ const resTelefonos = await obtenerTelefonosDeDuenos(contactosSeleccionados);
 if (!resTelefonos.success) { alert('❌ Error: ' + resTelefonos.error); return; }
 const res = await enviarMasivo(resTelefonos.telefonos, mensaje, true);
 if (res.success) alert('✅ ' + res.mensaje);
-else alert('❌ Error: ' + res.error);
+else alert(' Error: ' + res.error);
 };
 window.enviarWhatsAppIndividual = () => {
 const telefono = document.getElementById('contactoTelefono').value;
@@ -2811,7 +2810,7 @@ document.getElementById('totalPerrosActivos').textContent = perrosDB.length;
 function abrirVentanaImpresion(contenidoHTML) {
 const win = window.open('', '_blank');
 if (!win) {
-alert('️ El navegador bloqueó la ventana de impresión. Por favor, permite las ventanas emergentes (pop-ups) para este sitio (icono con una X roja en la barra de dirección).');
+alert('⚠️ El navegador bloqueó la ventana de impresión. Por favor, permite las ventanas emergentes (pop-ups) para este sitio (icono con una X roja en la barra de dirección).');
 return;
 }
 win.document.write(contenidoHTML);
@@ -2824,7 +2823,7 @@ win.print();
 window.imprimirHistorialSeleccionado = () => {
 const seleccionados = Array.from(document.querySelectorAll('.history-checkbox:checked'));
 if (seleccionados.length === 0) { alert('⚠️ Selecciona al menos un registro'); return; }
-let contenido = `<meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:8px;text-align:left;}</style><h1>Elantkan - Historial Seleccionado</h1><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
+let contenido = `<meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:8px;text-align:left;}</style><h1>Lyra App - Historial Seleccionado</h1><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
 seleccionados.forEach(cb => {
 const row = cb.closest('tr');
 const celdas = row.querySelectorAll('td');
@@ -2836,7 +2835,7 @@ abrirVentanaImpresion(contenido);
 window.imprimirTodoHistorial = () => {
 const filas = document.querySelectorAll('#tablaHistorial tr');
 if (filas.length === 0) { alert('❌ No hay datos para imprimir'); return; }
-let contenido = `<meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:8px;text-align:left;}</style><h1>Elantkan - Historial Completo</h1><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
+let contenido = `<meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:8px;text-align:left;}</style><h1>Lyra App - Historial Completo</h1><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Perro</th><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th></tr></thead><tbody>`;
 filas.forEach(row => {
 const celdas = row.querySelectorAll('td');
 if (celdas.length > 1) {
@@ -2860,12 +2859,12 @@ grupo.reservas.forEach(r => {
 const inicio = formatearFecha(r.inicio);
 const fin = formatearFecha(r.fin);
 const dias = r.dias || Math.ceil((new Date(r.fin) - new Date(r.inicio)) / (1000 * 60 * 60 * 24)) + 1;
-const casetaInfo = r.caseta ? `🏪 ${r.caseta}` : '-';
+const casetaInfo = r.caseta ? ` ${r.caseta}` : '-';
 const tipoLabel = r.tipo === 'hotel' ? '🏨' : r.tipo === 'guarderia' ? '🏠' : '';
 filasHTML += `<tr><td>${r.nombrePerro}</td><td>${tipoLabel} ${r.tipo}</td><td>${inicio}</td><td>${fin}</td><td>${dias}</td><td>${casetaInfo}</td><td>${r.precio}€</td></tr>`;
 });
 });
-const contenido = `<meta charset="UTF-8"><h1>ELANTKAN - Gestión Canina</h1><h2>Lista de Reservas - ${new Date().toLocaleDateString('es-ES')}</h2><table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;"><thead><tr><th>Perro</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Días</th><th>Caseta</th><th>Precio</th></tr></thead><tbody>${filasHTML}</tbody></table><p class="total">Total: ${reservasDB.length} reserva(s)</p>`;
+const contenido = `<meta charset="UTF-8"><h1>LYRA APP - Gestión Canina</h1><h2>Lista de Reservas - ${new Date().toLocaleDateString('es-ES')}</h2><table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;"><thead><tr><th>Perro</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Días</th><th>Caseta</th><th>Precio</th></tr></thead><tbody>${filasHTML}</tbody></table><p class="total">Total: ${reservasDB.length} reserva(s)</p>`;
 abrirVentanaImpresion(contenido);
 };
 window.imprimirCalendario = () => {
@@ -2886,7 +2885,7 @@ const porcentaje = Math.round((ocupacion / totalK) * 100);
 let color = porcentaje >= 90 ? '#ef4444' : porcentaje >= 60 ? '#fee2e2' : porcentaje >= 20 ? '#fef3c7' : '#dcfce7';
 gridHTML += `<div style="background:white;border:1px solid #e2e8f0;padding:10px;min-height:80px"><div style="font-weight:bold">${dia}</div><div style="font-size:11px;padding:3px 8px;border-radius:10px;background:${color};color:${porcentaje >= 90 ? 'white' : '#333'}">${porcentaje}%</div></div>`;
 }
-const contenido = `<meta charset="UTF-8"><h1>ELANTKAN - Calendario Hotel</h1><h2>${meses[month]} ${year}</h2><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;">${gridHTML}</div>`;
+const contenido = `<meta charset="UTF-8"><h1>LYRA APP - Calendario Hotel</h1><h2>${meses[month]} ${year}</h2><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;">${gridHTML}</div>`;
 abrirVentanaImpresion(contenido);
 };
 window.imprimirSeccion = (elementId) => {
@@ -2898,13 +2897,13 @@ abrirVentanaImpresion(contenido);
 window.imprimirFichaIndividual = () => {
 if (!perroIndividualActual) return;
 const p = perroIndividualActual;
-const contenido = `<meta charset="UTF-8"><h1>ELANTKAN - Ficha de Perro</h1><h2>🐕 ${p.nombrePerro}</h2><p><strong>Raza:</strong> ${p.raza || '-'}</p><p><strong>Edad:</strong> ${p.fechaNacimiento ? calcularEdad(p.fechaNacimiento) : p.edad || '-'}</p><p><strong>Microchip:</strong> ${p.microchip || '-'}</p><p><strong>Pasaporte:</strong> ${p.pasaporte || '-'}</p><hr><h3>👤 Dueño</h3><p><strong>Nombre:</strong> ${p.nombreDueno}</p><p><strong>Teléfono:</strong> ${p.telefono || '-'}</p><p><strong>Email:</strong> ${p.email || '-'}</p><p><strong>Dirección:</strong> ${p.direccion || '-'}</p><hr><p><strong>Notas:</strong> ${p.notas || '-'}</p>`;
+const contenido = `<meta charset="UTF-8"><h1>LYRA APP - Ficha de Perro</h1><h2>🐕 ${p.nombrePerro}</h2><p><strong>Raza:</strong> ${p.raza || '-'}</p><p><strong>Edad:</strong> ${p.fechaNacimiento ? calcularEdad(p.fechaNacimiento) : p.edad || '-'}</p><p><strong>Microchip:</strong> ${p.microchip || '-'}</p><p><strong>Pasaporte:</strong> ${p.pasaporte || '-'}</p><hr><h3> Dueño</h3><p><strong>Nombre:</strong> ${p.nombreDueno}</p><p><strong>Teléfono:</strong> ${p.telefono || '-'}</p><p><strong>Email:</strong> ${p.email || '-'}</p><p><strong>Dirección:</strong> ${p.direccion || '-'}</p><hr><p><strong>Notas:</strong> ${p.notas || '-'}</p>`;
 abrirVentanaImpresion(contenido);
 };
 window.imprimirReservaIndividual = () => {
 if (!reservaIndividualActual) return;
 const r = reservaIndividualActual;
-const contenido = `<meta charset="UTF-8"><h1>ELANTKAN - Reserva</h1><h2>🐕 ${r.nombrePerro}</h2><p><strong>Tipo:</strong> ${r.tipo}</p><p><strong>Inicio:</strong> ${formatearFecha(r.inicio)}</p><p><strong>Fin:</strong> ${formatearFecha(r.fin)}</p><p><strong>Precio:</strong> ${r.precio}€</p><p><strong>Caseta:</strong> ${r.caseta || '-'}</p><hr><p><strong>Dueño:</strong> ${r.nombreDueno}</p><p><strong>Teléfono:</strong> ${r.telefono || '-'}</p><p><strong>Notas:</strong> ${r.notas || '-'}</p>`;
+const contenido = `<meta charset="UTF-8"><h1>LYRA APP - Reserva</h1><h2>🐕 ${r.nombrePerro}</h2><p><strong>Tipo:</strong> ${r.tipo}</p><p><strong>Inicio:</strong> ${formatearFecha(r.inicio)}</p><p><strong>Fin:</strong> ${formatearFecha(r.fin)}</p><p><strong>Precio:</strong> ${r.precio}€</p><p><strong>Caseta:</strong> ${r.caseta || '-'}</p><hr><p><strong>Dueño:</strong> ${r.nombreDueno}</p><p><strong>Teléfono:</strong> ${r.telefono || '-'}</p><p><strong>Notas:</strong> ${r.notas || '-'}</p>`;
 abrirVentanaImpresion(contenido);
 };
 // ================= MÓDULO EMPLEADOS =================
@@ -2924,7 +2923,7 @@ tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">N
 return;
 }
 empleados.forEach(emp => {
-const rolLabel = emp.rol === 'admin' ? '👑 Admin' : emp.rol === 'recepcion' ? '📋 Recepción' : '🎓 Adiestrador';
+const rolLabel = emp.rol === 'admin' ? '👑 Admin' : emp.rol === 'recepcion' ? ' Recepción' : '🎓 Adiestrador';
 const estadoBadge = emp.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>';
 tbody.innerHTML += `<tr>
 <td><strong>${emp.nombre}</strong> ${emp.apellidos || ''}</td>
@@ -2953,7 +2952,7 @@ for (let i = 0; i < 8; i++) password += chars.charAt(Math.floor(Math.random() * 
 const data = { nombre, apellidos, email, telefono, password, rol, notas };
 const res = await crearEmpleado(data);
 if (res.success) {
-alert(`✅ ${res.message}\n\nCONTRASEÑA TEMPORAL (muéstrasela al empleado):\n${password}\n\n⚠️ Esta contraseña solo se muestra una vez.`);
+alert(`✅ ${res.message}\n\nCONTRASEÑA TEMPORAL (muéstrasela al empleado):\n${password}\n\n️ Esta contraseña solo se muestra una vez.`);
 document.getElementById('empNombre').value = ''; document.getElementById('empApellidos').value = '';
 document.getElementById('empEmail').value = ''; document.getElementById('empTelefono').value = '';
 document.getElementById('empRol').value = ''; document.getElementById('empNotas').value = '';
@@ -3019,8 +3018,8 @@ return;
 }
 res.historial.forEach(h => {
 const fecha = h.fechaISO ? new Date(h.fechaISO).toLocaleString('es-ES') : '-';
-const icono = { perros: '🐕', reservas: '', facturas: '📄', training: '🎓', empleados: '', configuracion: '⚙️' }[h.modulo] || '📋';
-const accionIcono = { crear: '➕', editar: '✏️', eliminar: '🗑️', activar: '▶️', desactivar: '⏸️' }[h.accion] || '📝';
+const icono = { perros: '', reservas: '📅', facturas: '📄', training: '', empleados: '👥', configuracion: '⚙️' }[h.modulo] || '📋';
+const accionIcono = { crear: '➕', editar: '✏️', eliminar: '️', activar: '▶️', desactivar: '⏸️' }[h.accion] || '📝';
 tbody.innerHTML += `<tr><td>${fecha}</td><td>${h.userEmail || '-'}</td><td>${icono} ${h.modulo}</td><td>${accionIcono} ${h.accion}</td><td>${h.descripcion || '-'}</td></tr>`;
 });
 }
