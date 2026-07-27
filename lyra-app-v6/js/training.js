@@ -73,12 +73,11 @@ export async function crearClase(data) {
 }
 
 /**
- * Obtiene todas las clases (ordenadas por fecha ascendente para facilitar vista mensual)
+ * Obtiene todas las clases (ordenadas por fecha ascendente para facilitar la vista mensual)
  */
 export async function obtenerClases() {
   try {
     const trainingPath = getTrainingPath();
-    // Ordenamos por fecha ascendente para que sea más fácil pintar calendarios mensuales
     const q = query(collection(db, trainingPath), orderBy('fecha', 'asc'));
     const snapshot = await getDocs(q);
 
@@ -121,7 +120,7 @@ export async function actualizarClase(id, data) {
 }
 
 /**
- * Cancela una clase (Recomendado sobre eliminar para mantener el historial)
+ * Cancela una clase (Recomendado sobre eliminar para mantener el historial y la auditoría)
  */
 export async function cancelarClase(id, motivo) {
   try {
@@ -136,7 +135,7 @@ export async function cancelarClase(id, motivo) {
 }
 
 /**
- * Elimina una clase definitivamente (Usar con precaución)
+ * Elimina una clase definitivamente (Usar solo si es un error de creación, no para cancelaciones)
  */
 export async function eliminarClase(id) {
   try {
@@ -151,7 +150,7 @@ export async function eliminarClase(id) {
 
 /**
  * Comprueba las alertas de clases para hoy y mañana
- * (Ignora las clases que ya están canceladas)
+ * (Ignora las clases que ya están canceladas para no generar falsas alarmas)
  */
 export async function comprobarAvisosClases() {
   try {
