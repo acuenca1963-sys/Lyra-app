@@ -2655,16 +2655,32 @@ const url = `https://api.whatsapp.com/send?phone=${telefonoLimpio}&text=${encode
 window.open(url, '_blank');
 };
 window.enviarMasivo = async () => {
-const mensaje = document.getElementById('mensajeMasivo').value;
-if (!mensaje) { alert('❌ Escribe un mensaje'); return; }
-if (contactosSeleccionados.length === 0) { alert('⚠️ Selecciona al menos un contacto'); return; }
-const resTelefonos = await obtenerTelefonosDeDuenos(contactosSeleccionados);
-if (!resTelefonos.success) { alert('❌ Error: ' + resTelefonos.error); return; }
-const res = await enviarMasivo(resTelefonos.telefonos, mensaje, true);
-if (res.success) alert('✅ ' + res.mensaje);
-else alert(' Error: ' + res.error);
-};
-window.enviarWhatsAppIndividual = () => {
+    const mensaje = document.getElementById('mensajeMasivo').value;
+    if (!mensaje) { alert('❌ Escribe un mensaje'); return; }
+    if (contactosSeleccionados.length === 0) { alert('⚠️ Selecciona al menos un contacto'); return; }
+    
+    const btn = document.getElementById('btnEnviarMasivo');
+    const textoOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Enviando... (no cierres la pestaña)';
+    
+    try {
+        const resTelefonos = await obtenerTelefonosDeDuenos(contactosSeleccionados);
+        if (!resTelefonos.success) { throw new Error(resTelefonos.error); }
+        
+        const res = await enviarMasivo(resTelefonos.telefonos, mensaje, true);
+        if (res.success) {
+            alert(res.mensaje);
+        } else {
+            alert('❌ Error: ' + res.error);
+        }
+    } catch (e) {
+        alert('❌ Error inesperado: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
+    }
+};window.enviarWhatsAppIndividual = () => {
 const telefono = document.getElementById('contactoTelefono').value;
 const nombre = document.getElementById('contactoNombre').value;
 const mensaje = document.getElementById('mensajeIndividual').value;
