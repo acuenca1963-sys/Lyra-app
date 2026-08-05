@@ -841,25 +841,31 @@ initApp();
 });
 // 🆕 NUEVO: initApp con bloqueo de botón atrás y restauración de pestaña
 async function initApp() {
-    // 🛡️ BLOQUEO AGRESIVO DEL BOTÓN ATRÁS (Funciona en Firefox, Chrome y Safari)
+    // 🛡️ 1. BLOQUEO DEL BOTÓN ATRÁS
     window.history.pushState(null, document.title, window.location.href);
     window.addEventListener('popstate', function (event) {
         window.history.pushState(null, document.title, window.location.href);
     });
 
+    // 🛡️ 2. REGISTRO DEL SERVICE WORKER
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW no registrado:', err));
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(reg => console.log('✅ SW registrado correctamente'))
+            .catch(err => console.log('⚠️ Error al registrar SW:', err));
     }
-    
+
+    // 🛡️ 3. MANEJO DE AUTENTICACIÓN
     initAuthListener(async (isAuth, user) => {
-        if (isAuth) {
+        if (isAuth && user) {
             currentUser = user;
             document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             document.getElementById('userEmail').textContent = user.email;
+            
             await cargarConfiguracionInicial();
             try { await aplicarPermisosUI(); } catch(e) { console.log('Permisos no críticos:', e); }
+            
             cargarDatos();
             cargarDatosTraining();
         } else {
@@ -869,14 +875,13 @@ async function initApp() {
             document.getElementById('mainApp').style.display = 'none';
         }
     });
-    setupEventListeners();
-}
+
+    // 🛡️ 4. CONFIGURAR EVENTOS (¡SOLO UNA VEZ!)
     setupEventListeners();
 
-    // 🛡️ 4. DETECCIÓN DE VISIBILIDAD (Cuando el usuario minimiza y vuelve a la app)
+    // 🛡️ 5. DETECCIÓN DE VISIBILIDAD (Al minimizar y volver)
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && currentUser) {
-            // Al volver a la app, aseguramos que el usuario sigue en la misma pestaña
             const ultimaPestaña = localStorage.getItem('lyra_ultima_pestaña');
             if (ultimaPestaña) {
                 const tab = document.querySelector(`.tab[data-section="${ultimaPestaña}"]`);
@@ -888,13 +893,14 @@ async function initApp() {
         }
     });
 }
+
 async function cargarConfiguracionInicial() {
-const res = await obtenerConfiguracion();
-if (res.success) {
-currentConfig = res.config;
-initLyraUI();
-}
-}
+    const res = await obtenerConfiguracion();
+    if (res.success) {
+        currentConfig = res.config;
+        initLyraUI();
+    }
+}}
 function initLyraUI() {
 if (!currentConfig) return;
 const cfg = currentConfig;
@@ -1030,28 +1036,29 @@ console.error('⚠️ Error aplicando permisos (no crítico):', error);
 };
 function setupEventListeners() {
 document.getElementById('formLogin').addEventListener('submit', async (e) => {
-e.preventDefault();
-const email = document.getElementById('loginEmail').value.trim();
-const password = document.getElementById('loginPassword').value;
-const res = await loginUser(email, password);
-if (!res.success) mostrarError(res.error);
-});
-document.getElementById('formRegister').addEventListener('submit', async (e) => {
-e.preventDefault();
-const email = document.getElementById('registerEmail').value.trim();
-const password = document.getElementById('registerPassword').value;
-const res = await registerUser(email, password, 'Nuevo Usuario', 'Mi Hotel');
-if (res.success) {
-mostrarSuccess('✅ Cuenta creada. Inicia sesión.');
-setTimeout(() => {
-document.getElementById('linkLogin').click();
-document.getElementById('loginEmail').value = email;
-}, 2000);
-} else {
-mostrarError(res.error);
-}
-});
-document.getElementById('linkRegistro').addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const password = document.getElementById('loginPassword').value.trim();
+    
+    console.log('🔍 Intentando login con:', email);
+    alert('🔍 Iniciando login con: ' + email); // ESTE ALERT ES CLAVE PARA SABER SI FUNCIONA
+    
+    try {
+        const res = await loginUser(email, password);
+        console.log('📥 Respuesta login:', res);
+        
+        if (!res.success) {
+            alert("⚠️ ERROR: " + res.error);
+            mostrarError(res.error);
+        } else {
+            alert("✅ Login exitoso, cargando app...");
+        }
+    } catch (err) {
+        alert("🔥 ERROR CRÍTICO: " + err.message);
+        console.error("Error crítico:", err);
+    }
+});document.getElementById('linkRegistro').addEventListener('click', (e) => {
 e.preventDefault();
 document.getElementById('loginFormContainer').style.display = 'none';
 document.getElementById('registerFormContainer').style.display = 'block';
