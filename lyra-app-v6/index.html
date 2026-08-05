@@ -842,56 +842,36 @@ initApp();
 });
 // 🆕 NUEVO: initApp con bloqueo de botón atrás y restauración de pestaña
 async function initApp() {
-    // 🛡️ 1. BLOQUEO DEL BOTÓN ATRÁS (Evita que el navegador o el sistema cierren la app)
+    // 🛡️ BLOQUEO AGRESIVO DEL BOTÓN ATRÁS (Funciona en Firefox, Chrome y Safari)
     window.history.pushState(null, document.title, window.location.href);
     window.addEventListener('popstate', function (event) {
         window.history.pushState(null, document.title, window.location.href);
     });
 
-    // 🛡️ 2. REGISTRO DEL SERVICE WORKER
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js')
-            .then(reg => console.log('✅ SW registrado correctamente'))
-            .catch(err => console.log('⚠️ Error al registrar SW:', err));
+        navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW no registrado:', err));
     }
-
-    // 🛡️ 3. MANEJO DE AUTENTICACIÓN Y SESIÓN
+    
     initAuthListener(async (isAuth, user) => {
-        if (isAuth && user) {
+        if (isAuth) {
             currentUser = user;
-            
-            // Transición suave de pantallas
             document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             document.getElementById('userEmail').textContent = user.email;
-            
-            // Carga de datos
             await cargarConfiguracionInicial();
             try { await aplicarPermisosUI(); } catch(e) { console.log('Permisos no críticos:', e); }
-            
             cargarDatos();
             cargarDatosTraining();
-            
-            // 🔄 Restaurar la última pestaña si la app se minimizó y volvió
-            setTimeout(() => {
-                const ultimaPestaña = localStorage.getItem('lyra_ultima_pestaña');
-                if (ultimaPestaña) {
-                    const tab = document.querySelector(`.tab[data-section="${ultimaPestaña}"]`);
-                    if (tab && !tab.classList.contains('active')) {
-                        tab.click();
-                    }
-                }
-            }, 300);
         } else {
-            // Si no hay sesión válida, mostrar login
             currentUser = null;
             document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
         }
     });
-
+    setupEventListeners();
+}
     setupEventListeners();
 
     // 🛡️ 4. DETECCIÓN DE VISIBILIDAD (Cuando el usuario minimiza y vuelve a la app)
