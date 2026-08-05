@@ -243,11 +243,10 @@ body * { visibility: hidden; }
 <div class="success" id="loginSuccess"></div>
 <div id="loginFormContainer">
 <form id="formLogin">
-<input type="email" id="loginEmail" placeholder="📧 Email" required>
-<input type="password" id="loginPassword" placeholder="🔒 Contraseña" required>
-<button type="submit">🔐 Iniciar Sesión</button>
-</form>
-<p style="margin:20px 0;color:#64748b;font-size:14px;text-align:center;">
+    <input type="email" id="loginEmail" placeholder="📧 Email" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <input type="password" id="loginPassword" placeholder="🔒 Contraseña" required autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <button type="submit">🔐 Iniciar Sesión</button>
+</form><p style="margin:20px 0;color:#64748b;font-size:14px;text-align:center;">
 ¿No tienes cuenta? <a href="#" id="linkRegistro">Crear una aquí</a>
 </p>
 </div>
