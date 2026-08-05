@@ -183,7 +183,6 @@ tr:hover { background: #f8fafc; }
 .readonly-input { background: #f1f5f9; color: #64748b; }
 .form-row { display: flex; gap: 15px; }
 .form-row .form-group { flex: 1; }
-/* 🆕 NUEVO: SKELETON LOADER */
 .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 6px; }
 @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .skeleton-row { height: 60px; margin: 8px 0; }
@@ -243,9 +242,9 @@ body * { visibility: hidden; }
 <div class="success" id="loginSuccess"></div>
 <div id="loginFormContainer">
 <form id="formLogin">
-    <input type="email" id="loginEmail" placeholder="📧 Email" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
-    <input type="password" id="loginPassword" placeholder="🔒 Contraseña" required autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
-    <button type="submit">🔐 Iniciar Sesión</button>
+<input type="email" id="loginEmail" placeholder="📧 Email" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+<input type="password" id="loginPassword" placeholder="🔒 Contraseña" required autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
+<button type="submit">🔐 Iniciar Sesión</button>
 </form><p style="margin:20px 0;color:#64748b;font-size:14px;text-align:center;">
 ¿No tienes cuenta? <a href="#" id="linkRegistro">Crear una aquí</a>
 </p>
@@ -281,7 +280,6 @@ body * { visibility: hidden; }
 </div>
 </div>
 <div class="container">
-<!-- 🆕 NUEVO: SKELETON LOADER -->
 <div id="skeletonLoader" style="display:none;">
 <div class="skeleton skeleton-row"></div>
 <div class="skeleton skeleton-row"></div>
@@ -306,7 +304,6 @@ body * { visibility: hidden; }
 <button class="tab" data-section="empleados">👥 Empleados</button>
 <button class="tab" data-section="contactos">💬 WhatsApp</button>
 </div>
-<!-- SECCIÓN PERROS -->
 <div id="perros" class="section active">
 <div class="buscador-container">
 <h3>🔍 Buscador Avanzado</h3>
@@ -384,7 +381,6 @@ body * { visibility: hidden; }
 </table>
 </div>
 </div>
-<!-- SECCIÓN HOTEL -->
 <div id="hotel" class="section">
 <div class="calendar-header">
 <h2 id="calendarMonthYear"></h2>
@@ -426,7 +422,6 @@ body * { visibility: hidden; }
 <button class="btn btn-success" id="btnCrearReservaHotel">✅ Crear Reserva</button>
 </div>
 </div>
-<!-- SECCIÓN RESERVAS -->
 <div id="reservas" class="section">
 <div class="form-section">
 <h3>📅 Nueva Reserva <button class="btn btn-print" id="btnImprimirReservas" style="float:right;">️ Imprimir Lista</button></h3>
@@ -479,7 +474,6 @@ body * { visibility: hidden; }
 </table>
 </div>
 </div>
-<!-- SECCIÓN ADIESTRAMIENTO -->
 <div id="adiestramiento" class="section">
 <div class="form-section">
 <h3>🎓 Programar Clase de Adiestramiento</h3>
@@ -524,7 +518,6 @@ body * { visibility: hidden; }
 <div id="trainingList" class="training-list"></div>
 </div>
 </div>
-<!-- SECCIÓN ESTADÍSTICAS -->
 <div id="estadisticas" class="section">
 <div class="form-section">
 <h3>📊 Panel de Análisis</h3>
@@ -552,7 +545,6 @@ body * { visibility: hidden; }
 </div>
 </div>
 </div>
-<!-- SECCIÓN HISTORIAL -->
 <div id="historial" class="section">
 <div class="history-toolbar">
 <div class="history-filters">
@@ -588,7 +580,6 @@ body * { visibility: hidden; }
 </table>
 </div>
 </div>
-<!-- SECCIÓN FACTURAS -->
 <div id="facturas" class="section">
 <div class="form-section">
 <h3>🧾 Nueva Factura Multi-Concepto</h3>
@@ -653,7 +644,6 @@ body * { visibility: hidden; }
 </table>
 </div>
 </div>
-<!-- SECCIÓN EMPLEADOS -->
 <div id="empleados" class="section">
 <div class="form-section">
 <h3>➕ Nuevo Empleado <button class="btn btn-print" id="btnImprimirEmpleados" style="float:right;">🖨️ Imprimir Lista</button></h3>
@@ -722,7 +712,6 @@ body * { visibility: hidden; }
 </div>
 </div>
 </div>
-<!-- SECCIÓN CONTACTOS -->
 <div id="contactos" class="section">
 <div class="form-section">
 <h3> Envío Masivo de Mensajes</h3>
@@ -755,7 +744,6 @@ body * { visibility: hidden; }
 </div>
 <div class="sync-status"><div class="sync-dot"></div><span>Sincronizado</span></div>
 </div>
-<!-- MODALES -->
 <div id="modalReservasPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalReservasPerro">&times;</span><h2 id="modalReservasPerroTitle" style="color:#334155;margin-bottom:20px;">📅 Reservas del Perro</h2><div id="modalReservasPerroContent"></div></div></div>
 <div id="modalTrainingDay" class="modal"><div class="modal-content"><span class="close" data-modal="modalTrainingDay">&times;</span><h2 style="color:#334155;margin-bottom:20px;" id="modalTrainingDayTitle">🎓 Clases del Día</h2><div id="modalTrainingDayContent"></div></div></div>
 <div id="modalPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalPerro">&times;</span><img id="modalFotoPerro" class="foto-perro-grande hidden" src="" alt="Foto"><div id="contenidoPerro"></div><button class="btn btn-print" id="btnImprimirFichaIndividual" style="margin-top: 20px; width: 100%;">🖨️ Imprimir Ficha</button></div></div>
@@ -803,20 +791,19 @@ let reservaIndividualActual = null;
 let facturaIndividualActual = null;
 let empleadosDB = [];
 let historialEmpleadosDB = [];
-// 🆕 NUEVO: Debounce para renderizados (evita cuelgues)
 let renderTimeout = null;
 function renderDebounced() {
-    if (renderTimeout) clearTimeout(renderTimeout);
-    renderTimeout = setTimeout(() => {
-        mostrarPerros();
-        actualizarStats();
-        cargarSelectPerros();
-        cargarContactos();
-        mostrarHistorial();
-        calcularEstadisticas();
-        const sk = document.getElementById('skeletonLoader');
-        if (sk) sk.style.display = 'none';
-    }, 150);
+if (renderTimeout) clearTimeout(renderTimeout);
+renderTimeout = setTimeout(() => {
+mostrarPerros();
+actualizarStats();
+cargarSelectPerros();
+cargarContactos();
+mostrarHistorial();
+calcularEstadisticas();
+const sk = document.getElementById('skeletonLoader');
+if (sk) sk.style.display = 'none';
+}, 150);
 }
 const LISTA_RAZAS = [
 "Affenpinscher", "Akita", "American Pit Bull Terrier", "American Staffordshire Terrier",
@@ -839,70 +826,56 @@ datalist.appendChild(option);
 }
 initApp();
 });
-// 🆕 NUEVO: initApp con bloqueo de botón atrás y restauración de pestaña
 async function initApp() {
-    // 🛡️ 1. BLOQUEO DEL BOTÓN ATRÁS
-    window.history.pushState(null, document.title, window.location.href);
-    window.addEventListener('popstate', function (event) {
-        window.history.pushState(null, document.title, window.location.href);
-    });
-
-    // 🛡️ 2. REGISTRO DEL SERVICE WORKER
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js')
-            .then(reg => console.log('✅ SW registrado correctamente'))
-            .catch(err => console.log('⚠️ Error al registrar SW:', err));
-    }
-
-    // 🛡️ 3. MANEJO DE AUTENTICACIÓN
-    initAuthListener(async (isAuth, user) => {
-        if (isAuth && user) {
-            currentUser = user;
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            document.getElementById('userEmail').textContent = user.email;
-            
-            await cargarConfiguracionInicial();
-            try { await aplicarPermisosUI(); } catch(e) { console.log('Permisos no críticos:', e); }
-            
-            cargarDatos();
-            cargarDatosTraining();
-        } else {
-            currentUser = null;
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-        }
-    });
-
-    // 🛡️ 4. CONFIGURAR EVENTOS (¡SOLO UNA VEZ!)
-    setupEventListeners();
-
-    // 🛡️ 5. DETECCIÓN DE VISIBILIDAD (Al minimizar y volver)
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && currentUser) {
-            const ultimaPestaña = localStorage.getItem('lyra_ultima_pestaña');
-            if (ultimaPestaña) {
-                const tab = document.querySelector(`.tab[data-section="${ultimaPestaña}"]`);
-                if (tab && !tab.classList.contains('active')) {
-                    tab.click();
-                }
-            }
-            console.log('✅ App restaurada desde segundo plano');
-        }
-    });
+window.history.pushState(null, document.title, window.location.href);
+window.addEventListener('popstate', function (event) {
+window.history.pushState(null, document.title, window.location.href);
+});
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('./service-worker.js')
+.then(reg => console.log('✅ SW registrado correctamente'))
+.catch(err => console.log('⚠️ Error al registrar SW:', err));
 }
-
+initAuthListener(async (isAuth, user) => {
+if (isAuth && user) {
+currentUser = user;
+document.getElementById('loadingScreen').style.display = 'none';
+document.getElementById('loginScreen').style.display = 'none';
+document.getElementById('mainApp').style.display = 'block';
+document.getElementById('userEmail').textContent = user.email;
+await cargarConfiguracionInicial();
+try { await aplicarPermisosUI(); } catch(e) { console.log('Permisos no críticos:', e); }
+cargarDatos();
+cargarDatosTraining();
+} else {
+currentUser = null;
+document.getElementById('loadingScreen').style.display = 'none';
+document.getElementById('loginScreen').style.display = 'flex';
+document.getElementById('mainApp').style.display = 'none';
+}
+});
+setupEventListeners();
+document.addEventListener('visibilitychange', () => {
+if (!document.hidden && currentUser) {
+const ultimaPestaña = localStorage.getItem('lyra_ultima_pestaña');
+if (ultimaPestaña) {
+const tab = document.querySelector(`.tab[data-section="${ultimaPestaña}"]`);
+if (tab && !tab.classList.contains('active')) {
+tab.click();
+}
+}
+console.log('✅ App restaurada desde segundo plano');
+}
+});
+}
 async function cargarConfiguracionInicial() {
-    const res = await obtenerConfiguracion();
-    if (res.success) {
-        currentConfig = res.config;
-        initLyraUI();
-    }
-} 
-
-function initLyraUI() {function initLyraUI() {
+const res = await obtenerConfiguracion();
+if (res.success) {
+currentConfig = res.config;
+initLyraUI();
+}
+}
+function initLyraUI() {
 if (!currentConfig) return;
 const cfg = currentConfig;
 const sel = document.getElementById('hotelCasetaSelect');
@@ -921,77 +894,64 @@ stat.textContent = `${ocup}/${cfg.totalKennels}`;
 if (status) status.textContent = `✅ Configurado: ${cfg.totalKennels} casetas (${cfg.kennelPrefix}1-${cfg.kennelPrefix}${cfg.totalKennels})`;
 if (document.getElementById('hotelPrecio')) document.getElementById('hotelPrecio').value = cfg.prices.hotel;
 }
-// 🆕 NUEVO: cargarDatos con caché local
 function cargarDatos() {
-    const user = getCurrentUser();
-    if (!user) return;
-    
-    // 📦 Mostrar skeleton mientras carga
-    const skeleton = document.getElementById('skeletonLoader');
-    if (skeleton) skeleton.style.display = 'block';
-    
-    // 📦 CARGA INICIAL DESDE CACHÉ LOCAL (instantáneo)
-    const cachePerros = localStorage.getItem('lyra_cache_perros_' + user.uid);
-    if (cachePerros) {
-        try { perrosDB = JSON.parse(cachePerros); renderDebounced(); console.log('✅ Perros cargados desde caché'); } catch (e) {}
-    }
-    
-    onSnapshot(collection(db, 'usuarios', user.uid, 'perros'), (s) => {
-        perrosDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
-        try { localStorage.setItem('lyra_cache_perros_' + user.uid, JSON.stringify(perrosDB)); } catch (e) {}
-        renderDebounced();
-    });
-    
-    const cacheReservas = localStorage.getItem('lyra_cache_reservas_' + user.uid);
-    if (cacheReservas) {
-        try { reservasDB = JSON.parse(cacheReservas); renderDebounced(); } catch (e) {}
-    }
-    
-    onSnapshot(collection(db, 'usuarios', user.uid, 'reservas'), async (s) => {
-        reservasDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
-        await migrarReservasAntiguas();
-        try { localStorage.setItem('lyra_cache_reservas_' + user.uid, JSON.stringify(reservasDB)); } catch (e) {}
-        mostrarReservas();
-        actualizarStats();
-        mostrarCalendario();
-        mostrarReservasActivas();
-        actualizarOcupacion();
-        mostrarHistorial();
-        initLyraUI();
-        calcularEstadisticas();
-        if (skeleton) skeleton.style.display = 'none';
-    });
-    
-    const cacheFacturas = localStorage.getItem('lyra_cache_facturas_' + user.uid);
-    if (cacheFacturas) {
-        try { facturasDB = JSON.parse(cacheFacturas); mostrarFacturas(); } catch (e) {}
-    }
-    
-    onSnapshot(collection(db, 'usuarios', user.uid, 'facturas'), (s) => {
-        facturasDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
-        try { localStorage.setItem('lyra_cache_facturas_' + user.uid, JSON.stringify(facturasDB)); } catch (e) {}
-        mostrarFacturas();
-        calcularEstadisticas();
-    });
+const user = getCurrentUser();
+if (!user) return;
+const skeleton = document.getElementById('skeletonLoader');
+if (skeleton) skeleton.style.display = 'block';
+const cachePerros = localStorage.getItem('lyra_cache_perros_' + user.uid);
+if (cachePerros) {
+try { perrosDB = JSON.parse(cachePerros); renderDebounced(); console.log('✅ Perros cargados desde caché'); } catch (e) {}
 }
-// 🆕 NUEVO: cargarDatosTraining con caché local
+onSnapshot(collection(db, 'usuarios', user.uid, 'perros'), (s) => {
+perrosDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
+try { localStorage.setItem('lyra_cache_perros_' + user.uid, JSON.stringify(perrosDB)); } catch (e) {}
+renderDebounced();
+});
+const cacheReservas = localStorage.getItem('lyra_cache_reservas_' + user.uid);
+if (cacheReservas) {
+try { reservasDB = JSON.parse(cacheReservas); renderDebounced(); } catch (e) {}
+}
+onSnapshot(collection(db, 'usuarios', user.uid, 'reservas'), async (s) => {
+reservasDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
+await migrarReservasAntiguas();
+try { localStorage.setItem('lyra_cache_reservas_' + user.uid, JSON.stringify(reservasDB)); } catch (e) {}
+mostrarReservas();
+actualizarStats();
+mostrarCalendario();
+mostrarReservasActivas();
+actualizarOcupacion();
+mostrarHistorial();
+initLyraUI();
+calcularEstadisticas();
+if (skeleton) skeleton.style.display = 'none';
+});
+const cacheFacturas = localStorage.getItem('lyra_cache_facturas_' + user.uid);
+if (cacheFacturas) {
+try { facturasDB = JSON.parse(cacheFacturas); mostrarFacturas(); } catch (e) {}
+}
+onSnapshot(collection(db, 'usuarios', user.uid, 'facturas'), (s) => {
+facturasDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
+try { localStorage.setItem('lyra_cache_facturas_' + user.uid, JSON.stringify(facturasDB)); } catch (e) {}
+mostrarFacturas();
+calcularEstadisticas();
+});
+}
 function cargarDatosTraining() {
-    const user = getCurrentUser();
-    if (!user) return;
-    
-    const cacheTraining = localStorage.getItem('lyra_cache_training_' + user.uid);
-    if (cacheTraining) {
-        try { trainingDB = JSON.parse(cacheTraining); renderizarTrainingCalendar(); renderTrainingList(); } catch (e) {}
-    }
-    
-    onSnapshot(collection(db, 'usuarios', user.uid, 'training'), (s) => {
-        trainingDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
-        try { localStorage.setItem('lyra_cache_training_' + user.uid, JSON.stringify(trainingDB)); } catch (e) {}
-        renderizarTrainingCalendar();
-        renderTrainingList();
-        mostrarHistorial();
-        comprobarAvisosTraining();
-    });
+const user = getCurrentUser();
+if (!user) return;
+const cacheTraining = localStorage.getItem('lyra_cache_training_' + user.uid);
+if (cacheTraining) {
+try { trainingDB = JSON.parse(cacheTraining); renderizarTrainingCalendar(); renderTrainingList(); } catch (e) {}
+}
+onSnapshot(collection(db, 'usuarios', user.uid, 'training'), (s) => {
+trainingDB = s.docs.map(d => ({ id: d.id, ...d.data() }));
+try { localStorage.setItem('lyra_cache_training_' + user.uid, JSON.stringify(trainingDB)); } catch (e) {}
+renderizarTrainingCalendar();
+renderTrainingList();
+mostrarHistorial();
+comprobarAvisosTraining();
+});
 }
 async function migrarReservasAntiguas() {
 const reservasSinCaseta = reservasDB.filter(r => r.tipo === 'hotel' && !r.caseta);
@@ -1037,29 +997,20 @@ console.error('⚠️ Error aplicando permisos (no crítico):', error);
 };
 function setupEventListeners() {
 document.getElementById('formLogin').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-    const password = document.getElementById('loginPassword').value.trim();
-    
-    console.log('🔍 Intentando login con:', email);
-    alert('🔍 Iniciando login con: ' + email); // ESTE ALERT ES CLAVE PARA SABER SI FUNCIONA
-    
-    try {
-        const res = await loginUser(email, password);
-        console.log('📥 Respuesta login:', res);
-        
-        if (!res.success) {
-            alert("⚠️ ERROR: " + res.error);
-            mostrarError(res.error);
-        } else {
-            alert("✅ Login exitoso, cargando app...");
-        }
-    } catch (err) {
-        alert("🔥 ERROR CRÍTICO: " + err.message);
-        console.error("Error crítico:", err);
-    }
-});document.getElementById('linkRegistro').addEventListener('click', (e) => {
+e.preventDefault();
+const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+const password = document.getElementById('loginPassword').value.trim();
+try {
+const res = await loginUser(email, password);
+if (!res.success) {
+mostrarError(res.error);
+}
+} catch (err) {
+console.error("Error crítico:", err);
+mostrarError("Error al iniciar sesión");
+}
+});
+document.getElementById('linkRegistro').addEventListener('click', (e) => {
 e.preventDefault();
 document.getElementById('loginFormContainer').style.display = 'none';
 document.getElementById('registerFormContainer').style.display = 'block';
@@ -1073,7 +1024,6 @@ document.getElementById('btnLogout').addEventListener('click', async () => {
 await logoutUser();
 window.location.reload();
 });
-// 🆕 NUEVO: Guardar pestaña activa al cambiar
 document.querySelectorAll('.tab').forEach(tab => {
 tab.addEventListener('click', () => {
 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1081,7 +1031,6 @@ document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
 tab.classList.add('active');
 const sectionId = tab.getAttribute('data-section');
 document.getElementById(sectionId).classList.add('active');
-// 💾 NUEVO: Guardar pestaña activa
 localStorage.setItem('lyra_ultima_pestaña', sectionId);
 if (sectionId === 'hotel') { mostrarCalendario(); mostrarReservasActivas(); }
 if (sectionId === 'adiestramiento') { renderizarTrainingCalendar(); renderTrainingList(); }
