@@ -900,8 +900,9 @@ async function cargarConfiguracionInicial() {
         currentConfig = res.config;
         initLyraUI();
     }
-}}
-function initLyraUI() {
+} // ✅ SOLO UNA LLAVE. ASÍ ESTÁ BIEN.
+
+function initLyraUI() {function initLyraUI() {
 if (!currentConfig) return;
 const cfg = currentConfig;
 const sel = document.getElementById('hotelCasetaSelect');
