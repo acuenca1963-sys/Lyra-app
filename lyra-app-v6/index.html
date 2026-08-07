@@ -745,6 +745,8 @@ body * { visibility: hidden; }
 </div>
 <div class="sync-status"><div class="sync-dot"></div><span>Sincronizado</span></div>
 </div>
+
+<!-- MODALES -->
 <div id="modalReservasPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalReservasPerro">&times;</span><h2 id="modalReservasPerroTitle" style="color:#334155;margin-bottom:20px;">📅 Reservas del Perro</h2><div id="modalReservasPerroContent"></div></div></div>
 <div id="modalTrainingDay" class="modal"><div class="modal-content"><span class="close" data-modal="modalTrainingDay">&times;</span><h2 style="color:#334155;margin-bottom:20px;" id="modalTrainingDayTitle">🎓 Clases del Día</h2><div id="modalTrainingDayContent"></div></div></div>
 <div id="modalPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalPerro">&times;</span><img id="modalFotoPerro" class="foto-perro-grande hidden" src="" alt="Foto"><div id="contenidoPerro"></div><button class="btn btn-print" id="btnImprimirFichaIndividual" style="margin-top: 20px; width: 100%;">🖨️ Imprimir Ficha</button></div></div>
@@ -833,18 +835,29 @@ document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
+// 🛡️ FUNCIÓN initApp CORREGIDA Y LIMPIA (Sin duplicados)
 async function initApp() {
-    window.history.pushState(null, document.title, window.location.href);
+    // 1. BLOQUEO AGRESIVO DEL BOTÓN ATRÁS (Infalible en Firefox y Chrome)
+    for (let i = 0; i < 5; i++) {
+        window.history.pushState({ lyra: true }, '', window.location.href);
+    }
     window.addEventListener('popstate', function (event) {
-        window.history.pushState(null, document.title, window.location.href);
-    });
+        setTimeout(function() { window.history.go(1); }, 0);
+        window.history.pushState({ lyra: true }, '', window.location.href);
+    }, false);
+    window.onpopstate = function (event) {
+        setTimeout(function() { window.history.go(1); }, 0);
+        window.history.pushState({ lyra: true }, '', window.location.href);
+    };
 
+    // 2. REGISTRO DEL SERVICE WORKER (Solo una vez)
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js')
             .then(reg => console.log('✅ SW registrado correctamente'))
             .catch(err => console.log('⚠️ Error al registrar SW:', err));
     }
 
+    // 3. MANEJO DE AUTENTICACIÓN
     initAuthListener(async (isAuth, user) => {
         if (isAuth && user) {
             currentUser = user;
@@ -864,8 +877,10 @@ async function initApp() {
         }
     });
 
+    // 4. CONFIGURAR EVENTOS
     setupEventListeners();
 
+    // 5. DETECCIÓN DE VISIBILIDAD (Al minimizar y volver)
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && currentUser) {
             const ultimaPestaña = localStorage.getItem('lyra_ultima_pestaña');
@@ -1031,7 +1046,7 @@ function setupEventListeners() {
         }
     });
 
-    // ✅ AQUÍ ESTÁ EL ARREGLO: El listener de guardar edición de reserva, FUERA del login, perfectamente formado.
+    // ✅ ARREGLO DEFINITIVO: Listener de guardar edición de reserva, FUERA y separado del login.
     document.getElementById('btnGuardarEdicionReserva').addEventListener('click', async () => {
         const id = document.getElementById('editReservaId').value;
         if (!id || !reservaEditActual) {
@@ -2326,6 +2341,7 @@ async function actualizarPreciosFila(row) {
 }
 
 window.calcularTotalesFactura = () => {
+    let baseTotal = 0;
     const filas = document.querySelectorAll('#listaConceptos tr');
     const conceptos = [];
     filas.forEach(row => {
@@ -2722,7 +2738,7 @@ function calcularEstadisticas() {
 function abrirVentanaImpresion(contenidoHTML) {
     const win = window.open('', '_blank');
     if (!win) {
-        alert('⚠️ El navegador bloqueó la ventana de impresión. Por favor, permite las ventanas emergentes (pop-ups) para este sitio.');
+        alert('⚠️ El navegador bloqueó la ventana de impresión. Por favor, permite las ventanas emergentes (pop-ups) para este sitio (icono con una X roja en la barra de dirección).');
         return;
     }
     win.document.write(contenidoHTML);
