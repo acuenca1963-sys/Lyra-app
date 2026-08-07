@@ -827,11 +827,19 @@ datalist.appendChild(option);
 initApp();
 });
 async function initApp() {
-window.history.pushState(null, document.title, window.location.href);
-window.addEventListener('popstate', function (event) {
-window.history.pushState(null, document.title, window.location.href);
-});
-if ('serviceWorker' in navigator) {
+async function initApp() {
+// 🛡️ BLOQUEO AGRESIVO DEL BOTÓN ATRÁS (funciona en Firefox y Chrome)
+for (let i = 0; i < 5; i++) {
+    history.pushState({ lyra: true }, '', location.href);
+}
+window.addEventListener('popstate', function(event) {
+    setTimeout(function() { history.go(1); }, 0);
+    history.pushState({ lyra: true }, '', location.href);
+}, false);
+window.onpopstate = function(event) {
+    setTimeout(function() { history.go(1); }, 0);
+    history.pushState({ lyra: true }, '', location.href);
+};if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('./service-worker.js')
 .then(reg => console.log('✅ SW registrado correctamente'))
 .catch(err => console.log('⚠️ Error al registrar SW:', err));
