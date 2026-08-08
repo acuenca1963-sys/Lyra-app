@@ -279,13 +279,36 @@ export async function actualizarReserva(id, data) {
         delete datosLimpios.caseta;
     }
 
-    await updateDoc(reservaRef, datosLimpios);
+       await updateDoc(reservaRef, datosLimpios);
     return { success: true, message: 'Reserva actualizada' };
   } catch (error) {
     console.error('Error actualizando reserva:', error);
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Marca clases/días como completados
+ */
+export async function marcarCompletada(id, cantidad) {
+  try {
+    const reservasPath = getReservasPath();
+    const reservaRef = doc(db, reservasPath, id);
+    const docSnap = await getDoc(reservaRef);
+    
+    if (!docSnap.exists()) throw new Error('Reserva no encontrada');
+    
+    const data = docSnap.data();
+    const nuevasCompletadas = Math.min(data.completadas + cantidad, data.total);
+    
+    await updateDoc(reservaRef, { completadas: nuevasCompletadas });
+    return { success: true, completadas: nuevasCompletadas };
+  } catch (error) {
+    console.error('Error marcando completada:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 /**
  * Elimina una reserva
  */
