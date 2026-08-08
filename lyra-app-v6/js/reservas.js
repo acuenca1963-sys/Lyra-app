@@ -231,58 +231,61 @@ export async function obtenerReservas() {
 }
 
 /**
- * Actualiza una reserva existente
+ * Actualiza una reserva existente (Lyra Fix: Sanitización y Caseta)
  */
 export async function actualizarReserva(id, data) {
   try {
     const reservasPath = getReservasPath();
     const reservaRef = doc(db, reservasPath, id);
     
-    // Si cambian las fechas y es hotel, recalcular caseta si es necesario
-    if (data.tipo === 'hotel' && (data.inicio || data.fin)) {
-      const docSnap = await getDoc(reservaRef);
-      if (docSnap.exists()) {
-        const oldData = docSnap.data();
-        const nuevaEntrada = data.inicio || oldData.inicio;
-        const nuevaSalida = data.fin || oldData.fin;
-        
-        if (!data.caseta) { // Si no se especifica caseta manual, buscar libre
-          const casetaLibre = await encontrarCasetaLibre(nuevaEntrada, nuevaSalida, id);
-          if (casetaLibre) data.caseta = casetaLibre.numero;
-        }
+    // 1. Limpiar datos antes de enviar a Firestore
+    const datosLimpios = { ...data };
+    
+    // Eliminar undefined, NaN o strings vacíos críticos
+    Object.keys(datosLimpios).forEach(key => {
+      if (datosLimpios[key] === undefined || datosLimpios[key] === null) {
+        delete datosLimpios[key];
       }
+      if (typeof datosLimpios[key] === 'number' && isNaN(datosLimpios[key])) {
+        delete datosLimpios[key];
+      }
+    });
+
+    // 2. Gestión de Caseta (Solo Hotel)
+    if (datosLimpios.tipo === 'hotel') {
+        // Si viene caseta manual, asegurar que es número
+        if (datosLimpios.caseta) {
+            datosLimpios.caseta = parseInt(datosLimpios.caseta);
+        }
+        
+        // Si cambian fechas y no hay caseta, buscar una libre
+        if ((datosLimpios.inicio || datosLimpios.fin) && !datosLimpios.caseta) {
+             const docSnap = await getDoc(reservaRef);
+             if (docSnap.exists()) {
+                 const oldData = docSnap.data();
+                 const nuevaEntrada = datosLimpios.inicio || oldData.inicio;
+                 const nuevaSalida = datosLimpios.fin || oldData.fin;
+                 
+                 const casetaLibre = await encontrarCasetaLibre(nuevaEntrada, nuevaSalida, id);
+                 if (casetaLibre) {
+                     datosLimpios.caseta = casetaLibre.numero;
+                 } else if (oldData.caseta) {
+                     datosLimpios.caseta = oldData.caseta; // Mantener la antigua si no hay hueco
+                 }
+             }
+        }
+    } else {
+        // Si no es hotel, borramos la caseta para no guardar basura
+        delete datosLimpios.caseta;
     }
 
-    await updateDoc(reservaRef, data);
+    await updateDoc(reservaRef, datosLimpios);
     return { success: true, message: 'Reserva actualizada' };
   } catch (error) {
     console.error('Error actualizando reserva:', error);
     return { success: false, error: error.message };
   }
 }
-
-/**
- * Marca clases/días como completados
- */
-export async function marcarCompletada(id, cantidad) {
-  try {
-    const reservasPath = getReservasPath();
-    const reservaRef = doc(db, reservasPath, id);
-    const docSnap = await getDoc(reservaRef);
-    
-    if (!docSnap.exists()) throw new Error('Reserva no encontrada');
-    
-    const data = docSnap.data();
-    const nuevasCompletadas = Math.min(data.completadas + cantidad, data.total);
-    
-    await updateDoc(reservaRef, { completadas: nuevasCompletadas });
-    return { success: true, completadas: nuevasCompletadas };
-  } catch (error) {
-    console.error('Error marcando completada:', error);
-    return { success: false, error: error.message };
-  }
-}
-
 /**
  * Elimina una reserva
  */
@@ -321,5 +324,49 @@ export async function obtenerOcupacion(fecha) {
   } catch (error) {
     console.error('Error obteniendo ocupación:', error);
     return { ocupadas: 0, total: 15, porcentaje: 0 };
+  }
+}
+/**
+ * Añade un perro a un grupo existente (misma caseta y fechas)
+ */
+export async function añadirPerroAGrupo(idReservaBase, idNuevoPerro) {
+  try {
+    const reservasPath = getReservasPath();
+    const baseRef = doc(db, reservasPath, idReservaBase);
+    const baseSnap = await getDoc(baseRef);
+    
+    if (!baseSnap.exists()) throw new Error('Reserva base no encontrada');
+    const baseData = baseSnap.data();
+
+    // Obtener datos del nuevo perro
+    const user = getCurrentUser();
+    const perroRef = doc(db, `usuarios/${user.uid}/perros`, idNuevoPerro);
+    const perroSnap = await getDoc(perroRef);
+    if (!perroSnap.exists()) throw new Error('Perro no encontrado');
+    const perro = perroSnap.data();
+
+    // Crear la nueva reserva clonada (mismas fechas, caseta y precio base)
+    const nuevaReserva = {
+      ...baseData,
+      idPerro: idNuevoPerro,
+      nombrePerro: perro.nombrePerro,
+      nombreDueno: perro.nombreDueno,
+      telefono: perro.telefono || '',
+      // Asegurar que el grupoId exista
+      grupoId: baseData.grupoId || `grupo-${idReservaBase}`,
+      fechaCreacion: new Date().toISOString()
+    };
+    
+    // Si la reserva base no tenía grupoId (era individual), la actualizamos para vincularlas
+    if (!baseData.grupoId) {
+        await updateDoc(baseRef, { grupoId: nuevaReserva.grupoId });
+    }
+
+    const docRef = await addDoc(collection(db, reservasPath), nuevaReserva);
+    
+    return { success: true, id: docRef.id, message: `Perro añadido a la caseta ${baseData.caseta}` };
+  } catch (error) {
+    console.error('Error añadiendo perro al grupo:', error);
+    return { success: false, error: error.message };
   }
 }
