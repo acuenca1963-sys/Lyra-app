@@ -1628,7 +1628,8 @@ window.verPerro = async (id) => {
     
     document.getElementById('modalPerro').style.display = 'block';
 };
-};window.eliminarPerro = async (id) => {
+
+window.eliminarPerro = async (id) => {
     if (confirm('¿Eliminar?')) {
         await eliminarFotoFirebase(id);
         const res = await eliminarPerro(id);
