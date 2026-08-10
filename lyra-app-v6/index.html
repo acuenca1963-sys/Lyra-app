@@ -1053,19 +1053,45 @@ window.aplicarPermisosUI = async () => {
 
 function setupEventListeners() {
     document.getElementById('formLogin').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-        const password = document.getElementById('loginPassword').value.trim();
-        try {
-            const res = await loginUser(email, password);
-            if (!res.success) {
-                mostrarError(res.error);
-            }
-        } catch (err) {
-            console.error("Error crítico:", err);
-            mostrarError("Error al iniciar sesión");
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const password = document.getElementById('loginPassword').value.trim();
+    const btnSubmit = e.target.querySelector('button[type="submit"]');
+    
+    console.log('🔵 [LOGIN] Botón pulsado');
+    console.log('🔵 [LOGIN] Email:', email);
+    console.log('🔵 [LOGIN] Password length:', password.length);
+    
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = '⏳ Conectando...';
+    
+    try {
+        // Timeout de 15 segundos
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout: Firebase no responde en 15s')), 15000)
+        );
+        
+        console.log('🔵 [LOGIN] Llamando a loginUser()...');
+        const loginPromise = loginUser(email, password);
+        
+        const res = await Promise.race([loginPromise, timeoutPromise]);
+        
+        console.log('🔵 [LOGIN] Respuesta recibida:', res);
+        
+        if (!res.success) {
+            console.log('🔴 [LOGIN] Error:', res.error);
+            mostrarError(res.error);
+        } else {
+            console.log('✅ [LOGIN] Éxito');
         }
-    });
+    } catch (err) {
+        console.error('🔴 [LOGIN] Error crítico:', err);
+        mostrarError('Error: ' + (err.message || 'desconocido'));
+    } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = '🔐 Iniciar Sesión';
+    }
+});
 
     // ✅ ARREGLO DEFINITIVO: Listener de guardar edición de reserva, FUERA y separado del login.
    // ✅ LISTENER GUARDAR EDICIÓN DE RESERVA - CÓDIGO COMPLETO CORREGIDO
