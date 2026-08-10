@@ -3044,6 +3044,36 @@ window.guardarNuevaPassUI = async () => {
 };
 
 window.cerrarModal = (id) => { document.getElementById(id).style.display = 'none'; };
+// ✅ LISTENER AÑADIR PERRO AL GRUPO (movido aquí para evitar crash en móvil)
+const btnAñadirGrupo = document.getElementById('btnAñadirPerroGrupo');
+if (btnAñadirGrupo) {
+btnAñadirGrupo.addEventListener('click', async () => {
+const select = document.getElementById('selectPerroAñadir');
+const idPerro = select ? select.value : '';
+if (!idPerro) return alert('Selecciona un perro para añadir.');
+if (!reservaEditActual) return alert('No hay ninguna reserva abierta.');
+btnAñadirGrupo.disabled = true;
+btnAñadirGrupo.textContent = 'Añadiendo...';
+try {
+const resultado = await añadirPerroAGrupo(reservaEditActual.id, idPerro);
+if (resultado.success) {
+alert(`✅ ${resultado.message}`);
+mostrarReservas();
+actualizarStats();
+mostrarCalendario();
+if (select) select.value = "";
+} else {
+alert(`❌ Error: ${resultado.error}`);
+}
+} catch (err) {
+console.error('Error añadiendo perro al grupo:', err);
+alert('❌ Error: ' + err.message);
+} finally {
+btnAñadirGrupo.disabled = false;
+btnAñadirGrupo.textContent = 'Añadir';
+}
+});
+}
 window.calcularPrecioReservaUI = window.calcularPrecioReserva;
 window.calcularTotalesFacturaUI = window.calcularTotalesFactura;
 window.crearReservaUI = window.crearReserva;
@@ -3079,32 +3109,6 @@ else {
     });
 }
 
-// LYRA: Listener para el botón de añadir perro al grupo
-document.getElementById('btnAñadirPerroGrupo').addEventListener('click', async () => {
-    const select = document.getElementById('selectPerroAñadir');
-    const idPerro = select.value;
-    
-    if (!idPerro) return alert('Selecciona un perro para añadir.');
-    if (!reservaEditActual) return alert('No hay ninguna reserva abierta.');
-
-    const btn = document.getElementById('btnAñadirPerroGrupo');
-    const textoOriginal = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Añadiendo...';
-
-    const resultado = await añadirPerroAGrupo(reservaEditActual.id, idPerro);
-
-    if (resultado.success) {
-        alert(`✅ ${resultado.message}`);
-        await cargarReservas(); // Refrescar la lista principal
-        select.value = ""; // Limpiar select
-    } else {
-        alert(`❌ Error: ${resultado.error}`);
-    }
-
-    btn.disabled = false;
-    btn.textContent = textoOriginal;
-});
-</script>
+// ✅ MOVIDO DENTRO DE setupEventListeners() - Ver cambio 2</script>
 </body>
 </html>
