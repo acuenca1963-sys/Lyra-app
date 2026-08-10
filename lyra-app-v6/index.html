@@ -1120,7 +1120,11 @@ function setupEventListeners() {
       if (resultado.success) {
           alert('✅ Reserva actualizada correctamente');
           document.getElementById('modalEditarReserva').style.display = 'none';
-          await cargarReservas(); 
+          mostrarReservas();
+actualizarStats();
+mostrarCalendario();
+mostrarReservasActivas();
+actualizarOcupacion(); 
       } else {
           alert(`❌ Error: ${resultado.error}`);
       }
