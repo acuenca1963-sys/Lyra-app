@@ -1064,7 +1064,7 @@ function setupEventListeners() {
   const tipo = document.getElementById('editReservaTipo').value;
   const inicio = document.getElementById('editReservaInicio').value;
   const fin = document.getElementById('editReservaFin').value;
-  const dias = parseInt(document.getElementById('editReservaDias').textContent);
+  const dias = Math.max(1, Math.ceil((new Date(fin) - new Date(inicio)) / (1000 * 60 * 60 * 24)) + 1);
   const precioInput = document.getElementById('editReservaPrecio').value;
   const precio = precioInput === '' ? 0 : parseFloat(precioInput);
   const casetaInput = document.getElementById('editReservaCaseta').value;
