@@ -233,15 +233,18 @@ export async function obtenerReservas() {
 /**
  * Actualiza una reserva existente (Lyra Fix: Sanitización y Caseta)
  */
+/**
+ * Actualiza una reserva existente - CÓDIGO COMPLETO CORREGIDO
+ */
 export async function actualizarReserva(id, data) {
   try {
     const reservasPath = getReservasPath();
     const reservaRef = doc(db, reservasPath, id);
-    
+
     // 1. Limpiar datos antes de enviar a Firestore
     const datosLimpios = { ...data };
-    
-    // Eliminar undefined, NaN o strings vacíos críticos
+
+    // Eliminar undefined, null y NaN
     Object.keys(datosLimpios).forEach(key => {
       if (datosLimpios[key] === undefined || datosLimpios[key] === null) {
         delete datosLimpios[key];
@@ -250,6 +253,44 @@ export async function actualizarReserva(id, data) {
         delete datosLimpios[key];
       }
     });
+
+    // 2. Gestión de Caseta (Solo Hotel)
+    if (datosLimpios.tipo === 'hotel') {
+      // Si viene caseta manual, asegurar que es número
+      if (datosLimpios.caseta) {
+        datosLimpios.caseta = parseInt(datosLimpios.caseta);
+      }
+
+      // Si cambian fechas y no hay caseta, buscar una libre
+      if ((datosLimpios.inicio || datosLimpios.fin) && !datosLimpios.caseta) {
+        const docSnap = await getDoc(reservaRef);
+        if (docSnap.exists()) {
+          const oldData = docSnap.data();
+          const nuevaEntrada = datosLimpios.inicio || oldData.inicio;
+          const nuevaSalida = datosLimpios.fin || oldData.fin;
+
+          const casetaLibre = await encontrarCasetaLibre(nuevaEntrada, nuevaSalida, id);
+          if (casetaLibre) {
+            datosLimpios.caseta = casetaLibre.numero;
+          } else if (oldData.caseta) {
+            // Mantener la caseta anterior si no hay hueco
+            datosLimpios.caseta = oldData.caseta;
+          }
+        }
+      }
+    } else {
+      // Si no es hotel, eliminar caseta para no guardar basura
+      delete datosLimpios.caseta;
+    }
+
+    // 3. Actualizar en Firestore
+    await updateDoc(reservaRef, datosLimpios);
+    return { success: true, message: 'Reserva actualizada' };
+  } catch (error) {
+    console.error('Error actualizando reserva:', error);
+    return { success: false, error: error.message };
+  }
+}
 
     // 2. Gestión de Caseta (Solo Hotel)
     if (datosLimpios.tipo === 'hotel') {
