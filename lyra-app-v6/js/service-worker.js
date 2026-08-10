@@ -74,17 +74,10 @@ self.addEventListener('fetch', (event) => {
       url.includes('/Listen/channel') ||  // Canal de escucha Firestore
       url.includes('/rpc');  // Llamadas RPC de Firestore
       
-  if (urlEsCritica) {
-    // Siempre desde la red, sin caché, sin fallback
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        // Si falla la red, devolvemos error limpio (no intentamos caché)
-        return new Response('Offline - Firebase requiere conexión', { 
-          status: 503, 
-          statusText: 'Service Unavailable' 
-        });
-      })
-    );
+    if (urlEsCritica) {
+    // 🔇 PASSTHROUGH: El SW no toca estas URLs. El navegador las gestiona directamente.
+    // Esto evita errores falsos en consola cuando Firebase reconecta o el token expira.
+    event.respondWith(fetch(event.request));
     return;
   }
 
