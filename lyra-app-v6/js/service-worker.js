@@ -1,5 +1,5 @@
 // lyra-app-v6/service-worker.js
-const CACHE_NAME = 'lyra-app-v6-cache-v3'; // Cambiado a v3 para forzar actualización
+const CACHE_NAME = 'lyra-app-v6-cache-v4'; // v4: Network-First para JS
 
 // Archivos a cachear (SIN index.html ni auth.js - esos siempre se descargan frescos)
 const urlsToCache = [
@@ -22,7 +22,7 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      console.log('✅ Cache v3 abierto');
+      console.log('✅ Cache v4 abierto');
       for (const url of urlsToCache) {
         try {
           const response = await fetch(url);
@@ -60,20 +60,59 @@ self.addEventListener('fetch', (event) => {
   // NUNCA cachear estas URLs críticas (siempre desde la red)
   const url = event.request.url;
   
-  if (url.includes('firebaseio.com') || 
-      url.includes('googleapis.com') ||
+    // 🚨 LISTA NEGRO: URLs que NUNCA deben pasar por caché del Service Worker
+  const urlEsCritica = 
+      url.includes('firebaseio.com') || 
+      url.includes('firestore.googleapis.com') ||  // Firestore en tiempo real
+      url.includes('securetoken.googleapis.com') || // Tokens Firebase Auth
       url.includes('identitytoolkit.googleapis.com') ||
       url.includes('graph.facebook.com') ||
       url.includes('corsproxy.io') ||
-      url.includes('index.html') ||
-      url.includes('auth.js') ||
-      url.includes('empleados.js')) {
-    // Siempre desde la red, sin caché
-    event.respondWith(fetch(event.request));
+      url.endsWith('index.html') ||
+      url.endsWith('auth.js') ||
+      url.endsWith('empleados.js') ||
+      url.includes('/Listen/channel') ||  // Canal de escucha Firestore
+      url.includes('/rpc');  // Llamadas RPC de Firestore
+      
+  if (urlEsCritica) {
+    // Siempre desde la red, sin caché, sin fallback
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        // Si falla la red, devolvemos error limpio (no intentamos caché)
+        return new Response('Offline - Firebase requiere conexión', { 
+          status: 503, 
+          statusText: 'Service Unavailable' 
+        });
+      })
+    );
     return;
   }
 
-  // Para el resto, caché normal
+    // 🚨 NETWORK-FIRST PARA ARCHIVOS JS (Arregla el bug en móvil)
+  if (url.endsWith('.js') || url.includes('.js?')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Si la red funciona, actualizamos caché y devolvemos versión fresca
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Si falla la red (offline), servimos desde caché
+          return caches.match(event.request).then((response) => {
+            return response || new Response('Sin conexión JS', { status: 503 });
+          });
+        })
+    );
+    return;
+  }
+
+  // Para el resto (imágenes, CSS), caché normal
   event.respondWith(
     caches.match(event.request).then((response) => {
       if (response) return response;
