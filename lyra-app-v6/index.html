@@ -862,11 +862,21 @@ async function initApp() {
     };
 
     // 2. REGISTRO DEL SERVICE WORKER (Solo una vez)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js')
-            .then(reg => console.log('✅ SW registrado correctamente'))
-            .catch(err => console.log('⚠️ Error al registrar SW:', err));
-    }
+   if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('./service-worker.js')
+.then(reg => {
+console.log('✅ SW registrado correctamente');
+reg.update(); // Forzar comprobación de nueva versión SIEMPRE
+})
+.catch(err => console.log('⚠️ Error al registrar SW:', err));
+
+// Si hay un SW viejo controlando esta página, matarlo inmediatamente
+navigator.serviceWorker.getRegistration().then(reg => {
+if (reg && reg.active && reg.active.scriptURL.includes('service-worker')) {
+reg.update();
+}
+});
+}
 
     // 3. MANEJO DE AUTENTICACIÓN
     initAuthListener(async (isAuth, user) => {
