@@ -27,7 +27,6 @@ async function obtenerConfiguracion() {
     if (configDoc.exists()) {
       return configDoc.data();
     }
-    // Valores por defecto si no hay config
     return {
       totalKennels: 15,
       kennelPrefix: 'C-',
@@ -54,7 +53,7 @@ async function obtenerPerrosParaPrecios() {
 }
 
 /**
- * Calcula el precio de una reserva (exacta lógica de v5.17)
+ * Calcula el precio de una reserva
  */
 export async function calcularPrecioReserva(tipo, inicio, fin, idPerro) {
   try {
@@ -64,11 +63,9 @@ export async function calcularPrecioReserva(tipo, inicio, fin, idPerro) {
     
     let precioBase = 0;
     
-    // 1. Comprobar precio personalizado del perro
     if (perro && perro.precioPersonalizado && perro.precioPersonalizado > 0) {
       precioBase = parseFloat(perro.precioPersonalizado);
     } else {
-      // 2. Usar precio general de la config
       if (tipo === 'hotel') precioBase = config.prices.hotel;
       else if (tipo === 'guarderia') precioBase = config.prices.guarderia;
       else if (tipo === 'clase-suelta') precioBase = config.prices.claseSuelta;
@@ -76,7 +73,6 @@ export async function calcularPrecioReserva(tipo, inicio, fin, idPerro) {
       else if (tipo === 'pack-20') precioBase = config.prices.pack20;
     }
 
-    // 3. Calcular total según tipo
     if (tipo === 'hotel' || tipo === 'guarderia') {
       if (!inicio || !fin) return 0;
       const dias = Math.ceil((new Date(fin) - new Date(inicio)) / (1000 * 60 * 60 * 24)) + 1;
@@ -91,7 +87,7 @@ export async function calcularPrecioReserva(tipo, inicio, fin, idPerro) {
 }
 
 /**
- * Encuentra una caseta libre (exacta lógica de v5.17)
+ * Encuentra una caseta libre
  */
 export async function encontrarCasetaLibre(entrada, salida, excluirId = null) {
   const config = await obtenerConfiguracion();
@@ -132,18 +128,15 @@ export async function crearReserva(data, idsPerrosGrupo = []) {
     
     if (!perroPrincipal) throw new Error('Perro principal no encontrado');
 
-    // Calcular días
     const dias = (data.tipo === 'hotel' || data.tipo === 'guarderia') 
       ? Math.ceil((new Date(data.fin) - new Date(data.inicio)) / (1000 * 60 * 60 * 24)) + 1 
       : 1;
 
-    // Calcular precio final
     let precioFinal = data.precio;
     if (!precioFinal || precioFinal === 0) {
       precioFinal = await calcularPrecioReserva(data.tipo, data.inicio, data.fin, data.idPerro);
     }
 
-    // Asignar caseta si es hotel
     let casetaAsignada = data.caseta || null;
     if (data.tipo === 'hotel' && !casetaAsignada) {
       const casetaLibre = await encontrarCasetaLibre(data.inicio, data.fin);
@@ -174,7 +167,6 @@ export async function crearReserva(data, idsPerrosGrupo = []) {
     const reservasPath = getReservasPath();
     const docRef = await addDoc(collection(db, reservasPath), reservaPrincipal);
 
-    // Crear reservas para los perros del grupo
     const idsCreados = [docRef.id];
     
     if (idsPerrosGrupo.length > 0) {
@@ -187,7 +179,7 @@ export async function crearReserva(data, idsPerrosGrupo = []) {
             nombrePerro: perroGrupo.nombrePerro,
             nombreDueno: perroGrupo.nombreDueno,
             telefono: perroGrupo.telefono || '',
-            caseta: casetaAsignada, // Misma caseta
+            caseta: casetaAsignada,
             grupoId: grupoId
           };
           const docRefGrupo = await addDoc(collection(db, reservasPath), reservaGrupo);
@@ -231,20 +223,15 @@ export async function obtenerReservas() {
 }
 
 /**
- * Actualiza una reserva existente (Lyra Fix: Sanitización y Caseta)
- */
-/**
- * Actualiza una reserva existente - CÓDIGO COMPLETO CORREGIDO
+ * Actualiza una reserva existente
  */
 export async function actualizarReserva(id, data) {
   try {
     const reservasPath = getReservasPath();
     const reservaRef = doc(db, reservasPath, id);
 
-    // 1. Limpiar datos antes de enviar a Firestore
     const datosLimpios = { ...data };
 
-    // Eliminar undefined, null y NaN
     Object.keys(datosLimpios).forEach(key => {
       if (datosLimpios[key] === undefined || datosLimpios[key] === null) {
         delete datosLimpios[key];
@@ -254,73 +241,31 @@ export async function actualizarReserva(id, data) {
       }
     });
 
-    // 2. Gestión de Caseta (Solo Hotel)
     if (datosLimpios.tipo === 'hotel') {
-      // Si viene caseta manual, asegurar que es número
       if (datosLimpios.caseta) {
         datosLimpios.caseta = parseInt(datosLimpios.caseta);
       }
 
-      // Si cambian fechas y no hay caseta, buscar una libre
       if ((datosLimpios.inicio || datosLimpios.fin) && !datosLimpios.caseta) {
         const docSnap = await getDoc(reservaRef);
         if (docSnap.exists()) {
           const oldData = docSnap.data();
           const nuevaEntrada = datosLimpios.inicio || oldData.inicio;
           const nuevaSalida = datosLimpios.fin || oldData.fin;
-
+          
           const casetaLibre = await encontrarCasetaLibre(nuevaEntrada, nuevaSalida, id);
           if (casetaLibre) {
             datosLimpios.caseta = casetaLibre.numero;
           } else if (oldData.caseta) {
-            // Mantener la caseta anterior si no hay hueco
             datosLimpios.caseta = oldData.caseta;
           }
         }
       }
     } else {
-      // Si no es hotel, eliminar caseta para no guardar basura
       delete datosLimpios.caseta;
     }
 
-    // 3. Actualizar en Firestore
     await updateDoc(reservaRef, datosLimpios);
-    return { success: true, message: 'Reserva actualizada' };
-  } catch (error) {
-    console.error('Error actualizando reserva:', error);
-    return { success: false, error: error.message };
-  }
-}
-
-    // 2. Gestión de Caseta (Solo Hotel)
-    if (datosLimpios.tipo === 'hotel') {
-        // Si viene caseta manual, asegurar que es número
-        if (datosLimpios.caseta) {
-            datosLimpios.caseta = parseInt(datosLimpios.caseta);
-        }
-        
-        // Si cambian fechas y no hay caseta, buscar una libre
-        if ((datosLimpios.inicio || datosLimpios.fin) && !datosLimpios.caseta) {
-             const docSnap = await getDoc(reservaRef);
-             if (docSnap.exists()) {
-                 const oldData = docSnap.data();
-                 const nuevaEntrada = datosLimpios.inicio || oldData.inicio;
-                 const nuevaSalida = datosLimpios.fin || oldData.fin;
-                 
-                 const casetaLibre = await encontrarCasetaLibre(nuevaEntrada, nuevaSalida, id);
-                 if (casetaLibre) {
-                     datosLimpios.caseta = casetaLibre.numero;
-                 } else if (oldData.caseta) {
-                     datosLimpios.caseta = oldData.caseta; // Mantener la antigua si no hay hueco
-                 }
-             }
-        }
-    } else {
-        // Si no es hotel, borramos la caseta para no guardar basura
-        delete datosLimpios.caseta;
-    }
-
-       await updateDoc(reservaRef, datosLimpios);
     return { success: true, message: 'Reserva actualizada' };
   } catch (error) {
     console.error('Error actualizando reserva:', error);
@@ -365,7 +310,7 @@ export async function eliminarReserva(id) {
 }
 
 /**
- * Obtiene la ocupación del hotel para una fecha específica (para el calendario)
+ * Obtiene la ocupación del hotel para una fecha específica
  */
 export async function obtenerOcupacion(fecha) {
   try {
@@ -390,6 +335,7 @@ export async function obtenerOcupacion(fecha) {
     return { ocupadas: 0, total: 15, porcentaje: 0 };
   }
 }
+
 /**
  * Añade un perro a un grupo existente (misma caseta y fechas)
  */
@@ -402,26 +348,22 @@ export async function añadirPerroAGrupo(idReservaBase, idNuevoPerro) {
     if (!baseSnap.exists()) throw new Error('Reserva base no encontrada');
     const baseData = baseSnap.data();
 
-    // Obtener datos del nuevo perro
     const user = getCurrentUser();
     const perroRef = doc(db, `usuarios/${user.uid}/perros`, idNuevoPerro);
     const perroSnap = await getDoc(perroRef);
     if (!perroSnap.exists()) throw new Error('Perro no encontrado');
     const perro = perroSnap.data();
 
-    // Crear la nueva reserva clonada (mismas fechas, caseta y precio base)
     const nuevaReserva = {
       ...baseData,
       idPerro: idNuevoPerro,
       nombrePerro: perro.nombrePerro,
       nombreDueno: perro.nombreDueno,
       telefono: perro.telefono || '',
-      // Asegurar que el grupoId exista
       grupoId: baseData.grupoId || `grupo-${idReservaBase}`,
       fechaCreacion: new Date().toISOString()
     };
     
-    // Si la reserva base no tenía grupoId (era individual), la actualizamos para vincularlas
     if (!baseData.grupoId) {
         await updateDoc(baseRef, { grupoId: nuevaReserva.grupoId });
     }
