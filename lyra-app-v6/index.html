@@ -1564,16 +1564,21 @@ window.verPerro = async (id) => {
     const fotoSrc = p.fotoUrl || p.foto || '';
     const modalFoto = document.getElementById('modalFotoPerro');
     if (fotoSrc) { modalFoto.src = fotoSrc; modalFoto.classList.remove('hidden'); } else { modalFoto.classList.add('hidden'); }
+    
     const edad = p.fechaNacimiento ? calcularEdad(p.fechaNacimiento) : (p.edad || '-');
+    
+    // Historial de reservas
     const reservasPerro = reservasDB.filter(r => r.idPerro === id).sort((a, b) => new Date(b.inicio) - new Date(a.inicio));
     let reservasHTML = '';
     if (reservasPerro.length > 0) {
-        reservasHTML = '<hr><h3 style="color:#334155;margin-top:15px;"> Historial de Reservas</h3>';
+        reservasHTML = '<hr><h3 style="color:#334155;margin-top:15px;">📅 Historial de Reservas</h3>';
         reservasPerro.forEach(r => {
             const isPast = new Date(r.fin) < new Date();
-            reservasHTML += `<div class="reservas-list-item ${isPast ? 'past' : ''}"><div><strong>${r.tipo.toUpperCase()}</strong> | ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)}</div><span class="badge ${isPast ? 'badge-completed' : 'badge-active'}">${isPast ? 'Finalizada' : 'Activa'}</span></div>`;
+            reservasHTML += `<div class="reserva-list-item ${isPast ? 'completada' : 'activa'}"><div><strong>${r.tipo.toUpperCase()}</strong> | ${formatearFecha(r.inicio)} → ${formatearFecha(r.fin)}</div><span class="badge ${isPast ? 'badge-completed' : 'badge-active'}">${isPast ? 'Finalizada' : 'Activa'}</span></div>`;
         });
     }
+    
+    // Salud y Cuidados
     let saludHTML = '';
     if (p.estadoPelo || p.medicacion || p.alergias) {
         saludHTML = `<hr><h3 style="color:#334155;margin-top:15px;">🏥 Salud y Cuidados</h3>`;
@@ -1585,24 +1590,44 @@ window.verPerro = async (id) => {
     if (p.precioPersonalizado && p.precioPersonalizado > 0) {
         saludHTML += `<p style="color:#334155; font-weight:bold;">💶 Tarifa Especial: ${p.precioPersonalizado}€</p>`;
     }
-    // Generar HTML del contrato
-let contratoHTML = '';
-const tieneContrato = p.contrato && p.contrato.firmado;
-if (tieneContrato) {
-const fechaFirmaFmt = new Date(p.contrato.fechaFirma).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-contratoHTML = `<hr><h3 style="color:#334155;margin-top:15px;">📝 Contrato</h3>
-<div class="estado-contrato firmado">✅ Firmado el ${fechaFirmaFmt}</div>
-${p.contrato.firma ? `<div style="margin-top:10px;"><img src="${p.contrato.firma}" class="firma-img"></div>` : ''}
-<div style="margin-top:10px;"><button class="btn btn-info" onclick="abrirModalFirma('${p.id}')">📝 Ver / Firmar de nuevo</button></div>`;
-} else {
-contratoHTML = `<hr><h3 style="color:#334155;margin-top:15px;">📝 Contrato</h3>
-<div class="estado-contrato sin-firmar">❌ Sin firmar</div>
-<div style="margin-top:10px;"><button class="btn btn-success" onclick="abrirModalFirma('${p.id}')" style="width:100%; padding:12px;">📝 Firmar Contrato</button></div>`;
-}
-document.getElementById('contenidoPerro').innerHTML = `<h2>🐕 ${p.nombrePerro}</h2><p><strong>Raza:</strong> ${p.raza || '-'}</p><p><strong>Edad:</strong> ${edad}</p><p><strong>Fecha Nacimiento:</strong> ${formatearFecha(p.fechaNacimiento)}</p><p><strong>Microchip:</strong> ${p.microchip || '-'}</p><p><strong>Pasaporte:</strong> ${p.pasaporte || '-'}</p><p><strong>Dueño:</strong> ${p.nombreDueno}</p><p><strong>Teléfono:</strong> ${p.telefono || '-'}</p><p><strong>Email:</strong> ${p.email || '-'}</p><p><strong>Dirección:</strong> ${p.direccion || '-'}</p><p><strong>DNI Dueño:</strong> ${p.dniDueno || '-'}</p><p><strong>Veterinario:</strong> ${p.veterinario || '-'}</p><p><strong>Notas:</strong> ${p.notas || '-'}</p>${saludHTML}${contratoHTML}${reservasHTML}`;
-document.getElementById('modalPerro').style.display = 'block';
-};
-window.eliminarPerro = async (id) => {
+    
+    // Contrato
+    let contratoHTML = '';
+    const tieneContrato = p.contrato && p.contrato.firmado;
+    if (tieneContrato) {
+        const fechaFirmaFmt = new Date(p.contrato.fechaFirma).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        contratoHTML = `<hr><h3 style="color:#334155;margin-top:15px;">📝 Contrato</h3>
+        <div class="estado-contrato firmado">✅ Firmado el ${fechaFirmaFmt}</div>
+        ${p.contrato.firma ? `<div style="margin-top:10px;"><img src="${p.contrato.firma}" class="firma-img"></div>` : ''}
+        <div style="margin-top:10px;"><button class="btn btn-info" onclick="abrirModalFirma('${p.id}')">📝 Ver / Firmar de nuevo</button></div>`;
+    } else {
+        contratoHTML = `<hr><h3 style="color:#334155;margin-top:15px;">📝 Contrato</h3>
+        <div class="estado-contrato sin-firmar">❌ Sin firmar</div>
+        <div style="margin-top:10px;"><button class="btn btn-success" onclick="abrirModalFirma('${p.id}')" style="width:100%; padding:12px;">📝 Firmar Contrato</button></div>`;
+    }
+
+    // INYECCIÓN DE HTML LIMPIO (Sin basura repetida)
+    document.getElementById('contenidoPerro').innerHTML = `
+        <h2>🐕 ${p.nombrePerro}</h2>
+        <p><strong>Raza:</strong> ${p.raza || '-'}</p>
+        <p><strong>Edad:</strong> ${edad}</p>
+        <p><strong>Fecha Nacimiento:</strong> ${formatearFecha(p.fechaNacimiento)}</p>
+        <p><strong>Microchip:</strong> ${p.microchip || '-'}</p>
+        <p><strong>Pasaporte:</strong> ${p.pasaporte || '-'}</p>
+        <p><strong>Dueño:</strong> ${p.nombreDueno}</p>
+        <p><strong>Teléfono:</strong> ${p.telefono || '-'}</p>
+        <p><strong>Email:</strong> ${p.email || '-'}</p>
+        <p><strong>Dirección:</strong> ${p.direccion || '-'}</p>
+        <p><strong>DNI Dueño:</strong> ${p.dniDueno || '-'}</p>
+        <p><strong>Veterinario:</strong> ${p.veterinario || '-'}</p>
+        <p><strong>Notas:</strong> ${p.notas || '-'}</p>
+        ${saludHTML}
+        ${contratoHTML}
+        ${reservasHTML}
+    `;
+    
+    document.getElementById('modalPerro').style.display = 'block';
+};};window.eliminarPerro = async (id) => {
     if (confirm('¿Eliminar?')) {
         await eliminarFotoFirebase(id);
         const res = await eliminarPerro(id);
