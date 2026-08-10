@@ -1625,9 +1625,8 @@ window.verPerro = async (id) => {
         ${contratoHTML}
         ${reservasHTML}
     `;
-    
-    document.getElementById('modalPerro').style.display = 'block';
-};};window.eliminarPerro = async (id) => {
+        document.getElementById('modalPerro').style.display = 'block';
+};window.eliminarPerro = async (id) => {
     if (confirm('¿Eliminar?')) {
         await eliminarFotoFirebase(id);
         const res = await eliminarPerro(id);
