@@ -1058,79 +1058,77 @@ function setupEventListeners() {
     });
 
     // ✅ ARREGLO DEFINITIVO: Listener de guardar edición de reserva, FUERA y separado del login.
-   document.getElementById('btnGuardarEdicionReserva').addEventListener('click', async () => {
+   // ✅ LISTENER GUARDAR EDICIÓN DE RESERVA - CÓDIGO COMPLETO CORREGIDO
+document.getElementById('btnGuardarEdicionReserva').addEventListener('click', async () => {
   if (!reservaEditActual) return;
 
   const tipo = document.getElementById('editReservaTipo').value;
   const inicio = document.getElementById('editReservaInicio').value;
   const fin = document.getElementById('editReservaFin').value;
-  const dias = Math.max(1, Math.ceil((new Date(fin) - new Date(inicio)) / (1000 * 60 * 60 * 24)) + 1);
   const precioInput = document.getElementById('editReservaPrecio').value;
   const precio = precioInput === '' ? 0 : parseFloat(precioInput);
   const casetaInput = document.getElementById('editReservaCaseta').value;
   const notas = document.getElementById('editReservaNotas').value;
 
-  // 1. Validaciones corregidas
-  if (!inicio || !fin) { 
-      alert('❌ Las fechas son obligatorias'); 
-      return; 
+  // 1. Validaciones
+  if (!inicio || !fin) {
+    alert('❌ Las fechas son obligatorias');
+    return;
   }
-  // CORRECCIÓN CRÍTICA: Usar < en lugar de <= para permitir reservas de 1 día
-  if (new Date(fin) < new Date(inicio)) { 
-      alert('❌ La fecha de fin no puede ser anterior a la de inicio'); 
-      return; 
+  if (new Date(fin) < new Date(inicio)) {
+    alert('❌ La fecha de fin no puede ser anterior a la de inicio');
+    return;
   }
   if (isNaN(precio) || precio < 0) {
-      alert('❌ El precio no puede ser negativo');
-      return;
-  }
-  if (isNaN(dias) || dias < 1) {
-      alert('❌ El número de días/sesiones no es válido');
-      return;
+    alert('❌ El precio no puede ser negativo');
+    return;
   }
 
-  // 2. Preparar datos
-  const datos = { 
-      tipo, 
-      inicio, 
-      fin, 
-      dias, 
-      precio, 
-      notas 
+  // 2. Calcular días desde las fechas (SIN depender de elementos HTML)
+  const dias = Math.max(1, Math.ceil((new Date(fin) - new Date(inicio)) / (1000 * 60 * 60 * 24)) + 1);
+
+  // 3. Preparar datos
+  const datos = {
+    tipo,
+    inicio,
+    fin,
+    dias,
+    precio,
+    notas
   };
 
-  // CORRECCIÓN: Lógica de Total y Caseta
+  // 4. Lógica de Total y Caseta según tipo
   if (tipo === 'hotel' || tipo === 'guarderia') {
-      datos.total = dias;
-      // Caseta: solo enviar si es hotel y tiene valor numérico válido
-      const numCaseta = parseInt(casetaInput);
-      if (!isNaN(numCaseta)) {
-          datos.caseta = numCaseta;
-      }
+    datos.total = dias;
+    const numCaseta = parseInt(casetaInput);
+    if (!isNaN(numCaseta)) {
+      datos.caseta = numCaseta;
+    }
   } else {
-      // Para clases/packs, preservamos el total original (sesiones)
-      datos.total = reservaEditActual.total || 1;
-      // Aseguramos que no se envíe caseta si no es hotel
-      if (datos.caseta) delete datos.caseta; 
+    // Para clases y packs: preservar el total original (sesiones)
+    datos.total = reservaEditActual.total || 1;
+    if (datos.caseta) delete datos.caseta;
   }
 
+  // 5. Guardar
   try {
-      const resultado = await actualizarReserva(reservaEditActual.id, datos);
-      
-      if (resultado.success) {
-          alert('✅ Reserva actualizada correctamente');
-          document.getElementById('modalEditarReserva').style.display = 'none';
-          mostrarReservas();
-actualizarStats();
-mostrarCalendario();
-mostrarReservasActivas();
-actualizarOcupacion(); 
-      } else {
-          alert(`❌ Error: ${resultado.error}`);
-      }
+    const resultado = await actualizarReserva(reservaEditActual.id, datos);
+    if (resultado.success) {
+      alert('✅ Reserva actualizada correctamente');
+      document.getElementById('modalEditarReserva').style.display = 'none';
+      // Refrescar toda la interfaz
+      mostrarReservas();
+      actualizarStats();
+      mostrarCalendario();
+      mostrarReservasActivas();
+      actualizarOcupacion();
+      mostrarHistorial();
+    } else {
+      alert('❌ Error: ' + resultado.error);
+    }
   } catch (error) {
-      console.error("Error guardando:", error);
-      alert("❌ Error crítico al guardar. Revisa la consola.");
+    console.error('Error guardando:', error);
+    alert('❌ Error crítico al guardar. Revisa la consola.');
   }
 });
 
