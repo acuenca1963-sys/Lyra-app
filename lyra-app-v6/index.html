@@ -387,7 +387,16 @@ margin-top: 10px;
 </div>
 <div class="form-group full-width"><label>📋 Detalle de Medicación / Curas:</label><textarea id="detallesMedicacion" rows="2" placeholder="Ej: 1 pastilla azul cada mañana..."></textarea></div>
 <div class="form-group full-width"><label>⚠️ Alergias / Intolerancias:</label><textarea id="alergias" rows="2" placeholder="Ej: Alergia al pollo..."></textarea></div>
+<div class="form-group"><label>🎨 Color:</label><input type="text" id="colorPerro" placeholder="Ej: Marrón y blanco"></div>
+<div class="form-group"><label>📏 Tamaño:</label><select id="tamanoPerro"><option value="">-</option><option value="Pequeño">Pequeño</option><option value="Mediano">Mediano</option><option value="Grande">Grande</option><option value="Gigante">Gigante</option></select></div>
+<div class="form-group"><label>💉 Vacunas al día:</label><select id="vacunasAlDia"><option value="Sí">Sí</option><option value="No">No</option></select></div>
+<div class="form-group"><label>💊 Desparasitación interna:</label><select id="desparasitacionInterna"><option value="Sí">Sí</option><option value="No">No</option></select></div>
+<div class="form-group"><label>🛡️ Desparasitación externa:</label><select id="desparasitacionExterna"><option value="Sí">Sí</option><option value="No">No</option></select></div>
+<div class="form-group"><label>🤧 Tos de las perreras:</label><select id="tosPerreras"><option value="No">No</option><option value="Sí">Sí</option></select></div>
+<div class="form-group"><label>🐕 Acostumbrado a otros perros:</label><select id="contactoOtrosPerros"><option value="Sí">Sí</option><option value="No">No</option></select></div>
+<div class="form-group"><label>⚠️ Conducta agresiva previa:</label><select id="comportamientoAgresivo"><option value="No">No</option><option value="Sí">Sí</option></select></div>
 </div>
+<p style="font-size:12px;color:#64748b;">ℹ️ Los datos sanitarios se usan para rellenar automáticamente el contrato de servicios.</p>
 </div>
 <div class="salud-section" style="border-color: #cbd5e1;">
 <h3>💰 Tarifa Especial (Opcional)</h3>
@@ -789,14 +798,14 @@ margin-top: 10px;
 <button class="btn btn-success" id="btnGuardarEdicionReserva" style="width: 100%;">💾 Guardar Cambios</button>
 </div></div>
 <div id="modalDia" class="modal"><div class="modal-content"><span class="close" data-modal="modalDia">&times;</span><h2 style="color:#334155;margin-bottom:20px;" id="modalDiaTitulo">📅 Reservas del Día</h2><div id="modalDiaContenido"></div></div></div>
-<div id="modalEditarPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalEditarPerro">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Perro</h2><div class="form-grid"><input type="hidden" id="editPerroId"><div class="form-group full-width camera-container"><label>📸 Foto del Perro</label><img id="editFotoPreview" class="foto-perro-grande hidden" src="" alt="Foto"><div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"><button class="btn btn-camera" id="btnCamaraEditar">📸 Usar Cámara</button><input type="file" id="editFotoInputCamara" accept="image/*" capture="environment" style="display: none;"><button class="btn btn-info" id="btnGaleriaEditar">📁 Subir desde Galería</button><input type="file" id="editFotoInputGaleria" accept="image/*" style="display: none;"><button class="btn btn-danger hidden" id="editBtnEliminarFoto">🗑️ Quitar Foto</button></div></div><div class="form-group"><label>🐕 Nombre:</label><input type="text" id="editNombrePerro"></div><div class="form-group"><label>🦴 Raza:</label><input type="text" id="editRaza"></div><div class="form-group"><label>🎂 Fecha Nacimiento:</label><input type="date" id="editFechaNacimiento"></div><div class="form-group"><label>📊 Edad:</label><input type="text" id="editEdad" readonly class="edad-calculada"></div><div class="form-group"><label>⚧ Sexo:</label><select id="editSexo"><option value="">-</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div><div class="form-group"><label> Microchip:</label><input type="text" id="editMicrochip"></div><div class="form-group"><label>📕 Pasaporte:</label><input type="text" id="editPasaporte"></div><div class="form-group"><label> Dueño:</label><input type="text" id="editNombreDueno"></div><div class="form-group"><label>🆔 DNI:</label><input type="text" id="editDniDueno"></div><div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="editTelefono"></div><div class="form-group"><label>📧 Email:</label><input type="email" id="editEmail"></div><div class="form-group half-width"><label>📍 Dirección:</label><input type="text" id="editDireccion"></div><div class="form-group"><label>🏥 Vet:</label><input type="text" id="editVeterinario"></div><div class="form-group full-width"><label>📝 Notas:</label><textarea id="editNotas" rows="2"></textarea></div><div class="salud-section"><h3> Salud y Cuidados</h3><div class="form-grid"><div class="form-group"><label>✨ Estado del Pelo:</label><select id="editEstadoPelo"><option value="Bien">Bien</option><option value="Regular">Regular</option><option value="Mal">Mal</option></select></div><div class="form-group"><label>💊 ¿Medicación?:</label><select id="editMedicacion"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group full-width"><label>📋 Detalle Medicación:</label><textarea id="editDetallesMedicacion" rows="2"></textarea></div><div class="form-group full-width"><label>⚠️ Alergias:</label><textarea id="editAlergias" rows="2"></textarea></div></div></div><div class="salud-section" style="border-color: #cbd5e1;"><h3>💰 Tarifa Especial</h3><div class="form-group full-width"><label>💶 Precio Base (€/día o clase):</label><input type="number" id="editPrecioPersonalizado" step="0.50" placeholder="Dejar vacío para usar precio general"></div></div></div><button class="btn btn-success" id="btnGuardarEdicionPerro">💾 Guardar</button></div></div>
+<div id="modalEditarPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalEditarPerro">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Perro</h2><div class="form-grid"><input type="hidden" id="editPerroId"><div class="form-group full-width camera-container"><label>📸 Foto del Perro</label><img id="editFotoPreview" class="foto-perro-grande hidden" src="" alt="Foto"><div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"><button class="btn btn-camera" id="btnCamaraEditar">📸 Usar Cámara</button><input type="file" id="editFotoInputCamara" accept="image/*" capture="environment" style="display: none;"><button class="btn btn-info" id="btnGaleriaEditar">📁 Subir desde Galería</button><input type="file" id="editFotoInputGaleria" accept="image/*" style="display: none;"><button class="btn btn-danger hidden" id="editBtnEliminarFoto">🗑️ Quitar Foto</button></div></div><div class="form-group"><label>🐕 Nombre:</label><input type="text" id="editNombrePerro"></div><div class="form-group"><label>🦴 Raza:</label><input type="text" id="editRaza"></div><div class="form-group"><label>🎂 Fecha Nacimiento:</label><input type="date" id="editFechaNacimiento"></div><div class="form-group"><label>📊 Edad:</label><input type="text" id="editEdad" readonly class="edad-calculada"></div><div class="form-group"><label>⚧ Sexo:</label><select id="editSexo"><option value="">-</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div><div class="form-group"><label> Microchip:</label><input type="text" id="editMicrochip"></div><div class="form-group"><label>📕 Pasaporte:</label><input type="text" id="editPasaporte"></div><div class="form-group"><label> Dueño:</label><input type="text" id="editNombreDueno"></div><div class="form-group"><label>🆔 DNI:</label><input type="text" id="editDniDueno"></div><div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="editTelefono"></div><div class="form-group"><label>📧 Email:</label><input type="email" id="editEmail"></div><div class="form-group half-width"><label>📍 Dirección:</label><input type="text" id="editDireccion"></div><div class="form-group"><label>🏥 Vet:</label><input type="text" id="editVeterinario"></div><div class="form-group full-width"><label>📝 Notas:</label><textarea id="editNotas" rows="2"></textarea></div><div class="salud-section"><h3> Salud y Cuidados</h3><div class="form-grid"><div class="form-group"><label>✨ Estado del Pelo:</label><select id="editEstadoPelo"><option value="Bien">Bien</option><option value="Regular">Regular</option><option value="Mal">Mal</option></select></div><div class="form-group"><label>💊 ¿Medicación?:</label><select id="editMedicacion"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group full-width"><label>📋 Detalle Medicación:</label><textarea id="editDetallesMedicacion" rows="2"></textarea></div><div class="form-group full-width"><label>⚠️ Alergias:</label><textarea id="editAlergias" rows="2"></textarea></div><div class="form-group"><label>🎨 Color:</label><input type="text" id="editColorPerro"></div><div class="form-group"><label>📏 Tamaño:</label><select id="editTamanoPerro"><option value="">-</option><option value="Pequeño">Pequeño</option><option value="Mediano">Mediano</option><option value="Grande">Grande</option><option value="Gigante">Gigante</option></select></div><div class="form-group"><label>💉 Vacunas al día:</label><select id="editVacunasAlDia"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>💊 Desparasitación interna:</label><select id="editDesparasitacionInterna"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>🛡️ Desparasitación externa:</label><select id="editDesparasitacionExterna"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>🤧 Tos de las perreras:</label><select id="editTosPerreras"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group"><label>🐕 Acostumbrado a otros perros:</label><select id="editContactoOtrosPerros"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>⚠️ Conducta agresiva previa:</label><select id="editComportamientoAgresivo"><option value="No">No</option><option value="Sí">Sí</option></select></div></div></div><div class="salud-section" style="border-color: #cbd5e1;"><h3>💰 Tarifa Especial</h3><div class="form-group full-width"><label>💶 Precio Base (€/día o clase):</label><input type="number" id="editPrecioPersonalizado" step="0.50" placeholder="Dejar vacío para usar precio general"></div></div></div><button class="btn btn-success" id="btnGuardarEdicionPerro">💾 Guardar</button></div></div>
 <div id="modalEditarFactura" class="modal"><div class="modal-content"><span class="close" data-modal="modalEditarFactura">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Factura</h2><input type="hidden" id="editFacturaId"><div class="form-group"><label>Cliente:</label><input type="text" id="editFacturaCliente" readonly></div><div class="form-group"><label>Servicio:</label><input type="text" id="editFacturaServicio"></div><div class="form-group"><label>Total (€):</label><input type="number" id="editFacturaTotal" step="0.01"></div><div class="form-group"><label>Fecha:</label><input type="text" id="editFacturaFecha" readonly></div><button class="btn btn-success" id="btnGuardarEdicionFactura">💾 Guardar</button></div></div>
 <div id="modalConfig" class="modal"><div class="modal-content" style="max-width:600px;"><span class="close" data-modal="modalConfig">&times;</span><h2 style="color:#334155;margin-bottom:20px;">️ Configuración del Hotel</h2><div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px; font-size:16px;">🏢 Datos de Tu Empresa (Para Facturas)</h3><div class="form-group"><label>🖼️ Logo de Tu Empresa:</label><img id="configClientLogoPreview" class="foto-perro-grande hidden" src="" alt="Logo Cliente" style="max-width: 120px; margin: 10px auto; display: block;"><div style="margin-top: 5px; display: flex; gap: 5px; justify-content: center;"><button class="btn btn-info" id="btnSubirLogoConfig"> Subir Logo</button><input type="file" id="configClientLogoInput" accept="image/*" style="display: none;"><button class="btn btn-danger hidden" id="configBtnEliminarClientLogo">🗑️ Quitar</button></div></div><div class="form-grid" style="margin-top:10px;"><div class="form-group"><label>📛 Nombre Comercial:</label><input type="text" id="configClientName" placeholder="Ej: Hotel Canino Patitas"></div><div class="form-group"><label>🆔 CIF/NIF:</label><input type="text" id="configClientCIF" placeholder="B12345678"></div><div class="form-group full-width"><label>📍 Dirección:</label><input type="text" id="configClientAddress" placeholder="Calle, Nº, Ciudad, CP"></div><div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="configClientPhone" placeholder="600 000 000"></div></div></div><div class="form-group"><label>🏨 Nombre de la App (Interno):</label><input type="text" id="configHotelName" value="Lyra App"></div><div class="form-group"><label>🏠 Número de Casetas:</label><input type="number" id="configTotalKennels" value="15" min="1" max="500"></div><div class="form-group"><label>🔖 Prefijo de Casetas:</label><input type="text" id="configKennelPrefix" value="C-" maxlength="5"></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">💰 Precios Generales</h3><div class="form-grid"><div class="form-group"><label>🏨 Hotel (€):</label><input type="number" id="configPrecioHotel" value="15" step="0.50"></div><div class="form-group"><label>🏠 Guardería (€):</label><input type="number" id="configPrecioGuarderia" value="10" step="0.50"></div><div class="form-group"><label> Clase Suelta (€):</label><input type="number" id="configPrecioClase" value="35" step="1"></div></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;"> Facturación</h3><div class="form-group"><label>📄 Próximo Nº Factura:</label><input type="number" id="configNextInvoice" value="1" min="1"></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">💬 WhatsApp API (Meta)</h3><div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #bbf7d0; margin-bottom: 15px;"><p style="font-size: 13px; margin-bottom: 10px; color:#166534;">Configura la API para envío automático:</p><div class="form-group"><label>📱 Phone Number ID:</label><input type="text" id="configMetaPhoneNumberId" placeholder="Ej: 1229155380276087"></div><div class="form-group"><label>🔑 Access Token:</label><input type="text" id="configMetaAccessToken" placeholder="Ej: EAA..."></div><div class="form-group"><label>🏢 Business Account ID:</label><input type="text" id="configMetaBusinessId" placeholder="Ej: 1007246542271286"></div><div class="form-group"><label>📝 Plantilla (Opcional):</label><input type="text" id="configMetaTemplateName" placeholder="Dejar vacío para texto libre"></div></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">📝 Contrato (Firma Digital)</h3>
 <div class="form-group full-width">
 <label>📋 Plantilla del Contrato:</label>
-<textarea id="configPlantillaContrato" rows="10" style="font-family:monospace; font-size:13px;" placeholder="Escribe las cláusulas de tu contrato aquí..."></textarea>
+<textarea id="configPlantillaContrato" rows="15" style="font-family:monospace; font-size:13px;" placeholder="Contrato personalizado. Si lo dejas vacío se usará el contrato tipo de Lyra App."></textarea>
 <small style="color:#64748b; display:block; margin-top:5px;">
-Variables disponibles: <strong>{NOMBRE_EMPRESA}</strong>, <strong>{CIF}</strong>, <strong>{NOMBRE_DUENO}</strong>, <strong>{DNI_DUENO}</strong>, <strong>{NOMBRE_PERRO}</strong>, <strong>{RAZA}</strong>, <strong>{MICROCHIP}</strong>, <strong>{FECHA_FIRMA}</strong>
+Variables disponibles: <strong>{NOMBRE_EMPRESA}</strong>, <strong>{CIF}</strong>, <strong>{DIRECCION_EMPRESA}</strong>, <strong>{TELEFONO_EMPRESA}</strong>, <strong>{CIUDAD}</strong>, <strong>{NOMBRE_DUENO}</strong>, <strong>{DNI_DUENO}</strong>, <strong>{DIRECCION_DUENO}</strong>, <strong>{EMAIL_DUENO}</strong>, <strong>{TELEFONO_DUENO}</strong>, <strong>{NOMBRE_PERRO}</strong>, <strong>{RAZA}</strong>, <strong>{TAMANO}</strong>, <strong>{EDAD}</strong>, <strong>{COLOR}</strong>, <strong>{MICROCHIP}</strong>, <strong>{PASAPORTE}</strong>, <strong>{VACUNAS}</strong>, <strong>{DESPARASITACION_INTERNA}</strong>, <strong>{DESPARASITACION_EXTERNA}</strong>, <strong>{TOS_PERRERAS}</strong>, <strong>{CONTACTO_OTROS_PERROS}</strong>, <strong>{COMPORTAMIENTO_AGRESIVO}</strong>, <strong>{MEDICACION}</strong>, <strong>{ALERGIAS}</strong>, <strong>{FECHA_FIRMA}</strong>, <strong>{HORA_FIRMA}</strong><br>Si dejas este campo vacío se cargará automáticamente el contrato tipo de Lyra App.
 </small>
 </div>
 <hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">💾 Copia de Seguridad</h3><div style="background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d;"><p style="font-size: 13px; margin-bottom: 10px;">Guarda una copia de todos tus datos (perros, reservas, facturas) en un archivo seguro.</p><div style="display: flex; gap: 10px; flex-wrap: wrap;"><button class="btn btn-primary" id="btnExportarBackup">️ Descargar Backup</button><button class="btn btn-warning" id="btnImportarBackupLabel">⬆️ Restaurar Backup</button><input type="file" id="importBackupInput" accept=".json" style="display: none;"></div></div><button class="btn btn-success" id="btnGuardarConfiguracionHotel" style="width:100%;padding:15px;margin-top:20px;">💾 Guardar Configuración</button><div id="configStatus" style="margin-top:15px;padding:10px;border-radius:5px;display:none;"></div></div></div>
@@ -877,6 +886,75 @@ const LISTA_RAZAS = [
 "San Bernardo", "Schnauzer", "Shar Pei", "Shiba Inu", "Shih Tzu", "Yorkshire Terrier",
 "Mestizo", "Mestizo Pequeño", "Mestizo Mediano", "Mestizo Grande", "Cruce"
 ].sort();
+// ============================================
+// CONTRATO TIPO POR DEFECTO (se precarga en Configuración)
+// ============================================
+const CONTRATO_BASE = `CONTRATO DE PRESTACIÓN DE SERVICIOS
+{NOMBRE_EMPRESA}
+
+REUNIDOS
+
+De una parte, {NOMBRE_EMPRESA}, con CIF {CIF}, domicilio en {DIRECCION_EMPRESA} y teléfono {TELEFONO_EMPRESA}, en adelante "LA EMPRESA".
+
+De otra parte, D./Dña. {NOMBRE_DUENO}, con DNI/NIE {DNI_DUENO}, domicilio en {DIRECCION_DUENO}, teléfono {TELEFONO_DUENO} y email {EMAIL_DUENO}, en adelante "EL CLIENTE", como propietario/a de la mascota descrita a continuación.
+
+EXPONEN
+
+Que LA EMPRESA se dedica a la prestación de servicios de residencia canina, guardería y adiestramiento, y que EL CLIENTE desea contratar dichos servicios para su mascota, de acuerdo con las siguientes condiciones:
+
+DATOS DE LA MASCOTA
+Nombre: {NOMBRE_PERRO}
+Raza: {RAZA}
+Tamaño: {TAMANO}
+Edad: {EDAD}
+Color: {COLOR}
+Microchip: {MICROCHIP}
+Pasaporte / Cartilla sanitaria: {PASAPORTE}
+
+DECLARACIÓN SANITARIA (según manifestación de EL CLIENTE)
+Vacunas al día: {VACUNAS}
+Desparasitación interna: {DESPARASITACION_INTERNA}
+Desparasitación externa: {DESPARASITACION_EXTERNA}
+Tos de las perreras: {TOS_PERRERAS}
+Acostumbrado al contacto con otros perros: {CONTACTO_OTROS_PERROS}
+Episodios previos de conducta agresiva: {COMPORTAMIENTO_AGRESIVO}
+Medicación actual y pauta: {MEDICACION}
+Alergias o intolerancias: {ALERGIAS}
+
+HORARIO DE ATENCIÓN AL PÚBLICO
+Lunes a Viernes: de 9:00 a 14:00 h y de 16:00 a 19:00 h
+Sábados y Domingos: de 10:00 a 13:30 h
+Festivos: CERRADO
+
+CLÁUSULAS
+
+PRIMERA.- OBJETO. LA EMPRESA prestará a la mascota descrita los servicios contratados (residencia, guardería y/o adiestramiento) durante el período y condiciones indicados en la reserva correspondiente.
+
+SEGUNDA.- FORMA DE PAGO. El abono de los servicios contratados se realizará SIEMPRE POR ADELANTADO en el momento de formalizar la reserva. LA EMPRESA no prestará el servicio sin el pago previo del importe total. Los servicios adicionales contratados durante la estancia deberán abonarse antes de la recogida del animal.
+
+TERCERA.- OBLIGACIONES DE EL CLIENTE. EL CLIENTE declara que los datos sanitarios reseñados son ciertos y que la mascota cumple los requisitos legales vigentes (identificación, cartilla y vacunas obligatorias). Se obliga a comunicar cualquier enfermedad, alergia, medicación o problema de comportamiento. La ocultación o falsedad de estos datos exime a LA EMPRESA de las consecuencias que pudieran derivarse.
+
+CUARTA.- OBLIGACIONES DE LA EMPRESA. LA EMPRESA se obliga a alojar, alimentar, pasear y atender a la mascota con la diligencia debida, siguiendo las instrucciones facilitadas por EL CLIENTE, y a comunicarle de inmediato cualquier incidencia de salud o comportamiento.
+
+QUINTA.- ASISTENCIA VETERINARIA. En caso de enfermedad o accidente, LA EMPRESA avisará a EL CLIENTE y trasladará la mascota al veterinario, siendo los gastos por cuenta exclusiva de EL CLIENTE. Si no fuera posible contactar con EL CLIENTE, LA EMPRESA queda expresamente autorizada para actuar de urgencia en beneficio del animal.
+
+SEXTA.- RESPONSABILIDAD. LA EMPRESA no será responsable de lesiones, enfermedades o fallecimiento derivados de patologías previas, condiciones no declaradas por EL CLIENTE o la propia naturaleza del animal, ni de incidentes entre animales cuando EL CLIENTE haya autorizado el contacto entre ellos.
+
+SÉPTIMA.- CANCELACIONES. Cancelación con más de 7 días de antelación: devolución del 100 % del importe abonado. Entre 7 y 3 días: devolución del 50 %. Con menos de 3 días o no presentación: sin devolución.
+
+OCTAVA.- RECOGIDA Y ESTANCIAS. La recogida de la mascota se realizará dentro del horario de atención indicado. Si la mascota no fuera recogida en la fecha prevista sin aviso previo, el servicio se entenderá prorrogado día a día y se facturarán los días adicionales conforme a las tarifas vigentes.
+
+NOVENA.- PROTECCIÓN DE DATOS. Los datos personales y de la mascota serán tratados por LA EMPRESA conforme al RGPD y la LOPDGDD, exclusivamente para la gestión del servicio, la facturación y el cumplimiento de obligaciones legales.
+
+DÉCIMA.- ACEPTACIÓN. EL CLIENTE declara haber leído y comprendido el presente contrato y acepta todas sus cláusulas, firmando el documento por duplicado y a un solo efecto.
+
+Y en prueba de conformidad, firman el presente contrato.
+
+Fdo.: LA EMPRESA                      Fdo.: EL CLIENTE
+{NOMBRE_EMPRESA}                      {NOMBRE_DUENO}
+CIF: {CIF}                            DNI: {DNI_DUENO}
+
+Fecha de la firma: {FECHA_FIRMA}, a las {HORA_FIRMA}`;
 document.addEventListener('DOMContentLoaded', () => {
 const datalist = document.getElementById('lista-razas');
 if (datalist) {
@@ -1513,6 +1591,14 @@ estadoPelo: document.getElementById('estadoPelo').value,
 medicacion: document.getElementById('medicacion').value,
 detallesMedicacion: document.getElementById('detallesMedicacion').value,
 alergias: document.getElementById('alergias').value,
+color: document.getElementById('colorPerro').value.trim(),
+tamano: document.getElementById('tamanoPerro').value,
+vacunasAlDia: document.getElementById('vacunasAlDia').value,
+desparasitacionInterna: document.getElementById('desparasitacionInterna').value,
+desparasitacionExterna: document.getElementById('desparasitacionExterna').value,
+tosPerreras: document.getElementById('tosPerreras').value,
+contactoOtrosPerros: document.getElementById('contactoOtrosPerros').value,
+comportamientoAgresivo: document.getElementById('comportamientoAgresivo').value,
 precioPersonalizado: parseFloat(document.getElementById('precioPersonalizado').value) || 0,
 foto: fotoActualBase64 || '',
 tieneFoto: fotoActualBase64 ? true : false
@@ -1596,7 +1682,7 @@ const fechaFirmaFmt = new Date(p.contrato.fechaFirma).toLocaleDateString('es-ES'
 contratoHTML = `<hr><h3 style="color:#334155;margin-top:15px;">📝 Contrato</h3>
 <div class="estado-contrato firmado">✅ Firmado el ${fechaFirmaFmt}</div>
 ${p.contrato.firma ? `<div style="margin-top:10px;"><img src="${p.contrato.firma}" class="firma-img"></div>` : ''}
-<div style="margin-top:10px;"><button class="btn btn-info" onclick="abrirModalFirma('${p.id}')">📝 Ver / Firmar de nuevo</button></div>`;
+<div style="margin-top:10px;"><button class="btn btn-info" onclick="abrirModalFirma('${p.id}')">📝 Ver / Firmar de nuevo</button> <button class="btn btn-print" onclick="descargarCopiaContrato('${p.id}')">📄 Descargar copia</button></div>`;
 } else {
 contratoHTML = `<hr><h3 style="color:#334155;margin-top:15px;">📝 Contrato</h3>
 <div class="estado-contrato sin-firmar">❌ Sin firmar</div>
@@ -1653,6 +1739,14 @@ document.getElementById('editEstadoPelo').value = p.estadoPelo || 'Bien';
 document.getElementById('editMedicacion').value = p.medicacion || 'No';
 document.getElementById('editDetallesMedicacion').value = p.detallesMedicacion || '';
 document.getElementById('editAlergias').value = p.alergias || '';
+document.getElementById('editColorPerro').value = p.color || '';
+document.getElementById('editTamanoPerro').value = p.tamano || '';
+document.getElementById('editVacunasAlDia').value = p.vacunasAlDia || 'Sí';
+document.getElementById('editDesparasitacionInterna').value = p.desparasitacionInterna || 'Sí';
+document.getElementById('editDesparasitacionExterna').value = p.desparasitacionExterna || 'Sí';
+document.getElementById('editTosPerreras').value = p.tosPerreras || 'No';
+document.getElementById('editContactoOtrosPerros').value = p.contactoOtrosPerros || 'Sí';
+document.getElementById('editComportamientoAgresivo').value = p.comportamientoAgresivo || 'No';
 document.getElementById('editPrecioPersonalizado').value = p.precioPersonalizado || '';
 const fotoSrc = p.fotoUrl || p.foto || '';
 const editFotoPreview = document.getElementById('editFotoPreview');
@@ -1690,6 +1784,14 @@ estadoPelo: document.getElementById('editEstadoPelo').value,
 medicacion: document.getElementById('editMedicacion').value,
 detallesMedicacion: document.getElementById('editDetallesMedicacion').value,
 alergias: document.getElementById('editAlergias').value,
+color: document.getElementById('editColorPerro').value.trim(),
+tamano: document.getElementById('editTamanoPerro').value,
+vacunasAlDia: document.getElementById('editVacunasAlDia').value,
+desparasitacionInterna: document.getElementById('editDesparasitacionInterna').value,
+desparasitacionExterna: document.getElementById('editDesparasitacionExterna').value,
+tosPerreras: document.getElementById('editTosPerreras').value,
+contactoOtrosPerros: document.getElementById('editContactoOtrosPerros').value,
+comportamientoAgresivo: document.getElementById('editComportamientoAgresivo').value,
 precioPersonalizado: parseFloat(document.getElementById('editPrecioPersonalizado').value) || 0,
 foto: fotoEditBase64 || '',
 tieneFoto: fotoEditBase64 ? true : false
@@ -2158,7 +2260,7 @@ window.buscarPerroParaTraining = () => {
 const texto = document.getElementById('trainDogSearch').value.toLowerCase().trim();
 const resultados = document.getElementById('trainDogResults');
 if (texto.length < 2) { resultados.style.display = 'none'; return; }
-const perrosEncontrados = perrosDB.filter(p => (p.nombrePerro || '').toLowerCase().includes(texto) || (p.nombreDueno || '').toLowerCase().includes(texto));
+const perrosEncontrados = perrosDB.filter(p => p.nombrePerro.toLowerCase().includes(texto) || p.nombreDueno.toLowerCase().includes(texto));
 if (perrosEncontrados.length === 0) {
 resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
 resultados.style.display = 'block';
@@ -2736,7 +2838,8 @@ document.getElementById('configMetaPhoneNumberId').value = cfg.metaPhoneNumberId
 document.getElementById('configMetaAccessToken').value = cfg.metaAccessToken || '';
 document.getElementById('configMetaBusinessId').value = cfg.metaBusinessId || '';
 document.getElementById('configMetaTemplateName').value = cfg.metaTemplateName || '';
-document.getElementById('configPlantillaContrato').value = cfg.plantillaContrato || '';
+// ✅ Si no hay plantilla guardada, precargar el contrato tipo completo
+document.getElementById('configPlantillaContrato').value = cfg.plantillaContrato || CONTRATO_BASE;
 const clientLogoPreview = document.getElementById('configClientLogoPreview');
 const btnEliminarClientLogo = document.getElementById('configBtnEliminarClientLogo');
 if (cfg.clientLogo) {
@@ -2788,7 +2891,9 @@ const metaPhoneNumberId = document.getElementById('configMetaPhoneNumberId').val
 const metaAccessToken = document.getElementById('configMetaAccessToken').value.trim();
 const metaBusinessId = document.getElementById('configMetaBusinessId').value.trim();
 const metaTemplateName = document.getElementById('configMetaTemplateName').value.trim();
-const plantillaContrato = document.getElementById('configPlantillaContrato').value;
+// ✅ Si el cliente deja vacío el contrato, se guarda el contrato tipo
+let plantillaContrato = document.getElementById('configPlantillaContrato').value.trim();
+if (!plantillaContrato) plantillaContrato = CONTRATO_BASE;
 if (!hotelName || !totalKennels || !kennelPrefix) { alert('❌ Campos obligatorios'); return; }
 const configData = {
 hotelName, totalKennels, kennelPrefix,
@@ -3228,38 +3333,45 @@ canvasFirmaEl.addEventListener('touchstart', iniciarDibujo, { passive: false });
 canvasFirmaEl.addEventListener('touchmove', dibujar, { passive: false });
 canvasFirmaEl.addEventListener('touchend', terminarDibujo);
 };
+// ✅ NUEVO: Genera el texto del contrato con TODAS las variables
 window.generarTextoContrato = (perro) => {
-const plantilla = (currentConfig && currentConfig.plantillaContrato) ||
-`CONTRATO DE PRESTACIÓN DE SERVICIOS - {NOMBRE_EMPRESA}
-En {FECHA_FIRMA}, entre:
-EMPRESA: {NOMBRE_EMPRESA}
-CIF: {CIF}
-CLIENTE: {NOMBRE_DUENO}
-DNI: {DNI_DUENO}
-MASCOTA: {NOMBRE_PERRO}
-Raza: {RAZA}
-Microchip: {MICROCHIP}
-CLÁUSULAS:
-1. El cliente autoriza a {NOMBRE_EMPRESA} a cuidar de su mascota {NOMBRE_PERRO} durante el período contratado.
-2. El cliente declara que {NOMBRE_PERRO} se encuentra en buen estado de salud y con las vacunas al día.
-3. El cliente se compromete a comunicar cualquier alergia, medicación o condición especial de la mascota.
-4. {NOMBRE_EMPRESA} se compromete a proporcionar alimentación, paseo y atención adecuada según lo acordado.
-5. En caso de emergencia veterinaria, {NOMBRE_EMPRESA} contactará al cliente de inmediato. Los gastos veterinarios serán a cargo del cliente.
-6. El cliente acepta las tarifas establecidas y las condiciones de pago.
-7. El cliente acepta las políticas de cancelación y reservas de {NOMBRE_EMPRESA}.
-Firmado de conformidad,`;
-const fechaHoy = new Date().toLocaleDateString('es-ES', {
-day: 'numeric', month: 'long', year: 'numeric'
-});
+const plantilla = (currentConfig && currentConfig.plantillaContrato && currentConfig.plantillaContrato.trim()) || CONTRATO_BASE;
+const ahora = new Date();
+const fechaHoy = ahora.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+const horaHoy = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+const dirEmpresa = (currentConfig && currentConfig.clientAddress) || '';
+const partes = dirEmpresa.split(',');
+const ciudad = partes.length > 1 ? partes[partes.length - 1].trim() : dirEmpresa;
+const edad = perro.fechaNacimiento ? calcularEdad(perro.fechaNacimiento) : (perro.edad || '-');
+const medicacion = perro.medicacion === 'Sí' ? (perro.detallesMedicacion || 'Sí') : 'No';
 return plantilla
 .replace(/{NOMBRE_EMPRESA}/g, (currentConfig && currentConfig.clientName) || 'Lyra App')
 .replace(/{CIF}/g, (currentConfig && currentConfig.clientCIF) || 'N/A')
+.replace(/{DIRECCION_EMPRESA}/g, dirEmpresa || 'N/A')
+.replace(/{TELEFONO_EMPRESA}/g, (currentConfig && currentConfig.clientPhone) || 'N/A')
+.replace(/{CIUDAD}/g, ciudad || 'N/A')
 .replace(/{NOMBRE_DUENO}/g, perro.nombreDueno || '')
 .replace(/{DNI_DUENO}/g, perro.dniDueno || '')
+.replace(/{DIRECCION_DUENO}/g, perro.direccion || '')
+.replace(/{EMAIL_DUENO}/g, perro.email || '')
+.replace(/{TELEFONO_DUENO}/g, perro.telefono || '')
 .replace(/{NOMBRE_PERRO}/g, perro.nombrePerro || '')
-.replace(/{RAZA}/g, perro.raza || '')
-.replace(/{MICROCHIP}/g, perro.microchip || '')
-.replace(/{FECHA_FIRMA}/g, fechaHoy);
+.replace(/{RAZA}/g, perro.raza || '-')
+.replace(/{TAMANO}/g, perro.tamano || '-')
+.replace(/{EDAD}/g, edad)
+.replace(/{COLOR}/g, perro.color || '-')
+.replace(/{MICROCHIP}/g, perro.microchip || '-')
+.replace(/{PASAPORTE}/g, perro.pasaporte || '-')
+.replace(/{VACUNAS}/g, perro.vacunasAlDia || '-')
+.replace(/{DESPARASITACION_INTERNA}/g, perro.desparasitacionInterna || '-')
+.replace(/{DESPARASITACION_EXTERNA}/g, perro.desparasitacionExterna || '-')
+.replace(/{TOS_PERRERAS}/g, perro.tosPerreras || '-')
+.replace(/{CONTACTO_OTROS_PERROS}/g, perro.contactoOtrosPerros || '-')
+.replace(/{COMPORTAMIENTO_AGRESIVO}/g, perro.comportamientoAgresivo || '-')
+.replace(/{MEDICACION}/g, medicacion)
+.replace(/{ALERGIAS}/g, perro.alergias || 'Sin alergias conocidas')
+.replace(/{FECHA_FIRMA}/g, fechaHoy)
+.replace(/{HORA_FIRMA}/g, horaHoy);
 };
 window.abrirModalFirma = (idPerro) => {
 const perro = perrosDB.find(p => p.id === idPerro);
@@ -3294,8 +3406,9 @@ btnGuardar.textContent = '⏳ Guardando...';
 try {
 const firmaBase64 = canvasFirmaEl.toDataURL('image/png');
 const fechaFirma = new Date().toISOString();
+const idFirmado = perroParaFirma.id;
 // Guardar en el documento del perro
-const res = await actualizarPerro(perroParaFirma.id, {
+const res = await actualizarPerro(idFirmado, {
 contrato: {
 firmado: true,
 fechaFirma: fechaFirma,
@@ -3306,9 +3419,13 @@ textoContrato: window.generarTextoContrato(perroParaFirma)
 if (res.success) {
 alert('✅ Contrato firmado y guardado correctamente');
 document.getElementById('modalFirma').style.display = 'none';
+// ✅ NUEVO: ofrecer copia PDF para el cliente
+if (confirm('¿Desea descargar una copia del contrato en PDF para el cliente?')) {
+window.descargarCopiaContrato(idFirmado);
+}
 // Refrescar la ficha si está abierta
-if (perroIndividualActual && perroIndividualActual.id === perroParaFirma.id) {
-window.verPerro(perroParaFirma.id);
+if (perroIndividualActual && perroIndividualActual.id === idFirmado) {
+window.verPerro(idFirmado);
 }
 } else {
 alert('❌ Error: ' + res.error);
@@ -3320,6 +3437,36 @@ alert('❌ Error al guardar el contrato: ' + error.message);
 btnGuardar.disabled = false;
 btnGuardar.textContent = '💾 Guardar Contrato Firmado';
 }
+};
+// ✅ NUEVO: Copia del contrato lista para guardar/compartir como PDF
+window.descargarCopiaContrato = (idPerro) => {
+const perro = perrosDB.find(p => p.id === idPerro) || perroParaFirma;
+if (!perro) return alert('❌ Perro no encontrado');
+const win = window.open('', '_blank');
+if (!win) return alert('⚠️ Permite ventanas emergentes para este sitio');
+const textoContrato = window.generarTextoContrato(perro);
+const firmaSrc = (perro.contrato && perro.contrato.firma) ? perro.contrato.firma : (canvasFirmaEl ? canvasFirmaEl.toDataURL('image/png') : '');
+// ⚠️ El cierre del script interno va como <\/script> para NO romper el script principal de la app
+const contenido = `<meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; line-height: 1.8; }
+h1 { color: #334155; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+.firma { margin-top: 40px; text-align: center; }
+.firma img { max-width: 300px; border: 1px solid #e2e8f0; padding: 10px; background: white; }
+.pie { margin-top: 30px; font-size: 11px; color: #64748b; text-align: center; }
+</style>
+<h1>📝 Contrato de Prestación de Servicios</h1>
+<pre style="white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 13px;">${textoContrato}</pre>
+<div class="firma">
+<p><strong>Firma del cliente:</strong></p>
+<img id="imgFirmaCopia" src="${firmaSrc}" alt="Firma">
+</div>
+<p class="pie">Copia generada por Lyra App el ${new Date().toLocaleString('es-ES')}</p>
+<script>
+window.onload = function() { setTimeout(function() { window.print(); }, 500); };
+<\/script>`;
+win.document.write(contenido);
+win.document.close();
 };
 window.vistaPreviaContrato = () => {
 if (!perroParaFirma) return;
