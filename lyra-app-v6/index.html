@@ -299,6 +299,16 @@ margin-top: 10px;
 </div>
 </div>
 <div class="user-info">
+<select id="headerLangSelector" onchange="changeLanguage(this.value)" style="padding:6px 10px; border-radius:6px; border:1px solid #475569; font-size:13px; background:#1e293b; color:#cbd5e1; cursor:pointer;">
+    <option value="es">🇪🇸 ES</option>
+    <option value="en">🇬🇧 EN</option>
+    <option value="fr">🇫🇷 FR</option>
+    <option value="de">🇩🇪 DE</option>
+    <option value="it">🇮🇹 IT</option>
+    <option value="zh">🇨🇳 中文</option>
+    <option value="ru">🇷🇺 RU</option>
+    <option value="pt">🇵🇹 PT</option>
+</select>
 <button class="btn-config" id="btnConfig">⚙️ Configurar Hotel</button>
 <button class="btn-config" id="btnCambiarPass" style="background:#10b981;"> Cambiar Clave</button>
 <span id="userEmail" style="font-weight: 600; color: #cbd5e1;">usuario@email.com</span>
@@ -877,16 +887,36 @@ if (sk) sk.style.display = 'none';
 }, 150);
 }
 const LISTA_RAZAS = [
-"Affenpinscher", "Akita", "American Pit Bull Terrier", "American Staffordshire Terrier",
-"Australian Shepherd", "Beagle", "Border Collie", "Boxer", "Buldog Francés", "Buldog Inglés",
-"Bull Terrier", "Cane Corso", "Caniche", "Chihuahua", "Cocker Spaniel", "Collie",
-"Dálmata", "Doberman", "Galgo Español", "Golden Retriever", "Gran Danés", "Husky Siberiano",
-"Jack Russell Terrier", "Labrador Retriever", "Mastín Español", "Pastor Alemán", "Pastor Belga",
-"Perro de Agua Español", "Pomerania", "Presa Canario", "Pug", "Rottweiler", "Samoyedo",
-"San Bernardo", "Schnauzer", "Shar Pei", "Shiba Inu", "Shih Tzu", "Yorkshire Terrier",
-"Mestizo", "Mestizo Pequeño", "Mestizo Mediano", "Mestizo Grande", "Cruce"
-].sort();
-// ============================================
+"Affenpinscher", "Akita", "Akita Americano", "Alaskan Malamute", "American Bulldog",
+"American Pit Bull Terrier", "American Staffordshire Terrier", "Basenji", "Basset Hound",
+"Beagle", "Bichón Frisé", "Bichón Habanero", "Bichón Maltés", "Bobtail", "Border Collie",
+"Borzoi", "Boston Terrier", "Boxer", "Braco Alemán", "Braco de Weimar", "Braco Húngaro (Vizsla)",
+"Bull Terrier", "Bull Terrier Miniatura", "Buldog Americano", "Buldog Francés", "Buldog Inglés",
+"Cairn Terrier", "Caniche (Poodle)", "Caniche Gigante", "Caniche Mediano", "Caniche Toy",
+"Cane Corso", "Carlino (Pug)", "Cavalier King Charles Spaniel", "Chihuahua", "Chow Chow",
+"Cocker Spaniel Americano", "Cocker Spaniel Inglés", "Collie", "Corgi Galés (Pembroke)",
+"Crestado Chino", "Dálmata", "Dogo Argentino", "Dogo de Burdeos", "Doberman",
+"Elkhound Noruego", "Épagneul Breton (Spaniel Bretón)", "Fox Terrier", "Galgo Afgano",
+"Galgo Español", "Galgo Italiano (Lebrel Italiano)", "Golden Retriever", "Goldendoodle",
+"Gran Danés", "Gran Basset Griffon Vendeano", "Greyhound", "Griffon de Bruselas",
+"Havanese", "Husky Siberiano", "Jack Russell Terrier", "Keeshond", "Kerry Blue Terrier",
+"Labradoodle", "Labrador Retriever", "Leonberger", "Lhasa Apso", "Maltipoo",
+"Mastín del Pirineo", "Mastín Español", "Mastín Napolitano", "Papillon", "Pastor Alemán",
+"Pastor Australiano", "Pastor Belga Groenendael", "Pastor Belga Malinois", "Pastor Belga Tervueren",
+"Pastor de Beauce", "Pastor de los Pirineos", "Pastor de Shetland (Sheltie)", "Pastor Ganadero Australiano",
+"Pastor Inglés (Old English Sheepdog)", "Pastor Polaco de Tierras Bajas", "Pequinés",
+"Perro de Agua Español", "Perro de Agua Portugués", "Perro Lobo Checoslovaco",
+"Perro Sin Pelo del Perú", "Pinscher Miniatura", "Podenco Andaluz", "Podenco Canario",
+"Podenco Ibicenco", "Pointer Inglés", "Pomerania", "Presa Canario", "Rafeiro del Alentejo",
+"Rhodesian Ridgeback", "Rottweiler", "Saluki", "Samoyedo", "San Bernardo",
+"Schnauzer Estándar", "Schnauzer Gigante", "Schnauzer Miniatura", "Setter Gordon",
+"Setter Inglés", "Setter Irlandés", "Shar Pei", "Shiba Inu", "Shih Tzu",
+"Spaniel Tibetano", "Staffordshire Bull Terrier", "Teckel (Dachshund)", "Terranova",
+"Terrier Australiano", "Terrier Escocés", "Terrier Galés", "Terrier Irlandés",
+"Terrier Japonés", "Terrier Tibetano", "Vizsla", "Volpino Italiano",
+"West Highland White Terrier (Westie)", "Whippet", "Yorkshire Terrier",
+"Cruce", "Mestizo", "Mestizo Pequeño", "Mestizo Mediano", "Mestizo Grande"
+].sort();// ============================================
 // CONTRATO TIPO POR DEFECTO (se precarga en Configuración)
 // ============================================
 const CONTRATO_BASE = `CONTRATO DE PRESTACIÓN DE SERVICIOS
@@ -3613,9 +3643,11 @@ window.applyTranslations = () => {
         }
     });
     
-    // Actualizar selector de idioma si existe
-    const langSelect = document.getElementById('langSelector');
-    if (langSelect) langSelect.value = currentLang;
+    // Sincronizar selector del header (y el de configuración si existe)
+    const headerLang = document.getElementById('headerLangSelector');
+    if (headerLang) headerLang.value = currentLang;
+    const configLang = document.getElementById('configLangSelector');
+    if (configLang) configLang.value = currentLang;
 };
 
 // Cambiar idioma
@@ -3625,30 +3657,9 @@ window.changeLanguage = (lang) => {
     applyTranslations();
 };
 
-// Inyectar selector de idioma en el Login al cargar
+// Al cargar la página, aplicar traducciones iniciales
 document.addEventListener('DOMContentLoaded', () => {
-    const loginBox = document.querySelector('.login-box p');
-    if (loginBox && !document.getElementById('langSelector')) {
-        const langDiv = document.createElement('div');
-        langDiv.style.cssText = 'margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;';
-        langDiv.innerHTML = `
-            <label style="color:#64748b; font-size:14px;" data-i18n="lang_label">${t('lang_label')}</label>
-            <select id="langSelector" onchange="changeLanguage(this.value)" style="padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:14px;">
-                <option value="es">🇪🇸 Español</option>
-                <option value="en">🇬🇧 English</option>
-                <option value="fr">🇫🇷 Français</option>
-                <option value="de">🇩🇪 Deutsch</option>
-                <option value="it">🇮🇹 Italiano</option>
-                <option value="zh">🇨🇳 中文</option>
-                <option value="ru">🇷🇺 Русский</option>
-                <option value="pt">🇵🇹 Português</option>
-            </select>
-        `;
-        loginBox.parentNode.insertBefore(langDiv, loginBox);
-        document.getElementById('langSelector').value = currentLang;
-    }
     applyTranslations();
-});
-</script>
+});</script>
 </body>
 </html>
