@@ -3496,6 +3496,159 @@ img.src = '${canvasFirmaEl ? canvasFirmaEl.toDataURL('image/png') : ''}';
 win.document.write(contenido);
 win.document.close();
 };
+// ============================================
+// MOTOR DE TRADUCCIONES (i18n) - LYRA APP
+// ============================================
+const I18N = {
+    es: {
+        // Login
+        'app_title': 'LYRA APP',
+        'app_subtitle': 'Hotel & Adiestramiento Canino',
+        'login_email_placeholder': '📧 Email',
+        'login_pass_placeholder': '🔒 Contraseña',
+        'btn_login': '🔐 Iniciar Sesión',
+        'link_register': 'Crear una aquí',
+        'no_account': '¿No tienes cuenta?',
+        'register_email_placeholder': '📧 Email para registro',
+        'register_pass_placeholder': 'Contraseña (mín 6 caracteres)',
+        'btn_register': 'Crear Cuenta',
+        'has_account': '¿Ya tienes cuenta?',
+        'link_login': 'Iniciar Sesión',
+        
+        // Header / Tabs
+        'btn_config': '⚙️ Configurar Hotel',
+        'btn_change_pass': 'Cambiar Clave',
+        'btn_logout': '🚪 Salir',
+        'tab_dogs': '🐕 Perros',
+        'tab_hotel': '🏨 Hotel',
+        'tab_reservations': '📅 Reservas',
+        'tab_training': '🎓 Adiestramiento',
+        'tab_stats': '📈 Estadísticas',
+        'tab_history': 'Historial',
+        'tab_invoices': '📄 Facturas',
+        'tab_employees': '👥 Empleados',
+        'tab_whatsapp': '💬 WhatsApp',
+        
+        // Stats
+        'stat_dogs': 'Perros',
+        'stat_owners': '👤 Dueños',
+        'stat_reservations': '📅 Reservas',
+        'stat_hotel_slots': '🏨 Plazas Hotel',
+        
+        // Language Selector
+        'lang_label': 'Idioma:',
+        'lang_es': 'Español',
+        'lang_en': 'English',
+        'lang_fr': 'Français',
+        'lang_de': 'Deutsch',
+        'lang_it': 'Italiano',
+        'lang_zh': '中文',
+        'lang_ru': 'Русский',
+        'lang_pt': 'Português'
+    },
+    en: {
+        // Login
+        'app_title': 'LYRA APP',
+        'app_subtitle': 'Canine Hotel & Training',
+        'login_email_placeholder': '📧 Email',
+        'login_pass_placeholder': '🔒 Password',
+        'btn_login': '🔐 Log In',
+        'link_register': 'Create one here',
+        'no_account': "Don't have an account?",
+        'register_email_placeholder': '📧 Registration Email',
+        'register_pass_placeholder': 'Password (min 6 chars)',
+        'btn_register': 'Create Account',
+        'has_account': 'Already have an account?',
+        'link_login': 'Log In',
+        
+        // Header / Tabs
+        'btn_config': '⚙️ Hotel Settings',
+        'btn_change_pass': 'Change Password',
+        'btn_logout': '🚪 Log Out',
+        'tab_dogs': '🐕 Dogs',
+        'tab_hotel': '🏨 Hotel',
+        'tab_reservations': '📅 Reservations',
+        'tab_training': '🎓 Training',
+        'tab_stats': '📈 Statistics',
+        'tab_history': 'History',
+        'tab_invoices': '📄 Invoices',
+        'tab_employees': '👥 Employees',
+        'tab_whatsapp': '💬 WhatsApp',
+        
+        // Stats
+        'stat_dogs': 'Dogs',
+        'stat_owners': '👤 Owners',
+        'stat_reservations': '📅 Reservations',
+        'stat_hotel_slots': '🏨 Hotel Slots',
+        
+        // Language Selector
+        'lang_label': 'Language:',
+        'lang_es': 'Español',
+        'lang_en': 'English',
+        'lang_fr': 'Français',
+        'lang_de': 'Deutsch',
+        'lang_it': 'Italiano',
+        'lang_zh': '中文',
+        'lang_ru': 'Русский',
+        'lang_pt': 'Português'
+    }
+};
+
+// Idioma por defecto
+let currentLang = localStorage.getItem('lyra_lang') || 'es';
+
+// Función principal de traducción
+window.t = (key) => {
+    return (I18N[currentLang] && I18N[currentLang][key]) || (I18N['es'] && I18N['es'][key]) || key;
+};
+
+// Aplicar traducciones dinámicamente
+window.applyTranslations = () => {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            el.placeholder = t(key);
+        } else {
+            el.textContent = t(key);
+        }
+    });
+    
+    // Actualizar selector de idioma si existe
+    const langSelect = document.getElementById('langSelector');
+    if (langSelect) langSelect.value = currentLang;
+};
+
+// Cambiar idioma
+window.changeLanguage = (lang) => {
+    currentLang = lang;
+    localStorage.setItem('lyra_lang', lang);
+    applyTranslations();
+};
+
+// Inyectar selector de idioma en el Login al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    const loginBox = document.querySelector('.login-box p');
+    if (loginBox && !document.getElementById('langSelector')) {
+        const langDiv = document.createElement('div');
+        langDiv.style.cssText = 'margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;';
+        langDiv.innerHTML = `
+            <label style="color:#64748b; font-size:14px;" data-i18n="lang_label">${t('lang_label')}</label>
+            <select id="langSelector" onchange="changeLanguage(this.value)" style="padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:14px;">
+                <option value="es">🇪🇸 Español</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="it">🇮🇹 Italiano</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="pt">🇵🇹 Português</option>
+            </select>
+        `;
+        loginBox.parentNode.insertBefore(langDiv, loginBox);
+        document.getElementById('langSelector').value = currentLang;
+    }
+    applyTranslations();
+});
 </script>
 </body>
 </html>
