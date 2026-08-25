@@ -251,6 +251,30 @@ padding: 8px;
 background: white;
 margin-top: 10px;
 }
+/* ============================================
+ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
+============================================ */
+.btn-trash { 
+    background: transparent !important; 
+    color: #94a3b8 !important; 
+    border: none; 
+    font-size: 18px; 
+    padding: 5px; 
+    cursor: pointer; 
+    transition: color 0.2s; 
+}
+.btn-trash:hover { 
+    color: #ef4444 !important; 
+}
+.calendar-day.blocked-day {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.calendar-day.blocked-day .calendar-day-number {
+    color: #94a3b8;
+}
 </style>
 </head>
 <body>
@@ -805,7 +829,11 @@ margin-top: 10px;
 <button id="btnAñadirPerroGrupo" style="background: #4a6cf7; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Añadir</button>
 </div>
 </div>
-<button class="btn btn-success" id="btnGuardarEdicionReserva" style="width: 100%;">💾 Guardar Cambios</button>
+<!-- BOTÓN DE ELIMINAR Y GUARDAR CORREGIDOS -->
+<div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+    <button class="btn btn-trash" onclick="eliminarDesdeEdicion()" title="Eliminar Reserva">🗑️ Eliminar</button>
+    <button class="btn btn-success" id="btnGuardarEdicionReserva" style="width: auto; padding: 10px 30px;">💾 Guardar Cambios</button>
+</div>
 </div></div>
 <div id="modalDia" class="modal"><div class="modal-content"><span class="close" data-modal="modalDia">&times;</span><h2 style="color:#334155;margin-bottom:20px;" id="modalDiaTitulo">📅 Reservas del Día</h2><div id="modalDiaContenido"></div></div></div>
 <div id="modalEditarPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalEditarPerro">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Perro</h2><div class="form-grid"><input type="hidden" id="editPerroId"><div class="form-group full-width camera-container"><label>📸 Foto del Perro</label><img id="editFotoPreview" class="foto-perro-grande hidden" src="" alt="Foto"><div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"><button class="btn btn-camera" id="btnCamaraEditar">📸 Usar Cámara</button><input type="file" id="editFotoInputCamara" accept="image/*" capture="environment" style="display: none;"><button class="btn btn-info" id="btnGaleriaEditar">📁 Subir desde Galería</button><input type="file" id="editFotoInputGaleria" accept="image/*" style="display: none;"><button class="btn btn-danger hidden" id="editBtnEliminarFoto">🗑️ Quitar Foto</button></div></div><div class="form-group"><label>🐕 Nombre:</label><input type="text" id="editNombrePerro"></div><div class="form-group"><label>🦴 Raza:</label><input type="text" id="editRaza"></div><div class="form-group"><label>🎂 Fecha Nacimiento:</label><input type="date" id="editFechaNacimiento"></div><div class="form-group"><label>📊 Edad:</label><input type="text" id="editEdad" readonly class="edad-calculada"></div><div class="form-group"><label>⚧ Sexo:</label><select id="editSexo"><option value="">-</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div><div class="form-group"><label> Microchip:</label><input type="text" id="editMicrochip"></div><div class="form-group"><label>📕 Pasaporte:</label><input type="text" id="editPasaporte"></div><div class="form-group"><label> Dueño:</label><input type="text" id="editNombreDueno"></div><div class="form-group"><label>🆔 DNI:</label><input type="text" id="editDniDueno"></div><div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="editTelefono"></div><div class="form-group"><label>📧 Email:</label><input type="email" id="editEmail"></div><div class="form-group half-width"><label>📍 Dirección:</label><input type="text" id="editDireccion"></div><div class="form-group"><label>🏥 Vet:</label><input type="text" id="editVeterinario"></div><div class="form-group full-width"><label>📝 Notas:</label><textarea id="editNotas" rows="2"></textarea></div><div class="salud-section"><h3> Salud y Cuidados</h3><div class="form-grid"><div class="form-group"><label>✨ Estado del Pelo:</label><select id="editEstadoPelo"><option value="Bien">Bien</option><option value="Regular">Regular</option><option value="Mal">Mal</option></select></div><div class="form-group"><label>💊 ¿Medicación?:</label><select id="editMedicacion"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group full-width"><label>📋 Detalle Medicación:</label><textarea id="editDetallesMedicacion" rows="2"></textarea></div><div class="form-group full-width"><label>⚠️ Alergias:</label><textarea id="editAlergias" rows="2"></textarea></div><div class="form-group"><label>🎨 Color:</label><input type="text" id="editColorPerro"></div><div class="form-group"><label>📏 Tamaño:</label><select id="editTamanoPerro"><option value="">-</option><option value="Pequeño">Pequeño</option><option value="Mediano">Mediano</option><option value="Grande">Grande</option><option value="Gigante">Gigante</option></select></div><div class="form-group"><label>💉 Vacunas al día:</label><select id="editVacunasAlDia"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>💊 Desparasitación interna:</label><select id="editDesparasitacionInterna"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>🛡️ Desparasitación externa:</label><select id="editDesparasitacionExterna"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>🤧 Tos de las perreras:</label><select id="editTosPerreras"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group"><label>🐕 Acostumbrado a otros perros:</label><select id="editContactoOtrosPerros"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>⚠️ Conducta agresiva previa:</label><select id="editComportamientoAgresivo"><option value="No">No</option><option value="Sí">Sí</option></select></div></div></div><div class="salud-section" style="border-color: #cbd5e1;"><h3>💰 Tarifa Especial</h3><div class="form-group full-width"><label>💶 Precio Base (€/día o clase):</label><input type="number" id="editPrecioPersonalizado" step="0.50" placeholder="Dejar vacío para usar precio general"></div></div></div><button class="btn btn-success" id="btnGuardarEdicionPerro">💾 Guardar</button></div></div>
@@ -1793,64 +1821,101 @@ fotoEditBase64 = null;
 document.getElementById('modalEditarPerro').style.display = 'block';
 };
 window.guardarEdicionPerro = async () => {
-const id = document.getElementById('editPerroId').value;
-if (!id) return;
-const data = {
-nombrePerro: document.getElementById('editNombrePerro').value.trim(),
-raza: document.getElementById('editRaza').value.trim(),
-fechaNacimiento: document.getElementById('editFechaNacimiento').value,
-edad: document.getElementById('editEdad').value.trim(),
-sexo: document.getElementById('editSexo').value,
-microchip: document.getElementById('editMicrochip').value.trim(),
-pasaporte: document.getElementById('editPasaporte').value.trim(),
-nombreDueno: document.getElementById('editNombreDueno').value.trim(),
-dniDueno: document.getElementById('editDniDueno').value.trim(),
-telefono: document.getElementById('editTelefono').value.trim(),
-email: document.getElementById('editEmail').value.trim(),
-direccion: document.getElementById('editDireccion').value.trim(),
-veterinario: document.getElementById('editVeterinario').value.trim(),
-notas: document.getElementById('editNotas').value.trim(),
-estadoPelo: document.getElementById('editEstadoPelo').value,
-medicacion: document.getElementById('editMedicacion').value,
-detallesMedicacion: document.getElementById('editDetallesMedicacion').value,
-alergias: document.getElementById('editAlergias').value,
-color: document.getElementById('editColorPerro').value.trim(),
-tamano: document.getElementById('editTamanoPerro').value,
-vacunasAlDia: document.getElementById('editVacunasAlDia').value,
-desparasitacionInterna: document.getElementById('editDesparasitacionInterna').value,
-desparasitacionExterna: document.getElementById('editDesparasitacionExterna').value,
-tosPerreras: document.getElementById('editTosPerreras').value,
-contactoOtrosPerros: document.getElementById('editContactoOtrosPerros').value,
-comportamientoAgresivo: document.getElementById('editComportamientoAgresivo').value,
-precioPersonalizado: parseFloat(document.getElementById('editPrecioPersonalizado').value) || 0,
-foto: fotoEditBase64 || '',
-tieneFoto: fotoEditBase64 ? true : false
-};
-try {
-if (fotoEditBase64 && fotoEditBase64.startsWith('data:image')) {
-try {
-const fotoUrl = await subirFotoFirebase(fotoEditBase64, id);
-if (fotoUrl) data.fotoUrl = fotoUrl;
-} catch (fotoError) {
-console.log('Storage no disponible, guardando en base64');
-}
-} else if (!fotoEditBase64) {
-await eliminarFotoFirebase(id);
-data.fotoUrl = null;
-data.foto = null;
-}
-const res = await actualizarPerro(id, data);
-if (res.success) {
-alert('✅ Perro actualizado');
-document.getElementById('modalEditarPerro').style.display = 'none';
-} else {
-alert('❌ Error: ' + res.error);
-}
-} catch (e) {
-alert('❌ Error: ' + e.message);
-}
-};
-window.buscarPerroOCliente = () => {
+    const id = document.getElementById('editPerroId').value;
+    if (!id) return;
+    
+    // Recopilar todos los datos del formulario de edición
+    const data = {
+        nombrePerro: document.getElementById('editNombrePerro').value.trim(),
+        raza: document.getElementById('editRaza').value.trim(),
+        fechaNacimiento: document.getElementById('editFechaNacimiento').value,
+        edad: document.getElementById('editEdad').value.trim(),
+        sexo: document.getElementById('editSexo').value,
+        microchip: document.getElementById('editMicrochip').value.trim(),
+        pasaporte: document.getElementById('editPasaporte').value.trim(),
+        nombreDueno: document.getElementById('editNombreDueno').value.trim(),
+        dniDueno: document.getElementById('editDniDueno').value.trim(),
+        telefono: document.getElementById('editTelefono').value.trim(),
+        email: document.getElementById('editEmail').value.trim(),
+        direccion: document.getElementById('editDireccion').value.trim(),
+        veterinario: document.getElementById('editVeterinario').value.trim(),
+        notas: document.getElementById('editNotas').value.trim(),
+        estadoPelo: document.getElementById('editEstadoPelo').value,
+        medicacion: document.getElementById('editMedicacion').value,
+        detallesMedicacion: document.getElementById('editDetallesMedicacion').value,
+        alergias: document.getElementById('editAlergias').value,
+        color: document.getElementById('editColorPerro').value.trim(),
+        tamano: document.getElementById('editTamanoPerro').value,
+        vacunasAlDia: document.getElementById('editVacunasAlDia').value,
+        desparasitacionInterna: document.getElementById('editDesparasitacionInterna').value,
+        desparasitacionExterna: document.getElementById('editDesparasitacionExterna').value,
+        tosPerreras: document.getElementById('editTosPerreras').value,
+        contactoOtrosPerros: document.getElementById('editContactoOtrosPerros').value,
+        comportamientoAgresivo: document.getElementById('editComportamientoAgresivo').value,
+        precioPersonalizado: parseFloat(document.getElementById('editPrecioPersonalizado').value) || 0,
+        foto: fotoEditBase64 || '',
+        tieneFoto: fotoEditBase64 ? true : false
+    };
+
+    try {
+        // 1. Subir/Eliminar Foto si es necesario
+        if (fotoEditBase64 && fotoEditBase64.startsWith('data:image')) {
+            try {
+                const fotoUrl = await subirFotoFirebase(fotoEditBase64, id);
+                if (fotoUrl) data.fotoUrl = fotoUrl;
+            } catch (fotoError) {
+                console.log('Storage no disponible, guardando en base64');
+            }
+        } else if (!fotoEditBase64) {
+            await eliminarFotoFirebase(id);
+            data.fotoUrl = null;
+            data.foto = null;
+        }
+
+        // 2. Actualizar el documento del perro
+        const res = await actualizarPerro(id, data);
+        
+        if (res.success) {
+            // 3. PROPAGACIÓN: Actualizar nombre y teléfono en todas las reservas de este perro
+            const batchUpdates = [];
+            
+            // Actualizar reservas de Hotel/Guardería
+            const reservasAfectadas = reservasDB.filter(r => r.idPerro === id);
+            for (const reserva of reservasAfectadas) {
+                const updateData = {
+                    nombrePerro: data.nombrePerro,
+                    nombreDueno: data.nombreDueno,
+                    telefono: data.telefono,
+                    email: data.email
+                };
+                batchUpdates.push(updateDoc(doc(db, 'usuarios', currentUser.uid, 'reservas', reserva.id), updateData));
+            }
+
+            // Actualizar clases de Adiestramiento
+            const trainingAfectados = trainingDB.filter(t => t.idPerro === id);
+            for (const clase of trainingAfectados) {
+                const updateData = {
+                    nombrePerro: data.nombrePerro,
+                    nombreDueno: data.nombreDueno,
+                    telefono: data.telefono
+                };
+                batchUpdates.push(updateDoc(doc(db, 'usuarios', currentUser.uid, 'training', clase.id), updateData));
+            }
+
+            // Ejecutar todas las actualizaciones en paralelo
+            if (batchUpdates.length > 0) {
+                await Promise.all(batchUpdates);
+            }
+
+            alert('✅ Perro actualizado y datos propagados a todas las reservas.');
+            document.getElementById('modalEditarPerro').style.display = 'none';
+        } else {
+            alert('❌ Error: ' + res.error);
+        }
+    } catch (e) {
+        alert('❌ Error crítico: ' + e.message);
+    }
+};window.buscarPerroOCliente = () => {
 const texto = document.getElementById('buscarPerroCliente').value.toLowerCase().trim();
 const resultado = document.getElementById('resultadoBusqueda');
 if (!texto) { resultado.innerHTML = ''; return; }
@@ -2075,8 +2140,23 @@ const res = await eliminarReserva(id);
 if (!res.success) alert('❌ Error: ' + res.error);
 }
 };
-function mostrarCalendario() {
-const grid = document.getElementById('calendarGrid');
+// ✅ NUEVA FUNCIÓN: Eliminar desde el modal de edición
+window.eliminarDesdeEdicion = async () => {
+    if (!reservaEditActual) return;
+    if (confirm('¿Estás seguro de que deseas ELIMINAR permanentemente esta reserva?')) {
+        const res = await eliminarReserva(reservaEditActual.id);
+        if (res.success) {
+            alert('✅ Reserva eliminada correctamente');
+            document.getElementById('modalEditarReserva').style.display = 'none';
+            mostrarReservas();
+            actualizarStats();
+            mostrarCalendario();
+        } else {
+            alert('❌ Error al eliminar: ' + res.error);
+        }
+    }
+};
+function mostrarCalendario() {const grid = document.getElementById('calendarGrid');
 if (!grid) return;
 grid.innerHTML = '';
 const year = calendarDate.getFullYear();
@@ -2101,6 +2181,13 @@ grid.appendChild(div);
 }
 for (let dia = 1; dia <= totalDias; dia++) {
 const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+
+// VERIFICAR SI ESTÁ BLOQUEADO
+let estaBloqueado = false;
+if (currentConfig && currentConfig.diasBloqueados) {
+    estaBloqueado = currentConfig.diasBloqueados.some(b => fechaStr >= b.inicio && fechaStr <= b.fin);
+}
+
 const ocupacion = reservasDB.filter(r => r.tipo === 'hotel' && fechaStr >= r.inicio && fechaStr <= r.fin && r.completadas < r.total).length;
 const porcentaje = Math.round((ocupacion / totalK) * 100);
 let claseOcupacion = 'baja';
@@ -2108,13 +2195,20 @@ if (porcentaje >= 90) claseOcupacion = 'lleno';
 else if (porcentaje >= 60) claseOcupacion = 'alta';
 else if (porcentaje >= 20) claseOcupacion = 'media';
 const div = document.createElement('div');
-div.className = `calendar-day ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
-div.onclick = () => verReservasDelDia(fechaStr);
-div.innerHTML = `<div class="calendar-day-number">${dia}</div><div class="calendar-day-ocupacion ${claseOcupacion}">${porcentaje}%</div>`;
+// Añadir clase 'blocked-day' si está bloqueado
+div.className = `calendar-day ${estaBloqueado ? 'blocked-day' : ''} ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
+
+// Si está bloqueado, no permitir click para ver reservas y mostrar aviso
+if (estaBloqueado) {
+    div.onclick = null;
+    div.innerHTML = `<div class="calendar-day-number">${dia}</div><div style="font-size:10px;color:#ef4444;font-weight:bold;text-align:center;margin-top:5px;">BLOQUEADO</div>`;
+} else {
+    div.onclick = () => verReservasDelDia(fechaStr);
+    div.innerHTML = `<div class="calendar-day-number">${dia}</div><div class="calendar-day-ocupacion ${claseOcupacion}">${porcentaje}%</div>`;
+}
 grid.appendChild(div);
 }
-}
-window.verReservasDelDia = (fecha) => {
+}window.verReservasDelDia = (fecha) => {
 const reservasDelDia = reservasDB.filter(r => r.tipo === 'hotel' && fecha >= r.inicio && fecha <= r.fin && r.completadas < r.total);
 const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 document.getElementById('modalDiaTitulo').textContent = `📅 Reservas del ${fechaFormateada}`;
