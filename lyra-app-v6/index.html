@@ -3668,102 +3668,73 @@ win.document.write(contenido);
 win.document.close();
 };
 // ============================================
-// MOTOR DE TRADUCCIONES (i18n) - LYRA APP
+// MOTOR DE TRADUCCIONES (i18n) - LYRA APP v2
 // ============================================
 const I18N = {
     es: {
-        // Login
-        'app_title': 'LYRA APP',
-        'app_subtitle': 'Hotel & Adiestramiento Canino',
-        'login_email_placeholder': '📧 Email',
-        'login_pass_placeholder': '🔒 Contraseña',
-        'btn_login': '🔐 Iniciar Sesión',
-        'link_register': 'Crear una aquí',
-        'no_account': '¿No tienes cuenta?',
-        'register_email_placeholder': '📧 Email para registro',
-        'register_pass_placeholder': 'Contraseña (mín 6 caracteres)',
-        'btn_register': 'Crear Cuenta',
-        'has_account': '¿Ya tienes cuenta?',
-        'link_login': 'Iniciar Sesión',
-        
-        // Header / Tabs
-        'btn_config': '⚙️ Configurar Hotel',
-        'btn_change_pass': 'Cambiar Clave',
-        'btn_logout': '🚪 Salir',
-        'tab_dogs': '🐕 Perros',
-        'tab_hotel': '🏨 Hotel',
-        'tab_reservations': '📅 Reservas',
-        'tab_training': '🎓 Adiestramiento',
-        'tab_stats': '📈 Estadísticas',
-        'tab_history': 'Historial',
-        'tab_invoices': '📄 Facturas',
-        'tab_employees': '👥 Empleados',
-        'tab_whatsapp': '💬 WhatsApp',
-        
-        // Stats
-        'stat_dogs': 'Perros',
-        'stat_owners': '👤 Dueños',
-        'stat_reservations': '📅 Reservas',
-        'stat_hotel_slots': '🏨 Plazas Hotel',
-        
-        // Language Selector
-        'lang_label': 'Idioma:',
-        'lang_es': 'Español',
-        'lang_en': 'English',
-        'lang_fr': 'Français',
-        'lang_de': 'Deutsch',
-        'lang_it': 'Italiano',
-        'lang_zh': '中文',
-        'lang_ru': 'Русский',
-        'lang_pt': 'Português'
+        'tab_perros': '🐕 Perros', 'tab_hotel': '🏨 Hotel', 'tab_reservas': '📅 Reservas',
+        'tab_adiestramiento': '🎓 Adiestramiento', 'tab_estadisticas': '📈 Estadísticas',
+        'tab_historial': '📜 Historial', 'tab_facturas': '📄 Facturas', 
+        'tab_empleados': '👥 Empleados', 'tab_contactos': '💬 WhatsApp',
+        'btn_config': '⚙️ Configurar Hotel', 'btn_pass': '🔑 Cambiar Clave', 'btn_logout': '🚪 Salir'
+    },
+    fr: {
+        'tab_perros': '🐕 Chiens', 'tab_hotel': '🏨 Hôtel', 'tab_reservas': '📅 Réservations',
+        'tab_adiestramiento': '🎓 Dressage', 'tab_estadisticas': '📈 Statistiques',
+        'tab_historial': '📜 Historique', 'tab_facturas': '📄 Factures', 
+        'tab_empleados': '👥 Employés', 'tab_contactos': '💬 WhatsApp',
+        'btn_config': '⚙️ Configurer Hôtel', 'btn_pass': '🔑 Changer MDP', 'btn_logout': '🚪 Sortir'
     },
     en: {
-        // Login
-        'app_title': 'LYRA APP',
-        'app_subtitle': 'Canine Hotel & Training',
-        'login_email_placeholder': '📧 Email',
-        'login_pass_placeholder': '🔒 Password',
-        'btn_login': '🔐 Log In',
-        'link_register': 'Create one here',
-        'no_account': "Don't have an account?",
-        'register_email_placeholder': '📧 Registration Email',
-        'register_pass_placeholder': 'Password (min 6 chars)',
-        'btn_register': 'Create Account',
-        'has_account': 'Already have an account?',
-        'link_login': 'Log In',
-        
-        // Header / Tabs
-        'btn_config': '⚙️ Hotel Settings',
-        'btn_change_pass': 'Change Password',
-        'btn_logout': '🚪 Log Out',
-        'tab_dogs': '🐕 Dogs',
-        'tab_hotel': '🏨 Hotel',
-        'tab_reservations': '📅 Reservations',
-        'tab_training': '🎓 Training',
-        'tab_stats': '📈 Statistics',
-        'tab_history': 'History',
-        'tab_invoices': '📄 Invoices',
-        'tab_employees': '👥 Employees',
-        'tab_whatsapp': '💬 WhatsApp',
-        
-        // Stats
-        'stat_dogs': 'Dogs',
-        'stat_owners': '👤 Owners',
-        'stat_reservations': '📅 Reservations',
-        'stat_hotel_slots': '🏨 Hotel Slots',
-        
-        // Language Selector
-        'lang_label': 'Language:',
-        'lang_es': 'Español',
-        'lang_en': 'English',
-        'lang_fr': 'Français',
-        'lang_de': 'Deutsch',
-        'lang_it': 'Italiano',
-        'lang_zh': '中文',
-        'lang_ru': 'Русский',
-        'lang_pt': 'Português'
+        'tab_perros': '🐕 Dogs', 'tab_hotel': '🏨 Hotel', 'tab_reservas': '📅 Bookings',
+        'tab_adiestramiento': '🎓 Training', 'tab_estadisticas': '📈 Statistics',
+        'tab_historial': '📜 History', 'tab_facturas': '📄 Invoices', 
+        'tab_empleados': '👥 Staff', 'tab_contactos': '💬 WhatsApp',
+        'btn_config': '⚙️ Hotel Setup', 'btn_pass': '🔑 Change Pass', 'btn_logout': '🚪 Logout'
     }
 };
+
+let currentLang = localStorage.getItem('lyra_lang') || 'es';
+
+window.changeLanguage = (lang) => {
+    currentLang = lang;
+    localStorage.setItem('lyra_lang', lang);
+    
+    // 1. Actualizar elementos con data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang] && I18N[lang][key]) el.textContent = I18N[lang][key];
+    });
+
+    // 2. Actualizar elementos específicos de la interfaz (Tabs y Botones)
+    const translations = I18N[lang] || I18N['es'];
+    
+    // Mapeo directo de IDs/Selectores a claves de traducción
+    const uiMap = {
+        '.tab[data-section="perros"]': 'tab_perros',
+        '.tab[data-section="hotel"]': 'tab_hotel',
+        '.tab[data-section="reservas"]': 'tab_reservas',
+        '.tab[data-section="adiestramiento"]': 'tab_adiestramiento',
+        '.tab[data-section="estadisticas"]': 'tab_estadisticas',
+        '.tab[data-section="historial"]': 'tab_historial',
+        '.tab[data-section="facturas"]': 'tab_facturas',
+        '.tab[data-section="empleados"]': 'tab_empleados',
+        '.tab[data-section="contactos"]': 'tab_contactos',
+        '#btnConfig': 'btn_config',
+        '#btnCambiarPass': 'btn_pass',
+        '#btnLogout': 'btn_logout'
+    };
+
+    for (const [selector, key] of Object.entries(uiMap)) {
+        const el = document.querySelector(selector);
+        if (el && translations[key]) el.textContent = translations[key];
+    }
+};
+
+// Inicializar idioma al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    window.changeLanguage(currentLang);
+});
 
 // Idioma por defecto
 let currentLang = localStorage.getItem('lyra_lang') || 'es';
