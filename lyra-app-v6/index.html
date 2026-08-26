@@ -832,6 +832,9 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 <!-- BOTÓN DE ELIMINAR Y GUARDAR CORREGIDOS -->
 <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
     <button class="btn btn-trash" onclick="eliminarDesdeEdicion()" title="Eliminar Reserva">🗑️ Eliminar</button>
+<!-- BOTÓN DE ELIMINAR Y GUARDAR CORREGIDOS -->
+<div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+    <button class="btn btn-trash" onclick="eliminarDesdeEdicion()" title="Eliminar Reserva">🗑️ Eliminar</button>
     <button class="btn btn-success" id="btnGuardarEdicionReserva" style="width: auto; padding: 10px 30px;">💾 Guardar Cambios</button>
 </div>
 </div></div>
@@ -846,6 +849,15 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 Variables disponibles: <strong>{NOMBRE_EMPRESA}</strong>, <strong>{CIF}</strong>, <strong>{DIRECCION_EMPRESA}</strong>, <strong>{TELEFONO_EMPRESA}</strong>, <strong>{CIUDAD}</strong>, <strong>{NOMBRE_DUENO}</strong>, <strong>{DNI_DUENO}</strong>, <strong>{DIRECCION_DUENO}</strong>, <strong>{EMAIL_DUENO}</strong>, <strong>{TELEFONO_DUENO}</strong>, <strong>{NOMBRE_PERRO}</strong>, <strong>{RAZA}</strong>, <strong>{TAMANO}</strong>, <strong>{EDAD}</strong>, <strong>{COLOR}</strong>, <strong>{MICROCHIP}</strong>, <strong>{PASAPORTE}</strong>, <strong>{VACUNAS}</strong>, <strong>{DESPARASITACION_INTERNA}</strong>, <strong>{DESPARASITACION_EXTERNA}</strong>, <strong>{TOS_PERRERAS}</strong>, <strong>{CONTACTO_OTROS_PERROS}</strong>, <strong>{COMPORTAMIENTO_AGRESIVO}</strong>, <strong>{MEDICACION}</strong>, <strong>{ALERGIAS}</strong>, <strong>{FECHA_FIRMA}</strong>, <strong>{HORA_FIRMA}</strong><br>Si dejas este campo vacío se cargará automáticamente el contrato tipo de Lyra App.
 </small>
 </div>
+<hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">🚫 Días Bloqueados (Vacaciones/Cierre)</h3>
+<div class="form-group">
+    <label>Fecha inicio:</label>
+    <input type="date" id="configBloqueoInicio">
+    <label style="margin-top:10px; display:block;">Fecha fin:</label>
+    <input type="date" id="configBloqueoFin">
+    <button class="btn btn-warning" id="btnAñadirBloqueo" style="margin-top:10px;width:100%;">➕ Añadir Bloqueo</button>
+</div>
+<div id="listaBloqueos" style="margin-top:10px; font-size:13px;"></div>
 <hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">💾 Copia de Seguridad</h3><div style="background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d;"><p style="font-size: 13px; margin-bottom: 10px;">Guarda una copia de todos tus datos (perros, reservas, facturas) en un archivo seguro.</p><div style="display: flex; gap: 10px; flex-wrap: wrap;"><button class="btn btn-primary" id="btnExportarBackup">️ Descargar Backup</button><button class="btn btn-warning" id="btnImportarBackupLabel">⬆️ Restaurar Backup</button><input type="file" id="importBackupInput" accept=".json" style="display: none;"></div></div><button class="btn btn-success" id="btnGuardarConfiguracionHotel" style="width:100%;padding:15px;margin-top:20px;">💾 Guardar Configuración</button><div id="configStatus" style="margin-top:15px;padding:10px;border-radius:5px;display:none;"></div></div></div>
 <div id="modalEditarEmpleado" class="modal"><div class="modal-content" style="max-width:500px;"><span class="close" onclick="document.getElementById('modalEditarEmpleado').style.display='none'">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Empleado</h2><input type="hidden" id="editEmpId"><div class="form-group"><label>Nombre:</label><input type="text" id="editEmpNombre"></div><div class="form-group"><label>Apellidos:</label><input type="text" id="editEmpApellidos"></div><div class="form-group"><label>Email:</label><input type="email" id="editEmpEmail" readonly style="background:#f1f5f9;"></div><div class="form-group"><label>Teléfono:</label><input type="tel" id="editEmpTelefono"></div><div class="form-group"><label>Rol:</label><select id="editEmpRol"><option value="admin">👑 Admin</option><option value="recepcion">📋 Recepción</option><option value="adiestrador">🎓 Adiestrador</option></select></div><div class="form-group"><label>Notas:</label><textarea id="editEmpNotas" rows="2"></textarea></div><button class="btn btn-success" onclick="guardarEdicionEmpleadoUI()" style="width:100%;">💾 Guardar Cambios</button></div></div>
 <div id="modalCambiarPass" class="modal"><div class="modal-content" style="max-width:400px;"><span class="close" onclick="document.getElementById('modalCambiarPass').style.display='none'">&times;</span><h2 style="color:#334155;margin-bottom:20px;">🔒 Cambiar mi Contraseña</h2><div class="form-group"><label>Nueva contraseña (mín 6 caracteres):</label><input type="password" id="nuevaPass" placeholder="Escribe la nueva clave..."></div><button class="btn btn-success" onclick="guardarNuevaPassUI()" style="width:100%;margin-top:15px;">💾 Guardar Nueva Clave</button></div></div>
@@ -1536,6 +1548,17 @@ alert('❌ Error: ' + res.error);
 }
 }
 });
+// ✅ LISTENER PARA AÑADIR BLOQUEO DE DÍAS
+document.getElementById('btnAñadirBloqueo').addEventListener('click', () => {
+    const inicio = document.getElementById('configBloqueoInicio').value;
+    const fin = document.getElementById('configBloqueoFin').value;
+    if (!inicio || !fin) return alert('Selecciona fecha de inicio y fin');
+    
+    if (!currentConfig.diasBloqueados) currentConfig.diasBloqueados = [];
+    currentConfig.diasBloqueados.push({ inicio, fin });
+    
+    renderizarListaBloqueos();
+});
 }
 function mostrarError(m) {
 const e = document.getElementById('loginError');
@@ -2181,13 +2204,11 @@ grid.appendChild(div);
 }
 for (let dia = 1; dia <= totalDias; dia++) {
 const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-
 // VERIFICAR SI ESTÁ BLOQUEADO
 let estaBloqueado = false;
 if (currentConfig && currentConfig.diasBloqueados) {
-    estaBloqueado = currentConfig.diasBloqueados.some(b => fechaStr >= b.inicio && fechaStr <= b.fin);
+estaBloqueado = currentConfig.diasBloqueados.some(b => fechaStr >= b.inicio && fechaStr <= b.fin);
 }
-
 const ocupacion = reservasDB.filter(r => r.tipo === 'hotel' && fechaStr >= r.inicio && fechaStr <= r.fin && r.completadas < r.total).length;
 const porcentaje = Math.round((ocupacion / totalK) * 100);
 let claseOcupacion = 'baja';
@@ -2197,14 +2218,13 @@ else if (porcentaje >= 20) claseOcupacion = 'media';
 const div = document.createElement('div');
 // Añadir clase 'blocked-day' si está bloqueado
 div.className = `calendar-day ${estaBloqueado ? 'blocked-day' : ''} ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
-
 // Si está bloqueado, no permitir click para ver reservas y mostrar aviso
 if (estaBloqueado) {
-    div.onclick = null;
-    div.innerHTML = `<div class="calendar-day-number">${dia}</div><div style="font-size:10px;color:#ef4444;font-weight:bold;text-align:center;margin-top:5px;">BLOQUEADO</div>`;
+div.onclick = null;
+div.innerHTML = `<div class="calendar-day-number">${dia}</div><div style="font-size:10px;color:#ef4444;font-weight:bold;text-align:center;margin-top:5px;">BLOQUEADO</div>`;
 } else {
-    div.onclick = () => verReservasDelDia(fechaStr);
-    div.innerHTML = `<div class="calendar-day-number">${dia}</div><div class="calendar-day-ocupacion ${claseOcupacion}">${porcentaje}%</div>`;
+div.onclick = () => verReservasDelDia(fechaStr);
+div.innerHTML = `<div class="calendar-day-number">${dia}</div><div class="calendar-day-ocupacion ${claseOcupacion}">${porcentaje}%</div>`;
 }
 grid.appendChild(div);
 }
@@ -2976,7 +2996,34 @@ clientLogoPreview.classList.add('hidden');
 btnEliminarClientLogo.classList.add('hidden');
 clientLogoBase64 = null;
 }
+renderizarListaBloqueos();
 document.getElementById('modalConfig').style.display = 'block';
+};
+
+function renderizarListaBloqueos() {
+    const lista = document.getElementById('listaBloqueos');
+    if (!lista) return;
+    
+    if (!currentConfig || !currentConfig.diasBloqueados || currentConfig.diasBloqueados.length === 0) {
+        lista.innerHTML = '<p style="color:#64748b;">No hay días bloqueados.</p>';
+        return;
+    }
+    
+    let html = '<ul style="list-style:none; padding:0;">';
+    currentConfig.diasBloqueados.forEach((b, index) => {
+        html += `<li style="margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:5px 10px; border-radius:4px;">
+            <span>${b.inicio} a ${b.fin}</span>
+            <button onclick="eliminarBloqueo(${index})" style="color:red;border:none;background:none;cursor:pointer;font-weight:bold;">x</button>
+        </li>`;
+    });
+    html += '</ul>';
+    lista.innerHTML = html;
+}
+
+window.eliminarBloqueo = (index) => {
+    if (!currentConfig || !currentConfig.diasBloqueados) return;
+    currentConfig.diasBloqueados.splice(index, 1);
+    renderizarListaBloqueos();
 };
 window.procesarClientLogo = (input) => {
 if (input.files && input.files[0]) {
