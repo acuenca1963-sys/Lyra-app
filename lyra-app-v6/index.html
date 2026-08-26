@@ -319,7 +319,7 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 <div style="text-align: center;">
 <img src="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png" alt="Lyra App" style="width: 120px; height: 120px; object-fit: contain; display: block; margin: 0 auto;">
 <div style="margin-top: 5px; font-weight: 800; color: white; font-size: 20px; letter-spacing: 2px;">LYRA APP</div>
-<div style="font-size: 12px; color: #cbd5e1; font-weight: 600;">v6.0</div>
+<div style="font-size: 12px; color: #cbd5e1; font-weight: 600;">v6.1</div>
 </div>
 </div>
 <div class="user-info">
@@ -830,12 +830,10 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 </div>
 </div>
 <!-- BOTÓN DE ELIMINAR Y GUARDAR CORREGIDOS -->
-<div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-    <button class="btn btn-trash" onclick="eliminarDesdeEdicion()" title="Eliminar Reserva">🗑️ Eliminar</button>
 <!-- BOTÓN DE ELIMINAR Y GUARDAR CORREGIDOS -->
 <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-    <button class="btn btn-trash" onclick="eliminarDesdeEdicion()" title="Eliminar Reserva">🗑️ Eliminar</button>
-    <button class="btn btn-success" id="btnGuardarEdicionReserva" style="width: auto; padding: 10px 30px;">💾 Guardar Cambios</button>
+<button class="btn btn-trash" onclick="eliminarDesdeEdicion()" title="Eliminar Reserva">🗑️ Eliminar</button>
+<button class="btn btn-success" id="btnGuardarEdicionReserva" style="width: auto; padding: 10px 30px;">💾 Guardar Cambios</button>
 </div>
 </div></div>
 <div id="modalDia" class="modal"><div class="modal-content"><span class="close" data-modal="modalDia">&times;</span><h2 style="color:#334155;margin-bottom:20px;" id="modalDiaTitulo">📅 Reservas del Día</h2><div id="modalDiaContenido"></div></div></div>
@@ -1125,6 +1123,8 @@ stat.textContent = `${ocup}/${cfg.totalKennels}`;
 }
 if (status) status.textContent = `✅ Configurado: ${cfg.totalKennels} casetas (${cfg.kennelPrefix}1-${cfg.kennelPrefix}${cfg.totalKennels})`;
 if (document.getElementById('hotelPrecio')) document.getElementById('hotelPrecio').value = cfg.prices.hotel;
+// ✅ NUEVO: Mostrar reservas activas al iniciar
+mostrarReservasActivas();
 }
 function cargarDatos() {
 const user = getCurrentUser();
