@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Lyra App - Gestión Canina v6</title>
+<title>Lyra App - Gestión Canina v6.1</title>
 <meta name="theme-color" content="#334155">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="format-detection" content="telephone=no">
+<!-- Iconos para instalación profesional -->
+<link rel="icon" type="image/png" sizes="192x192" href="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/acuenca1963-sys/Lyra-app/main/logo-lyra.png">
 <link rel="manifest" href="./manifest.json">
 <style>
+/* ... (aquí va todo tu CSS actual, no lo toques) ... */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #cbd5e1; min-height: 100vh; color: #334155; }
 .training-alert-top { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-align: center; padding: 14px 20px; font-weight: bold; display: none; animation: slideDown 0.5s ease-out, pulseAlert 2s infinite; box-shadow: 0 4px 6px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
@@ -333,10 +337,10 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
     <option value="ru">🇷🇺 RU</option>
     <option value="pt">🇵🇹 PT</option>
 </select>
-<button class="btn-config" id="btnConfig">⚙️ Configurar Hotel</button>
-<button class="btn-config" id="btnCambiarPass" style="background:#10b981;"> Cambiar Clave</button>
+<button class="btn-config" id="btnConfig" data-i18n="btn_config">⚙️ Configurar Hotel</button>
+<button class="btn-config" id="btnCambiarPass" style="background:#10b981;" data-i18n="btn_change_pass"> Cambiar Clave</button>
 <span id="userEmail" style="font-weight: 600; color: #cbd5e1;">usuario@email.com</span>
-<button class="btn-logout" id="btnLogout">🚪 Salir</button>
+<button class="btn-logout" id="btnLogout" data-i18n="btn_logout">🚪 Salir</button>
 </div>
 </div>
 </div>
@@ -349,21 +353,21 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 <p style="text-align:center;color:#64748b;margin-top:15px;font-size:13px;">⏳ Cargando datos...</p>
 </div>
 <div class="stats">
-<div class="stat-card"><h3 id="statPerros">0</h3><p> Perros</p></div>
-<div class="stat-card"><h3 id="statDuenos">0</h3><p>👤 Dueños</p></div>
-<div class="stat-card"><h3 id="statReservas">0</h3><p>📅 Reservas</p></div>
-<div class="stat-card"><h3 id="statHotel">0/15</h3><p>🏨 Plazas Hotel</p></div>
+<div class="stat-card"><h3 id="statPerros">0</h3><p data-i18n="stat_dogs"> Perros</p></div>
+<div class="stat-card"><h3 id="statDuenos">0</h3><p data-i18n="stat_owners">👤 Dueños</p></div>
+<div class="stat-card"><h3 id="statReservas">0</h3><p data-i18n="stat_reservations">📅 Reservas</p></div>
+<div class="stat-card"><h3 id="statHotel">0/15</h3><p data-i18n="stat_hotel_slots">🏨 Plazas Hotel</p></div>
 </div>
 <div class="tabs">
-<button class="tab active" data-section="perros">🐕 Perros</button>
-<button class="tab" data-section="hotel">🏨 Hotel</button>
-<button class="tab" data-section="reservas">📅 Reservas</button>
-<button class="tab" data-section="adiestramiento">🎓 Adiestramiento</button>
-<button class="tab" data-section="estadisticas">📈 Estadísticas</button>
-<button class="tab" data-section="historial"> Historial</button>
-<button class="tab" data-section="facturas">📄 Facturas</button>
-<button class="tab" data-section="empleados">👥 Empleados</button>
-<button class="tab" data-section="contactos">💬 WhatsApp</button>
+<button class="tab active" data-section="perros" data-i18n="tab_dogs">🐕 Perros</button>
+<button class="tab" data-section="hotel" data-i18n="tab_hotel">🏨 Hotel</button>
+<button class="tab" data-section="reservas" data-i18n="tab_reservations">📅 Reservas</button>
+<button class="tab" data-section="adiestramiento" data-i18n="tab_training">🎓 Adiestramiento</button>
+<button class="tab" data-section="estadisticas" data-i18n="tab_stats">📈 Estadísticas</button>
+<button class="tab" data-section="historial" data-i18n="tab_history"> Historial</button>
+<button class="tab" data-section="facturas" data-i18n="tab_invoices">📄 Facturas</button>
+<button class="tab" data-section="empleados" data-i18n="tab_employees">👥 Empleados</button>
+<button class="tab" data-section="contactos" data-i18n="tab_whatsapp">💬 WhatsApp</button>
 </div>
 <div id="perros" class="section active">
 <div class="buscador-container">
@@ -3746,6 +3750,7 @@ window.t = (key) => {
 
 // Aplicar traducciones dinámicamente
 window.applyTranslations = () => {
+    // Actualizar textos normales
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
@@ -3755,13 +3760,10 @@ window.applyTranslations = () => {
         }
     });
     
-    // Sincronizar selector del header (y el de configuración si existe)
+    // Sincronizar selector de idioma
     const headerLang = document.getElementById('headerLangSelector');
     if (headerLang) headerLang.value = currentLang;
-    const configLang = document.getElementById('configLangSelector');
-    if (configLang) configLang.value = currentLang;
 };
-
 // Cambiar idioma
 window.changeLanguage = (lang) => {
     currentLang = lang;
