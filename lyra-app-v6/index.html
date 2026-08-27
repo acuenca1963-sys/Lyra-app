@@ -1557,11 +1557,14 @@ document.getElementById('btnAñadirBloqueo').addEventListener('click', () => {
     const inicio = document.getElementById('configBloqueoInicio').value;
     const fin = document.getElementById('configBloqueoFin').value;
     if (!inicio || !fin) return alert('Selecciona fecha de inicio y fin');
-    
     if (!currentConfig.diasBloqueados) currentConfig.diasBloqueados = [];
     currentConfig.diasBloqueados.push({ inicio, fin });
-    
     renderizarListaBloqueos();
+});
+
+// ✅ NUEVO: Listener para cambiar idioma desde el desplegable
+document.getElementById('headerLangSelector').addEventListener('change', (e) => {
+    changeLanguage(e.target.value);
 });
 }
 function mostrarError(m) {
@@ -3677,27 +3680,43 @@ win.document.close();
 const I18N = {
     es: {
         'app_title': 'LYRA APP', 'app_subtitle': 'Hotel & Adiestramiento Canino',
-        'tab_perros': '🐕 Perros', 'tab_hotel': '🏨 Hotel', 'tab_reservas': '📅 Reservas',
-        'tab_adiestramiento': '🎓 Adiestramiento', 'tab_estadisticas': '📈 Estadísticas',
-        'tab_historial': '📜 Historial', 'tab_facturas': '📄 Facturas', 
-        'tab_empleados': '👥 Empleados', 'tab_contactos': '💬 WhatsApp',
-        'btn_config': '⚙️ Configurar Hotel', 'btn_pass': '🔑 Cambiar Clave', 'btn_logout': '🚪 Salir'
+        'btn_login': '🔐 Iniciar Sesión', 'link_register': 'Crear una aquí', 'no_account': '¿No tienes cuenta?',
+        'btn_register': 'Crear Cuenta', 'has_account': '¿Ya tienes cuenta?', 'link_login': 'Iniciar Sesión',
+        'btn_config': '⚙️ Configurar Hotel', 'btn_change_pass': 'Cambiar Clave', 'btn_logout': '🚪 Salir',
+        'tab_dogs': '🐕 Perros', 'tab_hotel': '🏨 Hotel', 'tab_reservations': '📅 Reservas',
+        'tab_training': '🎓 Adiestramiento', 'tab_stats': '📈 Estadísticas', 'tab_history': 'Historial',
+        'tab_invoices': '📄 Facturas', 'tab_employees': '👥 Empleados', 'tab_whatsapp': '💬 WhatsApp',
+        'stat_dogs': 'Perros', 'stat_owners': '👤 Dueños', 'stat_reservations': '📅 Reservas', 'stat_hotel_slots': '🏨 Plazas Hotel'
     },
     en: {
         'app_title': 'LYRA APP', 'app_subtitle': 'Canine Hotel & Training',
-        'tab_perros': '🐕 Dogs', 'tab_hotel': '🏨 Hotel', 'tab_reservas': '📅 Bookings',
-        'tab_adiestramiento': '🎓 Training', 'tab_estadisticas': '📈 Statistics',
-        'tab_historial': '📜 History', 'tab_facturas': '📄 Invoices', 
-        'tab_empleados': '👥 Staff', 'tab_contactos': '💬 WhatsApp',
-        'btn_config': '⚙️ Hotel Setup', 'btn_pass': '🔑 Change Pass', 'btn_logout': '🚪 Logout'
+        'btn_login': '🔐 Log In', 'link_register': 'Create one here', 'no_account': "Don't have an account?",
+        'btn_register': 'Create Account', 'has_account': 'Already have an account?', 'link_login': 'Log In',
+        'btn_config': '⚙️ Hotel Settings', 'btn_change_pass': 'Change Pass', 'btn_logout': '🚪 Log Out',
+        'tab_dogs': '🐕 Dogs', 'tab_hotel': '🏨 Hotel', 'tab_reservations': '📅 Reservations',
+        'tab_training': '🎓 Training', 'tab_stats': '📈 Statistics', 'tab_history': 'History',
+        'tab_invoices': '📄 Invoices', 'tab_employees': '👥 Staff', 'tab_whatsapp': '💬 WhatsApp',
+        'stat_dogs': 'Dogs', 'stat_owners': '👤 Owners', 'stat_reservations': '📅 Reservations', 'stat_hotel_slots': '🏨 Hotel Slots'
     },
     fr: {
         'app_title': 'LYRA APP', 'app_subtitle': 'Hôtel & Dressage Canin',
-        'tab_perros': '🐕 Chiens', 'tab_hotel': '🏨 Hôtel', 'tab_reservas': '📅 Réservations',
-        'tab_adiestramiento': '🎓 Dressage', 'tab_estadisticas': '📈 Statistiques',
-        'tab_historial': '📜 Historique', 'tab_facturas': '📄 Factures', 
-        'tab_empleados': '👥 Employés', 'tab_contactos': '💬 WhatsApp',
-        'btn_config': '⚙️ Configurer', 'btn_pass': '🔑 Changer MDP', 'btn_logout': '🚪 Sortir'
+        'btn_login': '🔐 Connexion', 'link_register': 'Créer un compte', 'no_account': 'Pas de compte ?',
+        'btn_register': 'Créer Compte', 'has_account': 'Déjà un compte ?', 'link_login': 'Connexion',
+        'btn_config': '⚙️ Config Hôtel', 'btn_change_pass': 'Changer MDP', 'btn_logout': '🚪 Sortir',
+        'tab_dogs': '🐕 Chiens', 'tab_hotel': '🏨 Hôtel', 'tab_reservations': '📅 Réservations',
+        'tab_training': '🎓 Dressage', 'tab_stats': '📈 Stats', 'tab_history': 'Historique',
+        'tab_invoices': '📄 Factures', 'tab_employees': '👥 Employés', 'tab_whatsapp': '💬 WhatsApp',
+        'stat_dogs': 'Chiens', 'stat_owners': '👤 Propriétaires', 'stat_reservations': '📅 Réservations', 'stat_hotel_slots': '🏨 Places Hôtel'
+    },
+    de: {
+        'app_title': 'LYRA APP', 'app_subtitle': 'Hunde Hotel & Training',
+        'btn_login': '🔐 Anmelden', 'link_register': 'Konto erstellen', 'no_account': 'Kein Konto?',
+        'btn_register': 'Konto erstellen', 'has_account': 'Schon ein Konto?', 'link_login': 'Anmelden',
+        'btn_config': '⚙️ Hotel Konfig', 'btn_change_pass': 'Passwort ändern', 'btn_logout': '🚪 Ausloggen',
+        'tab_dogs': '🐕 Hunde', 'tab_hotel': '🏨 Hotel', 'tab_reservations': '📅 Reservierungen',
+        'tab_training': '🎓 Training', 'tab_stats': '📈 Statistik', 'tab_history': 'Verlauf',
+        'tab_invoices': '📄 Rechnungen', 'tab_employees': '👥 Mitarbeiter', 'tab_whatsapp': '💬 WhatsApp',
+        'stat_dogs': 'Hunde', 'stat_owners': '👤 Besitzer', 'stat_reservations': '📅 Reservierungen', 'stat_hotel_slots': '🏨 Hotel Plätze'
     }
 };
 
