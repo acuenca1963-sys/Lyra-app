@@ -3701,7 +3701,7 @@ win.document.write(contenido);
 win.document.close();
 };
 // ============================================
-// MOTOR DE TRADUCCIONES OPTIMIZADO (i18n) - LYRA APP v6.1
+// MOTOR DE TRADUCCIONES COMPLETO (i18n) - LYRA APP v6.1
 // ============================================
 const I18N = {
     es: {
@@ -3788,7 +3788,6 @@ const I18N = {
 
 let currentLang = localStorage.getItem('lyra_lang') || 'es';
 
-// Función rápida de traducción
 window.changeLanguage = (lang) => {
     if (!I18N[lang]) lang = 'es'; // Fallback a español si el idioma no existe
     currentLang = lang;
@@ -3796,7 +3795,7 @@ window.changeLanguage = (lang) => {
     
     const texts = I18N[lang];
     
-    // 1. Traducir elementos con data-i18n (Instantáneo)
+    // 1. Traducir elementos con data-i18n
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (texts[key]) {
@@ -3805,7 +3804,28 @@ window.changeLanguage = (lang) => {
         }
     });
 
-    // 2. Sincronizar selector
+    // 2. BARRIDO TOTAL: Buscar textos específicos en toda la interfaz
+    const mapTexts = {
+        '🐕 Perros': 'tab_dogs', '🏨 Hotel': 'tab_hotel', '📅 Reservas': 'tab_reservations',
+        '🎓 Adiestramiento': 'tab_training', '📈 Estadísticas': 'tab_stats', 'Historial': 'tab_history',
+        '📄 Facturas': 'tab_invoices', '👥 Empleados': 'tab_employees', '💬 WhatsApp': 'tab_whatsapp',
+        'Perros': 'stat_dogs', '👤 Dueños': 'stat_owners', '🏨 Plazas Hotel': 'stat_hotel_slots',
+        '⚙️ Configurar Hotel': 'btn_config', 'Cambiar Clave': 'btn_change_pass', '🚪 Salir': 'btn_logout'
+    };
+
+    // Recorrer el mapa y buscar esos textos en el DOM
+    for (const [originalText, key] of Object.entries(mapTexts)) {
+        if (texts[key]) {
+            // Buscamos elementos que contengan exactamente ese texto
+            document.querySelectorAll('*').forEach(el => {
+                if (el.textContent.trim() === originalText) {
+                    el.textContent = texts[key];
+                }
+            });
+        }
+    }
+    
+    // Actualizar selector
     const headerLang = document.getElementById('headerLangSelector');
     if (headerLang) headerLang.value = lang;
 };
