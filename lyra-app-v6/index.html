@@ -2385,96 +2385,114 @@ resultados.innerHTML = html;
 resultados.style.display = 'block';
 resultados.style.maxHeight = '500px';
 };
+// ✅ CORREGIDO: Selección de perro para reserva robusta
 window.seleccionarPerroParaReserva = (id, nombre, dueno, telefono) => {
-document.getElementById('reservaPerroId').value = id;
-document.getElementById('reservaPerroNombre').value = nombre;
-document.getElementById('reservaPerroDueno').value = dueno;
-document.getElementById('reservaPerroTelefono').value = telefono;
-document.getElementById('perroSeleccionadoNombre').textContent = nombre;
-document.getElementById('perroSeleccionadoDueno').textContent = dueno;
-document.getElementById('perroSeleccionadoInfo').style.display = 'block';
-document.getElementById('buscadorPerrosResultados').style.display = 'none';
-document.getElementById('buscadorPerrosReserva').value = `${nombre} (${dueno})`;
-calcularPrecioReservaUI();
+    // Guardamos los datos en los inputs ocultos y visibles
+    document.getElementById('reservaPerroId').value = id;
+    document.getElementById('reservaPerroNombre').value = nombre;
+    document.getElementById('reservaPerroDueno').value = dueno;
+    document.getElementById('reservaPerroTelefono').value = telefono;
+    
+    // Actualizamos la UI de confirmación
+    document.getElementById('perroSeleccionadoNombre').textContent = nombre;
+    document.getElementById('perroSeleccionadoDueno').textContent = dueno;
+    document.getElementById('perroSeleccionadoInfo').style.display = 'block';
+    
+    // Limpiamos resultados y actualizamos el buscador visualmente
+    document.getElementById('buscadorPerrosResultados').style.display = 'none';
+    document.getElementById('buscadorPerrosReserva').value = `${nombre} (${dueno})`;
+    
+    // Forzamos el cálculo del precio inmediatamente
+    calcularPrecioReservaUI();
 };
-window.editarPerroSeleccionado = () => {
-const id = document.getElementById('reservaPerroId').value;
-if (id) editarPerro(id);
-else alert('⚠️ Selecciona un perro primero');
+
+// ✅ CORREGIDO: Cálculo de precio seguro
+window.calcularPrecioReserva = () => {
+    const tipo = document.getElementById('reservaTipo').value;
+    const inicio = document.getElementById('reservaInicio').value;
+    const fin = document.getElementById('reservaFin').value;
+    const precioInput = document.getElementById('reservaPrecio');
+    const perroId = document.getElementById('reservaPerroId').value;
+    
+    if (!currentConfig) return;
+    
+    const prices = currentConfig.prices;
+    let precioBase = 0;
+    
+    // Buscamos el perro en la base de datos local para ver si tiene tarifa especial
+    const perro = perrosDB.find(p => p.id === perroId);
+    if (perro && perro.precioPersonalizado && perro.precioPersonalizado > 0) {
+        precioBase = parseFloat(perro.precioPersonalizado);
+    } else {
+        // Si no tiene tarifa especial, usamos la general según el tipo
+        if (tipo === 'hotel') precioBase = prices.hotel;
+        else if (tipo === 'guarderia') precioBase = prices.guarderia;
+        else if (tipo === 'clase-suelta') precioBase = prices.claseSuelta;
+        else if (tipo === 'pack-10') precioBase = prices.pack10;
+        else if (tipo === 'pack-20') precioBase = prices.pack20;
+    }
+
+    if (!tipo) return;
+
+    if (tipo === 'hotel' || tipo === 'guarderia') {
+        if (!inicio || !fin) return;
+        const dias = Math.ceil((new Date(fin) - new Date(inicio)) / (1000 * 60 * 60 * 24)) + 1;
+        precioInput.value = (dias * precioBase).toFixed(2);
+    } else {
+        // Para clases sueltas o packs, el precio es fijo por el pack/clase
+        precioInput.value = precioBase.toFixed(2);
+    }
 };
-window.buscarPerroParaGrupo = () => {
-const texto = document.getElementById('buscadorPerrosGrupo').value.toLowerCase().trim();
-const resultados = document.getElementById('buscadorPerrosGrupoResultados');
-const perroActualId = document.getElementById('reservaPerroId').value;
-if (texto.length < 2) { resultados.style.display = 'none'; return; }
-const perrosEncontrados = perrosDB.filter(p => ((p.nombrePerro || '').toLowerCase().includes(texto) || (p.nombreDueno || '').toLowerCase().includes(texto)) && p.id !== perroActualId);
-if (perrosEncontrados.length === 0) {
-resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
-resultados.style.display = 'block';
-return;
-}
-resultados.innerHTML = perrosEncontrados.map(p => `<div class="buscador-perros-item" onclick="añadirPerroAGrupo('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}')">🐕 <strong>${p.nombrePerro}</strong> -  ${p.nombreDueno}</div>`).join('');
-resultados.style.display = 'block';
-};
-window.añadirPerroAGrupo = (id, nombre, dueno) => {
-if (!perrosGrupoReserva.find(p => p.id === id)) {
-perrosGrupoReserva.push({ id, nombre, dueno });
-actualizarListaGrupo();
-}
-document.getElementById('buscadorPerrosGrupoResultados').style.display = 'none';
-document.getElementById('buscadorPerrosGrupo').value = '';
-};
-function actualizarListaGrupo() {
-const lista = document.getElementById('grupoPerrosLista');
-if (perrosGrupoReserva.length === 0) { lista.innerHTML = ''; return; }
-lista.innerHTML = perrosGrupoReserva.map((p, index) => `<div style="display:flex;justify-content:space-between;align-items:center;background:white;padding:8px;margin:4px 0;border-radius:5px;"><span> ${p.nombre} (${p.dueno})</span><button type="button" class="btn btn-danger btn-sm" onclick="eliminarPerroDeGrupo(${index})">🗑️</button></div>`).join('');
-}
-window.eliminarPerroDeGrupo = (index) => {
-perrosGrupoReserva.splice(index, 1);
-actualizarListaGrupo();
-};
-window.buscarPerroParaTraining = () => {
-const texto = document.getElementById('trainDogSearch').value.toLowerCase().trim();
-const resultados = document.getElementById('trainDogResults');
-if (texto.length < 2) { resultados.style.display = 'none'; return; }
-const perrosEncontrados = perrosDB.filter(p => p.nombrePerro.toLowerCase().includes(texto) || p.nombreDueno.toLowerCase().includes(texto));
-if (perrosEncontrados.length === 0) {
-resultados.innerHTML = '<div class="buscador-perros-item">❌ No encontrado</div>';
-resultados.style.display = 'block';
-return;
-}
-resultados.innerHTML = perrosEncontrados.map(p => `<div class="buscador-perros-item" onclick="seleccionarPerroTraining('${p.id}', '${p.nombrePerro}', '${p.nombreDueno}', '${p.telefono || ''}')">🐕 <strong>${p.nombrePerro}</strong> - 👤 ${p.nombreDueno}</div>`).join('');
-resultados.style.display = 'block';
-};
-window.seleccionarPerroTraining = (id, nombre, dueno, telefono) => {
-document.getElementById('trainPerroId').value = id;
-document.getElementById('trainPerroNombre').value = nombre;
-document.getElementById('trainPerroDueno').value = dueno;
-document.getElementById('trainPerroTelefono').value = telefono;
-document.getElementById('trainDogNameDisplay').textContent = `${nombre} (${dueno})`;
-document.getElementById('trainDogSelected').style.display = 'block';
-document.getElementById('trainDogResults').style.display = 'none';
-document.getElementById('trainDogSearch').value = '';
-};
-window.crearClaseAdiestramiento = async () => {
-const idPerro = document.getElementById('trainPerroId').value;
-const fecha = document.getElementById('trainDate').value;
-const hora = document.getElementById('trainTime').value;
-const tipo = document.getElementById('trainType').value;
-const precio = parseFloat(document.getElementById('trainPrice').value);
-const sesiones = parseInt(document.getElementById('trainSessions').value);
-if (!idPerro || !fecha || !hora) { alert('❌ Completa todos los campos (Perro, Fecha y Hora)'); return; }
-const data = { idPerro, fecha, hora, tipo, precio, sesiones };
-const res = await crearClase(data);
-if (res.success) {
-alert('✅ Clase programada correctamente');
-document.getElementById('trainDate').value = '';
-document.getElementById('trainTime').value = '';
-document.getElementById('trainDogSelected').style.display = 'none';
-document.getElementById('trainPerroId').value = '';
-} else {
-alert('❌ Error: ' + res.error);
-}
+
+// ✅ CORREGIDO: Creación de reserva sin bloqueos
+window.crearReserva = async () => {
+    const idPerro = document.getElementById('reservaPerroId').value;
+    const nombrePerro = document.getElementById('reservaPerroNombre').value;
+    const nombreDueno = document.getElementById('reservaPerroDueno').value;
+    const telefono = document.getElementById('reservaPerroTelefono').value;
+    const tipo = document.getElementById('reservaTipo').value;
+    const inicio = document.getElementById('reservaInicio').value;
+    const fin = document.getElementById('reservaFin').value;
+    const precio = parseFloat(document.getElementById('reservaPrecio').value) || 0;
+    const notas = document.getElementById('reservaNotas').value.trim();
+
+    // Validación estricta pero clara
+    if (!idPerro) {
+        alert('❌ Error: Debes seleccionar un perro de la lista de búsqueda.');
+        return;
+    }
+    if (!tipo || !inicio || !fin) {
+        alert('❌ Error: Completa el tipo de servicio y las fechas.');
+        return;
+    }
+
+    const data = { idPerro, tipo, inicio, fin, precio, notas };
+    const idsGrupo = perrosGrupoReserva.map(p => p.id);
+    
+    const res = await crearReserva(data, idsGrupo);
+    
+    if (res.success) {
+        // Limpieza total del formulario
+        document.getElementById('reservaPerroId').value = '';
+        document.getElementById('reservaPerroNombre').value = '';
+        document.getElementById('reservaPerroDueno').value = '';
+        document.getElementById('reservaPerroTelefono').value = '';
+        document.getElementById('buscadorPerrosReserva').value = '';
+        document.getElementById('perroSeleccionadoInfo').style.display = 'none';
+        document.getElementById('reservaTipo').value = '';
+        document.getElementById('reservaInicio').value = '';
+        document.getElementById('reservaFin').value = '';
+        document.getElementById('reservaPrecio').value = '';
+        document.getElementById('reservaNotas').value = '';
+        
+        perrosGrupoReserva = [];
+        actualizarListaGrupo();
+        document.getElementById('grupoPerrosSection').style.display = 'none';
+        
+        alert(`✅ ${res.message}`);
+    } else {
+        alert('❌ Error: ' + res.error);
+    }
 };
 function renderizarTrainingCalendar() {
 const grid = document.getElementById('trainingCalendarGrid');
@@ -4218,111 +4236,98 @@ zh: {
 let currentLang = localStorage.getItem('lyra_lang') || 'es';
 
 window.changeLanguage = (lang) => {
-if (!I18N[lang]) lang = 'es'; // Fallback a español si el idioma no existe
-currentLang = lang;
-localStorage.setItem('lyra_lang', lang);
-const texts = I18N[lang];
+    if (!I18N[lang]) lang = 'es'; 
+    currentLang = lang;
+    localStorage.setItem('lyra_lang', lang);
+    const texts = I18N[lang];
 
-// 1. Traducir elementos con data-i18n
-document.querySelectorAll('[data-i18n]').forEach(el => {
-const key = el.getAttribute('data-i18n');
-if (texts[key]) {
-if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = texts[key];
-else el.textContent = texts[key];
-}
-});
+    // 1. Traducir elementos estándar con data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (texts[key]) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = texts[key];
+            else el.textContent = texts[key];
+        }
+    });
 
-// 2. BARRIDO TOTAL: Buscar textos específicos en toda la interfaz
-const mapTexts = {
-'🐕 Perros': 'tab_dogs', '🏨 Hotel': 'tab_hotel', '📅 Reservas': 'tab_reservations',
-'🎓 Adiestramiento': 'tab_training', '📈 Estadísticas': 'tab_stats', 'Historial': 'tab_history',
-'📄 Facturas': 'tab_invoices', '👥 Empleados': 'tab_employees', '💬 WhatsApp': 'tab_whatsapp',
-'Perros': 'stat_dogs', '👤 Dueños': 'stat_owners', '📅 Reservas': 'stat_reservations', '🏨 Plazas Hotel': 'stat_hotel_slots',
-'⚙️ Configurar Hotel': 'btn_config', 'Cambiar Clave': 'btn_change_pass', '🚪 Salir': 'btn_logout',
-// Secciones
-'🔍 Buscador Avanzado': 'search_advanced', '➕ Nuevo Registro': 'new_record', '🖨️ Imprimir Lista': 'print_list',
-'🏥 Salud y Cuidados': 'health_care', '💰 Tarifa Especial (Opcional)': 'special_rate',
-'💾 Guardar Registro Completo': 'save_record', '📸 Foto del Perro': 'dog_photo',
-'📸 Usar Cámara': 'use_camera', '📁 Subir desde Galería': 'upload_gallery', '🗑️ Quitar Foto': 'remove_photo',
-// Formulario
-'Nombre:': 'name', '🦴 Raza:': 'breed', '🎂 Fecha Nacimiento:': 'birth_date', '📊 Edad:': 'age',
-'⚧ Sexo:': 'gender', '🔖 Microchip:': 'microchip', '📕 Pasaporte:': 'passport',
-'👤 Dueño:': 'owner', '🆔 DNI Dueño:': 'owner_dni', '📞 Teléfono:': 'phone',
-'📍 Dirección:': 'address', '🏥 Veterinario:': 'vet', '📝 Notas:': 'notes',
-'✨ Estado del Pelo:': 'coat_status', '💊 ¿Necesita Medicación?:': 'needs_medication',
-'📋 Detalle de Medicación / Curas:': 'medication_details', '⚠️ Alergias / Intolerancias:': 'allergies',
-'🎨 Color:': 'color', '📏 Tamaño:': 'size', '💉 Vacunas al día:': 'vaccinations',
-'💊 Desparasitación interna:': 'internal_deworming', '🛡️ Desparasitación externa:': 'external_deworming',
-'🤧 Tos de las perreras:': 'kennel_cough', '🐕 Acostumbrado a otros perros:': 'other_dogs',
-'⚠️ Conducta agresiva previa:': 'aggressive_behavior', '💶 Precio Base (€/día o clase):': 'base_price',
-// Opciones
-'✅ Bien': 'well', '⚠️ Regular': 'regular', '❌ Mal': 'bad', 'No': 'no', 'Sí': 'yes',
-'Macho': 'male', 'Hembra': 'female', 'Pequeño': 'small', 'Mediano': 'medium', 'Grande': 'large', 'Gigante': 'giant',
-// Hotel
-'📅 Nueva Reserva Hotel': 'new_hotel_reservation', 'Perro:': 'dog', '📅 Entrada:': 'check_in',
-'📅 Salida:': 'check_out', '💰 Precio/día:': 'price_day', '📊 Días:': 'days', '💰 Total:': 'total',
-'Caseta:': 'kennel', 'Auto-asignar la primera disponible': 'auto_assign', '✅ Crear Reserva': 'create_reservation',
-// Reservas
-'📅 Nueva Reserva': 'new_reservation', '🐕 Buscar Perro:': 'search_dog', 'Tipo:': 'type',
-'Inicio:': 'start', '📅 Fin:': 'end', '💰 Precio Total (Editable):': 'total_price',
-'➕ Añadir Perro al Grupo (misma caseta)': 'add_dog_group',
-// Adiestramiento
-'🎓 Programar Clase de Adiestramiento': 'schedule_class', '📅 Día:': 'day', 'Hora:': 'time',
-'🎯 Tipo de Clase:': 'class_type', '💰 Precio Clase (€):': 'class_price', '🔢 Nº Sesiones Pack:': 'sessions_pack',
-// Estadísticas
-'📊 Panel de Análisis': 'analysis_panel', '⭐ Cliente Frecuente': 'frequent_client',
-'💰 Ingresos Totales (Mes)': 'total_income', '🏨 Ocupación Media (Mes)': 'avg_occupation',
-'🐕 Total Perros Activos': 'total_active_dogs',
-// Historial
-'🔍 Buscar por perro o dueño...': 'search_history', 'Todos': 'all', '🏨 Hotel': 'hotel',
-'🎓 Adiestramiento': 'training', '🏠 Guardería': 'daycare', '🖨️ Imprimir Selección': 'print_selected',
-'Imprimir Todo': 'print_all',
-// Facturas
-'🧾 Nueva Factura Multi-Concepto': 'new_invoice', '👤 Buscar Dueño:': 'search_owner',
-'📝 Conceptos de la Factura': 'invoice_concepts', '➕ Añadir Línea': 'add_line',
-'🧾 GENERAR FACTURA': 'generate_invoice', '📚 Historial de Facturas': 'invoice_history',
-// Empleados
-'➕ Nuevo Empleado': 'new_employee', 'Lista de Empleados': 'employee_list',
-'📜 Historial de Acciones (Auditoría)': 'action_history',
-// Contactos
-'Envío Masivo de Mensajes': 'mass_messaging', '📱 Contactos Seleccionados': 'selected_contacts',
-'✅ Seleccionar Todos': 'select_all', '❌ Deseleccionar Todos': 'deselect_all',
-'📤 ENVIAR A SELECCIONADOS': 'send_selected', '📋 Lista de Contactos': 'contact_list',
-'💬 Mensaje Individual': 'individual_message',
-// Botones
-'💾 Guardar': 'save', '✏️ Editar': 'edit', '🗑️ Eliminar': 'delete', '❌ Cancelar': 'cancel',
-'🖨️ Imprimir': 'print', '👁️ Ver': 'view', '💬 WhatsApp': 'whatsapp',
-// Configuración
-'️ Configuración del Hotel': 'hotel_config', '🏢 Datos de Tu Empresa (Para Facturas)': 'company_data',
-'🖼️ Logo de Tu Empresa:': 'company_logo', 'Subir Logo': 'upload_logo',
-'📛 Nombre Comercial:': 'commercial_name', '🆔 CIF/NIF:': 'cif_nif',
-'🏨 Nombre de la App (Interno):': 'app_name', '🏠 Número de Casetas:': 'num_kennels',
-'🔖 Prefijo de Casetas:': 'kennel_prefix', '💰 Precios Generales': 'general_prices',
-'🏨 Hotel (€):': 'hotel_price', '🏠 Guardería (€):': 'daycare_price', 'Clase Suelta (€):': 'class_price',
-'Facturación': 'billing', '📄 Próximo Nº Factura:': 'next_invoice',
-'💬 WhatsApp API (Meta)': 'whatsapp_api', '📝 Contrato (Firma Digital)': 'contract',
-'🚫 Días Bloqueados (Vacaciones/Cierre)': 'blocked_days', 'Fecha inicio:': 'start_date', 'Fecha fin:': 'end_date',
-'➕ Añadir Bloqueo': 'add_block', '💾 Copia de Seguridad': 'backup',
-'💾 Guardar Configuración': 'save_config'
+    // 2. BARRIDO PROFUNDO: Traducción de elementos sin etiqueta específica
+    // Este mapa cubre los textos que estaban "mezclados" o fijos en español
+    const mapTexts = {
+        '🐕 Perros': 'tab_dogs', '🏨 Hotel': 'tab_hotel', '📅 Reservas': 'tab_reservations',
+        '🎓 Adiestramiento': 'tab_training', '📈 Estadísticas': 'tab_stats', 'Historial': 'tab_history',
+        '📄 Facturas': 'tab_invoices', '👥 Empleados': 'tab_employees', '💬 WhatsApp': 'tab_whatsapp',
+        'Perros': 'stat_dogs', '👤 Dueños': 'stat_owners', '📅 Reservas': 'stat_reservations', '🏨 Plazas Hotel': 'stat_hotel_slots',
+        '⚙️ Configurar Hotel': 'btn_config', 'Cambiar Clave': 'btn_change_pass', '🚪 Salir': 'btn_logout',
+        '🔍 Buscador Avanzado': 'search_advanced', '➕ Nuevo Registro': 'new_record', '🖨️ Imprimir Lista': 'print_list',
+        '🏥 Salud y Cuidados': 'health_care', '💰 Tarifa Especial (Opcional)': 'special_rate',
+        '💾 Guardar Registro Completo': 'save_record', '📸 Foto del Perro': 'dog_photo',
+        '📸 Usar Cámara': 'use_camera', '📁 Subir desde Galería': 'upload_gallery', '🗑️ Quitar Foto': 'remove_photo',
+        'Nombre:': 'name', '🦴 Raza:': 'breed', '🎂 Fecha Nacimiento:': 'birth_date', '📊 Edad:': 'age',
+        '⚧ Sexo:': 'gender', '🔖 Microchip:': 'microchip', '📕 Pasaporte:': 'passport',
+        '👤 Dueño:': 'owner', '🆔 DNI Dueño:': 'owner_dni', '📞 Teléfono:': 'phone',
+        '📍 Dirección:': 'address', '🏥 Veterinario:': 'vet', '📝 Notas:': 'notes',
+        '✨ Estado del Pelo:': 'coat_status', '💊 ¿Necesita Medicación?:': 'needs_medication',
+        '📋 Detalle de Medicación / Curas:': 'medication_details', '⚠️ Alergias / Intolerancias:': 'allergies',
+        '🎨 Color:': 'color', '📏 Tamaño:': 'size', '💉 Vacunas al día:': 'vaccinations',
+        '💊 Desparasitación interna:': 'internal_deworming', '🛡️ Desparasitación externa:': 'external_deworming',
+        '🤧 Tos de las perreras:': 'kennel_cough', '🐕 Acostumbrado a otros perros:': 'other_dogs',
+        '⚠️ Conducta agresiva previa:': 'aggressive_behavior', '💶 Precio Base (€/día o clase):': 'base_price',
+        '✅ Bien': 'well', '⚠️ Regular': 'regular', '❌ Mal': 'bad', 'No': 'no', 'Sí': 'yes',
+        'Macho': 'male', 'Hembra': 'female', 'Pequeño': 'small', 'Mediano': 'medium', 'Grande': 'large', 'Gigante': 'giant',
+        '📅 Nueva Reserva Hotel': 'new_hotel_reservation', 'Perro:': 'dog', '📅 Entrada:': 'check_in',
+        '📅 Salida:': 'check_out', '💰 Precio/día:': 'price_day', '📊 Días:': 'days', '💰 Total:': 'total',
+        'Caseta:': 'kennel', 'Auto-asignar la primera disponible': 'auto_assign', '✅ Crear Reserva': 'create_reservation',
+        '📅 Nueva Reserva': 'new_reservation', '🐕 Buscar Perro:': 'search_dog', 'Tipo:': 'type',
+        'Inicio:': 'start', '📅 Fin:': 'end', '💰 Precio Total (Editable):': 'total_price',
+        '➕ Añadir Perro al Grupo (misma caseta)': 'add_dog_group',
+        '🎓 Programar Clase de Adiestramiento': 'schedule_class', '📅 Día:': 'day', 'Hora:': 'time',
+        '🎯 Tipo de Clase:': 'class_type', '💰 Precio Clase (€):': 'class_price', '🔢 Nº Sesiones Pack:': 'sessions_pack',
+        '📊 Panel de Análisis': 'analysis_panel', '⭐ Cliente Frecuente': 'frequent_client',
+        '💰 Ingresos Totales (Mes)': 'total_income', '🏨 Ocupación Media (Mes)': 'avg_occupation',
+        '🐕 Total Perros Activos': 'total_active_dogs',
+        '🔍 Buscar por perro o dueño...': 'search_history', 'Todos': 'all', '🏨 Hotel': 'hotel',
+        '🎓 Adiestramiento': 'training', '🏠 Guardería': 'daycare', '🖨️ Imprimir Selección': 'print_selected',
+        'Imprimir Todo': 'print_all',
+        '🧾 Nueva Factura Multi-Concepto': 'new_invoice', '👤 Buscar Dueño:': 'search_owner',
+        '📝 Conceptos de la Factura': 'invoice_concepts', '➕ Añadir Línea': 'add_line',
+        '🧾 GENERAR FACTURA': 'generate_invoice', '📚 Historial de Facturas': 'invoice_history',
+        '➕ Nuevo Empleado': 'new_employee', 'Lista de Empleados': 'employee_list',
+        '📜 Historial de Acciones (Auditoría)': 'action_history',
+        'Envío Masivo de Mensajes': 'mass_messaging', '📱 Contactos Seleccionados': 'selected_contacts',
+        '✅ Seleccionar Todos': 'select_all', '❌ Deseleccionar Todos': 'deselect_all',
+        '📤 ENVIAR A SELECCIONADOS': 'send_selected', '📋 Lista de Contactos': 'contact_list',
+        '💬 Mensaje Individual': 'individual_message',
+        '💾 Guardar': 'save', '✏️ Editar': 'edit', '🗑️ Eliminar': 'delete', '❌ Cancelar': 'cancel',
+        '🖨️ Imprimir': 'print', '👁️ Ver': 'view', '💬 WhatsApp': 'whatsapp',
+        '️ Configuración del Hotel': 'hotel_config', '🏢 Datos de Tu Empresa (Para Facturas)': 'company_data',
+        '🖼️ Logo de Tu Empresa:': 'company_logo', 'Subir Logo': 'upload_logo',
+        '📛 Nombre Comercial:': 'commercial_name', '🆔 CIF/NIF:': 'cif_nif',
+        '🏨 Nombre de la App (Interno):': 'app_name', '🏠 Número de Casetas:': 'num_kennels',
+        '🔖 Prefijo de Casetas:': 'kennel_prefix', '💰 Precios Generales': 'general_prices',
+        '🏨 Hotel (€):': 'hotel_price', '🏠 Guardería (€):': 'daycare_price', 'Clase Suelta (€):': 'class_price',
+        'Facturación': 'billing', '📄 Próximo Nº Factura:': 'next_invoice',
+        '💬 WhatsApp API (Meta)': 'whatsapp_api', '📝 Contrato (Firma Digital)': 'contract',
+        '🚫 Días Bloqueados (Vacaciones/Cierre)': 'blocked_days', 'Fecha inicio:': 'start_date', 'Fecha fin:': 'end_date',
+        '➕ Añadir Bloqueo': 'add_block', '💾 Copia de Seguridad': 'backup',
+        '💾 Guardar Configuración': 'save_config'
+    };
+
+    // Aplicamos el mapa de textos a toda la interfaz
+    for (const [originalText, key] of Object.entries(mapTexts)) {
+        if (texts[key]) {
+            document.querySelectorAll('*').forEach(el => {
+                // Solo cambiamos si el texto coincide exactamente y no es un nodo vacío
+                if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3 && el.textContent.trim() === originalText) {
+                    el.textContent = texts[key];
+                }
+            });
+        }
+    }
+    
+    // Actualizar selector visual
+    const headerLang = document.getElementById('headerLangSelector');
+    if (headerLang) headerLang.value = lang;
 };
-
-// Recorrer el mapa y buscar esos textos en el DOM
-for (const [originalText, key] of Object.entries(mapTexts)) {
-if (texts[key]) {
-// Buscamos elementos que contengan exactamente ese texto
-document.querySelectorAll('*').forEach(el => {
-if (el.textContent.trim() === originalText) {
-el.textContent = texts[key];
-}
-});
-}
-}
-
-// Actualizar selector
-const headerLang = document.getElementById('headerLangSelector');
-if (headerLang) headerLang.value = lang;
-};
-
 // Inicializar al cargar
 document.addEventListener('DOMContentLoaded', () => {
 window.changeLanguage(currentLang);
