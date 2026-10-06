@@ -3954,10 +3954,14 @@ window.t = (key) => {
 };
 
 // ✅ FUNCIÓN para obtener array traducido (meses, días, tipos)
-window.tArray = (key, index) => {
+let currentLang = localStorage.getItem('lyra_lang') || 'es';
+
+// ✅ FUNCIÓN HELPER para traducir textos dinámicos desde cualquier parte del código
+window.t = (key) => {
   const texts = I18N[currentLang] || I18N.es;
-  return texts[key] ? texts[key][index] : I18N.es[key][index];
+  return texts[key] || I18N.es[key] || key;
 };
+
 // ✅ FUNCIÓN para obtener array traducido (meses, días, tipos)
 window.tArray = (key, index) => {
   const texts = I18N[currentLang] || I18N.es;
