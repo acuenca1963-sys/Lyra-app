@@ -3943,36 +3943,26 @@ const I18N = {
         'tab_invoices': '📄 发票', 'tab_employees': '👥 员工', 'tab_whatsapp': '💬 WhatsApp',
         'stat_dogs': '狗狗', 'stat_owners': '👤 主人', 'stat_reservations': '📅 预订', 'stat_hotel_slots': '🏨 酒店床位'
     }
-};
-
 let currentLang = localStorage.getItem('lyra_lang') || 'es';
-// ✅ FUNCIÓN HELPER para traducir textos dinámicos desde cualquier parte del código
-// ✅ FUNCIÓN HELPER para traducir textos dinámicos desde cualquier parte del código
+// ✅ FUNCIÓN HELPER para traducir textos dinámicos
 window.t = (key) => {
-  const texts = I18N[currentLang] || I18N.es;
-  return texts[key] || I18N.es[key] || key;
+    const texts = I18N[currentLang] || I18N.es;
+    return texts[key] || I18N.es[key] || key;
 };
 
 // ✅ FUNCIÓN para obtener array traducido (meses, días, tipos)
 window.tArray = (key, index) => {
-  const texts = I18N[currentLang] || I18N.es;
-  return texts[key] ? texts[key][index] : I18N.es[key][index];
-};
-// ✅ FUNCIÓN para obtener array traducido (meses, días, tipos)
-window.tArray = (key, index) => {
-  const texts = I18N[currentLang] || I18N.es;
-  return texts[key] ? texts[key][index] : I18N.es[key][index];
+    const texts = I18N[currentLang] || I18N.es;
+    return texts[key] ? texts[key][index] : I18N.es[key][index];
 };
 
 // Función rápida de traducción
 window.changeLanguage = (lang) => {
-    if (!I18N[lang]) lang = 'es'; // Fallback a español si el idioma no existe
+    if (!I18N[lang]) lang = 'es';
     currentLang = lang;
     localStorage.setItem('lyra_lang', lang);
-    
     const texts = I18N[lang];
-    
-    // 1. Traducir elementos con data-i18n (Instantáneo)
+
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (texts[key]) {
@@ -3981,7 +3971,6 @@ window.changeLanguage = (lang) => {
         }
     });
 
-    // 2. Sincronizar selector
     const headerLang = document.getElementById('headerLangSelector');
     if (headerLang) headerLang.value = lang;
 };
@@ -3993,3 +3982,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
