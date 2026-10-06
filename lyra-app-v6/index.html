@@ -2324,8 +2324,8 @@ function mostrarCalendario() {
         }
         grid.appendChild(div);
     }
-}
-}window.verReservasDelDia = (fecha) => 
+
+window.verReservasDelDia = (fecha) => {
 const reservasDelDia = reservasDB.filter(r => r.tipo === 'hotel' && fecha >= r.inicio && fecha <= r.fin && r.completadas < r.total);
 // ✅ TRADUCIDO: Usa el idioma actual
 const localeMap = {es:'es-ES', en:'en-US', fr:'fr-FR', de:'de-DE', it:'it-IT', pt:'pt-PT', ru:'ru-RU', zh:'zh-CN'};
@@ -2340,7 +2340,7 @@ contenido.innerHTML += `<div class="dia-reserva-item" style="background:#f8fafc;
 });
 }
 document.getElementById('modalDia').style.display = 'block';
-};
+}; //
 function mostrarReservasActivas() {
 const container = document.getElementById('listaReservasActivas');
 if (!container) return;
