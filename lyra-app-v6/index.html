@@ -2329,7 +2329,7 @@ function mostrarCalendario() {
 const reservasDelDia = reservasDB.filter(r => r.tipo === 'hotel' && fecha >= r.inicio && fecha <= r.fin && r.completadas < r.total);
 // ✅ TRADUCIDO: Usa el idioma actual
 const localeMap = {es:'es-ES', en:'en-US', fr:'fr-FR', de:'de-DE', it:'it-IT', pt:'pt-PT', ru:'ru-RU', zh:'zh-CN'};
-const fechaFormateada = new Date(fecha).toLocaleDateString(localeMap[currentLang] || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });document.getElementById('modalDiaTitulo').textContent = `📅 Reservas del ${fechaFormateada}`;
+const fechaFormateada = new Date(fecha).toLocaleDateString(localeMap[currentLang] || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 const contenido = document.getElementById('modalDiaContenido');
 if (reservasDelDia.length === 0) {
 contenido.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No hay reservas de hotel para este día</p>';
@@ -2635,8 +2635,9 @@ document.getElementById('modalEditarClase').style.display = 'block';
 };
 window.verClasesDelDia = (fecha) => {
 const clasesDia = trainingDB.filter(t => t.fecha === fecha).sort((a, b) => (a.hora || '').localeCompare(b.hora || ''));
-const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-document.getElementById('modalTrainingDayTitle').textContent = `🎓 Clases del ${fechaFormateada}`;
+const localeMap = {es:'es-ES', en:'en-US', fr:'fr-FR', de:'de-DE', it:'it-IT', pt:'pt-PT', ru:'ru-RU', zh:'zh-CN'};
+const fechaFormateada = new Date(fecha).toLocaleDateString(localeMap[currentLang] || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+;document.getElementById('modalTrainingDayTitle').textContent = `🎓 Clases del ${fechaFormateada}`;
 const contenido = document.getElementById('modalTrainingDayContent');
 if (clasesDia.length === 0) {
 contenido.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No hay clases de adiestramiento para este día</p>';
@@ -3035,19 +3036,6 @@ window.guardarEdicionFactura = async () => {
         alert('❌ Error crítico: ' + e.message);
     }
 };
-window.guardarEdicionFactura = async () => {
-const id = document.getElementById('editFacturaId').value;
-if (!id) return;
-const total = parseFloat(document.getElementById('editFacturaTotal').value) || 0;
-const servicio = document.getElementById('editFacturaServicio').value.trim();
-const res = await actualizarFactura(id, { servicio, total });
-if (res.success) {
-alert('✅ Factura actualizada');
-document.getElementById('modalEditarFactura').style.display = 'none';
-} else {
-alert('❌ Error: ' + res.error);
-}
-};
 window.imprimirFacturaIndividual = async (id) => {
 const res = await imprimirFactura(id);
 if (!res.success) alert('⚠️ ' + res.error);
@@ -3392,8 +3380,7 @@ abrirVentanaImpresion(contenido);
 window.imprimirCalendario = () => {
 const year = calendarDate.getFullYear();
 const month = calendarDate.getMonth();
-const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-let gridHTML = '';
+const meses = I18N[currentLang].months;let gridHTML = '';
 const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 diasSemana.forEach(d => { gridHTML += `<div style="background:#334155;color:white;padding:10px;text-align:center;font-weight:bold">${d}</div>`; });
 const primerDia = new Date(year, month, 1).getDay();
