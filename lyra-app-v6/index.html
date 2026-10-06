@@ -485,136 +485,136 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 <div class="calendar-header">
 <h2 id="calendarMonthYear"></h2>
 <div class="calendar-nav">
-<button id="btnMesAnterior" data-i18n="previous">◀ Anterior</button>
-<button id="btnMesActual" data-i18n="current_month">📅 Mes Actual</button>
-<button id="btnMesSiguiente" data-i18n="next">Siguiente ▶</button>
-<button class="btn-print" id="btnImprimirCalendario" style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white;" data-i18n="print">🖨️ Imprimir</button>
+<button id="btnMesAnterior">◀ Anterior</button>
+<button id="btnMesActual">📅 Mes Actual</button>
+<button id="btnMesSiguiente">Siguiente ▶</button>
+<button class="btn-print" id="btnImprimirCalendario" style="margin-left: 10px; background: rgba(255,255,255,0.1); color: white;">🖨️ Imprimir</button>
 </div>
 </div>
 <div class="calendar-leyenda">
 <div class="leyenda-item"><div class="leyenda-color baja"></div><span>0-20%</span></div>
 <div class="leyenda-item"><div class="leyenda-color media"></div><span>21-60%</span></div>
 <div class="leyenda-item"><div class="leyenda-color alta"></div><span>61-90%</span></div>
-<div class="leyenda-item"><div class="leyenda-color lleno"></div><span data-i18n="blocked">91%+ LLENO</span></div>
+<div class="leyenda-item"><div class="leyenda-color lleno"></div><span>91%+ LLENO</span></div>
 </div>
 <div class="calendar-grid" id="calendarGrid"></div>
 <div class="reservas-activas">
-<h3 data-i18n="hotel_month_reservations">🏨 Reservas del Mes</h3>
+<h3>🏨 Reservas del Mes</h3>
 <div id="listaReservasActivas"></div>
 </div>
 <div class="form-section" style="margin-top: 30px;">
-<h3 data-i18n="new_hotel_reservation">📅 Nueva Reserva Hotel</h3>
+<h3>📅 Nueva Reserva Hotel</h3>
 <div class="form-grid">
-<div class="form-group"><label data-i18n="dog">Perro:</label><select id="hotelPerro"></select></div>
-<div class="form-group"><label data-i18n="check_in">📅 Entrada:</label><input type="date" id="hotelEntrada"></div>
-<div class="form-group"><label data-i18n="check_out">📅 Salida:</label><input type="date" id="hotelSalida"></div>
-<div class="form-group"><label data-i18n="price_day">💰 Precio/día:</label><input type="number" id="hotelPrecio" step="0.01" value="15"></div>
-<div class="form-group"><label data-i18n="days">📊 Días:</label><input type="number" id="hotelDias" readonly></div>
-<div class="form-group"><label data-i18n="total">💰 Total:</label><input type="number" id="hotelTotal" readonly></div>
+<div class="form-group"><label> Perro:</label><select id="hotelPerro"></select></div>
+<div class="form-group"><label>📅 Entrada:</label><input type="date" id="hotelEntrada"></div>
+<div class="form-group"><label>📅 Salida:</label><input type="date" id="hotelSalida"></div>
+<div class="form-group"><label>💰 Precio/día:</label><input type="number" id="hotelPrecio" step="0.01" value="15"></div>
+<div class="form-group"><label>📊 Días:</label><input type="number" id="hotelDias" readonly></div>
+<div class="form-group"><label>💰 Total:</label><input type="number" id="hotelTotal" readonly></div>
 <div class="form-group full-width">
-<label data-i18n="kennel">Caseta:</label>
+<label> Caseta:</label>
 <select id="hotelCasetaSelect" style="background: #f8fafc; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%;">
-<option value="" data-i18n="auto_assign">Auto-asignar la primera disponible</option>
+<option value=""> Auto-asignar la primera disponible</option>
 </select>
-<small id="kennelStatus" style="color:#64748b;display:block;margin-top:5px;" data-i18n="kennel_configuring">Configurando...</small>
+<small id="kennelStatus" style="color:#64748b;display:block;margin-top:5px;">Configurando...</small>
 </div>
 </div>
-<button class="btn btn-success" id="btnCrearReservaHotel" data-i18n="create_reservation">✅ Crear Reserva</button>
+<button class="btn btn-success" id="btnCrearReservaHotel">✅ Crear Reserva</button>
 </div>
 </div>
 <div id="reservas" class="section">
 <div class="form-section">
-<h3><span data-i18n="new_reservation">📅 Nueva Reserva</span> <button class="btn btn-print" id="btnImprimirReservas" style="float:right;" data-i18n="print_list">🖨️ Imprimir Lista</button></h3>
+<h3>📅 Nueva Reserva <button class="btn btn-print" id="btnImprimirReservas" style="float:right;">️ Imprimir Lista</button></h3>
 <div class="form-grid">
 <div class="form-group full-width">
-<label data-i18n="search_dog">🐕 Buscar Perro:</label>
-<input type="text" id="buscadorPerrosReserva" data-i18n="search_dog_placeholder" placeholder="✍️ Escribe el nombre del perro...">
+<label>🐕 Buscar Perro:</label>
+<input type="text" id="buscadorPerrosReserva" placeholder="✍️ Escribe el nombre del perro...">
 <div id="buscadorPerrosResultados" class="buscador-perros-resultados"></div>
 <div id="perroSeleccionadoInfo" class="perro-seleccionado-info">
-<strong data-i18n="dog_selected">✅ Perro seleccionado:</strong> <span id="perroSeleccionadoNombre"></span> (<span id="perroSeleccionadoDueno"></span>)
-<button class="btn btn-warning" id="btnEditarPerroSeleccionado" style="padding: 3px 8px; font-size: 11px; margin-left: 10px;" data-i18n="edit">✏️ Editar</button>
+<strong>✅ Perro seleccionado:</strong> <span id="perroSeleccionadoNombre"></span> (<span id="perroSeleccionadoDueno"></span>)
+<button class="btn btn-warning" id="btnEditarPerroSeleccionado" style="padding: 3px 8px; font-size: 11px; margin-left: 10px;">✏️ Editar</button>
 <input type="hidden" id="reservaPerroId">
 <input type="hidden" id="reservaPerroNombre">
 <input type="hidden" id="reservaPerroDueno">
 <input type="hidden" id="reservaPerroTelefono">
 </div>
 </div>
-<div class="form-group"><label data-i18n="type">Tipo:</label>
+<div class="form-group"><label> Tipo:</label>
 <select id="reservaTipo">
-<option value="" data-i18n="select">Seleccionar...</option>
-<option value="hotel" data-i18n="hotel">🏨 Hotel</option>
-<option value="guarderia" data-i18n="daycare">🏠 Guardería</option>
-<option value="clase-suelta" data-i18n="class_type">🎓 Clase Suelta</option>
+<option value="">Seleccionar...</option>
+<option value="hotel">🏨 Hotel</option>
+<option value="guarderia">🏠 Guardería</option>
+<option value="clase-suelta">🎓 Clase Suelta</option>
 <option value="pack-10">📚 Pack 10 Clases</option>
 <option value="pack-20">📖 Pack 20 Clases</option>
 </select>
 </div>
-<div class="form-group"><label data-i18n="start">Inicio:</label><input type="date" id="reservaInicio"></div>
-<div class="form-group"><label data-i18n="end">📅 Fin:</label><input type="date" id="reservaFin"></div>
-<div class="form-group"><label data-i18n="total_price">💰 Precio Total (Editable):</label><input type="number" id="reservaPrecio" step="0.01" data-i18n="total_price_placeholder" placeholder="Calculado auto, pero puedes editar"></div>
-<div class="form-group full-width"><label data-i18n="reservation_notes">Notas:</label><textarea id="reservaNotas" rows="2" data-i18n="notes_placeholder" placeholder="Instrucciones especiales..."></textarea></div>
+<div class="form-group"><label> Inicio:</label><input type="date" id="reservaInicio"></div>
+<div class="form-group"><label>📅 Fin:</label><input type="date" id="reservaFin"></div>
+<div class="form-group"><label>💰 Precio Total (Editable):</label><input type="number" id="reservaPrecio" step="0.01" placeholder="Calculado auto, pero puedes editar"></div>
+<div class="form-group full-width"><label> Notas:</label><textarea id="reservaNotas" rows="2" placeholder="Instrucciones especiales..."></textarea></div>
 <div class="form-group full-width">
-<button type="button" class="btn btn-info" id="btnMostrarAñadirPerroGrupo" style="width:100%;" data-i18n="add_dog_group">➕ Añadir Perro al Grupo (misma caseta)</button>
+<button type="button" class="btn btn-info" id="btnMostrarAñadirPerroGrupo" style="width:100%;">➕ Añadir Perro al Grupo (misma caseta)</button>
 <div id="grupoPerrosSection" style="display:none;background:#f1f5f9;padding:12px;border-radius:6px;border:1px solid #cbd5e1;margin-top:10px;">
-<label style="color:#334155;font-weight:bold;display:block;margin-bottom:8px;" data-i18n="search_group_dog">Buscar perro para añadir al grupo:</label>
-<input type="text" id="buscadorPerrosGrupo" data-i18n="search_name_placeholder" placeholder="🔍 Escribe el nombre..." style="margin-bottom:8px;">
+<label style="color:#334155;font-weight:bold;display:block;margin-bottom:8px;"> Buscar perro para añadir al grupo:</label>
+<input type="text" id="buscadorPerrosGrupo" placeholder="🔍 Escribe el nombre..." style="margin-bottom:8px;">
 <div id="buscadorPerrosGrupoResultados" class="buscador-perros-resultados"></div>
 <div id="grupoPerrosLista" style="margin-top:8px;"></div>
-<p style="font-size:11px;color:#64748b;margin-top:5px;" data-i18n="group_info">ℹ️ Todos los perros compartirán la misma caseta</p>
+<p style="font-size:11px;color:#64748b;margin-top:5px;">ℹ️ Todos los perros compartirán la misma caseta</p>
 </div>
 </div>
 </div>
-<button class="btn btn-success" id="btnCrearReserva" style="width:100%;" data-i18n="create_reservation">✅ Crear Reserva</button>
-<p style="margin-top: 10px; color: #64748b; font-size: 13px;" data-i18n="price_info">ℹ️ El precio se calcula automáticamente según el perro y servicio, pero puedes editarlo manualmente si es necesario.</p>
+<button class="btn btn-success" id="btnCrearReserva" style="width:100%;">✅ Crear Reserva</button>
+<p style="margin-top: 10px; color: #64748b; font-size: 13px;">ℹ️ El precio se calcula automáticamente según el perro y servicio, pero puedes editarlo manualmente si es necesario.</p>
 </div>
 <div class="table-container">
 <table id="tablaReservasPrint">
-<thead><tr><th data-i18n="table_dog">Perro</th><th data-i18n="table_owner">Dueño</th><th data-i18n="table_phone">Teléfono</th><th data-i18n="table_actions">Acciones</th></tr></thead>
+<thead><tr><th>Perro</th><th>Dueño</th><th>Teléfono</th><th>Acciones</th></tr></thead>
 <tbody id="tablaReservas"></tbody>
 </table>
 </div>
 </div>
 <div id="adiestramiento" class="section">
 <div class="form-section">
-<h3 data-i18n="schedule_class">🎓 Programar Clase de Adiestramiento</h3>
+<h3>🎓 Programar Clase de Adiestramiento</h3>
 <div class="form-grid">
 <div class="form-group" style="position: relative;">
-<label data-i18n="search_dog">Buscar Perro:</label>
-<input type="text" id="trainDogSearch" data-i18n="search_dog_placeholder" placeholder="Escribe el nombre del perro...">
+<label> Buscar Perro:</label>
+<input type="text" id="trainDogSearch" placeholder="Escribe el nombre del perro...">
 <div id="trainDogResults" class="buscador-perros-resultados"></div>
 <input type="hidden" id="trainPerroId">
 <input type="hidden" id="trainPerroNombre">
 <input type="hidden" id="trainPerroDueno">
 <input type="hidden" id="trainPerroTelefono">
 <div id="trainDogSelected" class="perro-seleccionado-info" style="display:none;">
-<strong data-i18n="dog_selected">✅ Perro:</strong> <span id="trainDogNameDisplay"></span>
+<strong>✅ Perro:</strong> <span id="trainDogNameDisplay"></span>
 </div>
 </div>
-<div class="form-group"><label data-i18n="day">📅 Día:</label><input type="date" id="trainDate"></div>
-<div class="form-group"><label data-i18n="time">Hora:</label><input type="time" id="trainTime" class="time-input"></div>
-<div class="form-group"><label data-i18n="class_type">🎯 Tipo de Clase:</label>
+<div class="form-group"><label>📅 Día:</label><input type="date" id="trainDate"></div>
+<div class="form-group"><label> Hora:</label><input type="time" id="trainTime" class="time-input"></div>
+<div class="form-group"><label>🎯 Tipo de Clase:</label>
 <select id="trainType">
-<option value="Sesión Individual" data-i18n="individual_session">Sesión Individual</option>
-<option value="Clase Grupal" data-i18n="group_class">Clase Grupal</option>
-<option value="Evaluación" data-i18n="evaluation">Evaluación</option>
+<option value="Sesión Individual">Sesión Individual</option>
+<option value="Clase Grupal">Clase Grupal</option>
+<option value="Evaluación">Evaluación</option>
 </select>
 </div>
-<div class="form-group"><label data-i18n="class_price">💰 Precio Clase (€):</label><input type="number" id="trainPrice" step="0.50" value="35"></div>
-<div class="form-group"><label data-i18n="sessions_pack">🔢 Nº Sesiones Pack:</label><input type="number" id="trainSessions" value="1" min="1"></div>
+<div class="form-group"><label>💰 Precio Clase (€):</label><input type="number" id="trainPrice" step="0.50" value="35"></div>
+<div class="form-group"><label>🔢 Nº Sesiones Pack:</label><input type="number" id="trainSessions" value="1" min="1"></div>
 </div>
-<button class="btn btn-success" id="btnCrearClaseAdiestramiento" data-i18n="create_reservation">✅ Programar Clase</button>
+<button class="btn btn-success" id="btnCrearClaseAdiestramiento">✅ Programar Clase</button>
 </div>
 <div class="calendar-header">
 <h2 id="trainingMonthYear"></h2>
 <div class="calendar-nav">
-<button id="btnTrainingAnterior" data-i18n="previous">◀ Anterior</button>
-<button id="btnTrainingActual" data-i18n="current_month">📅 Mes Actual</button>
-<button id="btnTrainingSiguiente" data-i18n="next">Siguiente ▶</button>
+<button id="btnTrainingAnterior">◀ Anterior</button>
+<button id="btnTrainingActual">📅 Mes Actual</button>
+<button id="btnTrainingSiguiente">Siguiente ▶</button>
 </div>
 </div>
 <div class="calendar-grid" id="trainingCalendarGrid"></div>
 <div class="training-list-container">
-<h3 data-i18n="training_month_classes">Clases del Mes</h3>
+<h3> Clases del Mes</h3>
 <div id="trainingList" class="training-list"></div>
 </div>
 </div>
@@ -868,54 +868,7 @@ ESTILOS PARA BOTONES DE PAPELERA Y DÍAS BLOQUEADOS
 </div></div>
 <div id="modalDia" class="modal"><div class="modal-content"><span class="close" data-modal="modalDia">&times;</span><h2 style="color:#334155;margin-bottom:20px;" id="modalDiaTitulo">📅 Reservas del Día</h2><div id="modalDiaContenido"></div></div></div>
 <div id="modalEditarPerro" class="modal"><div class="modal-content"><span class="close" data-modal="modalEditarPerro">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Perro</h2><div class="form-grid"><input type="hidden" id="editPerroId"><div class="form-group full-width camera-container"><label>📸 Foto del Perro</label><img id="editFotoPreview" class="foto-perro-grande hidden" src="" alt="Foto"><div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"><button class="btn btn-camera" id="btnCamaraEditar">📸 Usar Cámara</button><input type="file" id="editFotoInputCamara" accept="image/*" capture="environment" style="display: none;"><button class="btn btn-info" id="btnGaleriaEditar">📁 Subir desde Galería</button><input type="file" id="editFotoInputGaleria" accept="image/*" style="display: none;"><button class="btn btn-danger hidden" id="editBtnEliminarFoto">🗑️ Quitar Foto</button></div></div><div class="form-group"><label>🐕 Nombre:</label><input type="text" id="editNombrePerro"></div><div class="form-group"><label>🦴 Raza:</label><input type="text" id="editRaza"></div><div class="form-group"><label>🎂 Fecha Nacimiento:</label><input type="date" id="editFechaNacimiento"></div><div class="form-group"><label>📊 Edad:</label><input type="text" id="editEdad" readonly class="edad-calculada"></div><div class="form-group"><label>⚧ Sexo:</label><select id="editSexo"><option value="">-</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div><div class="form-group"><label> Microchip:</label><input type="text" id="editMicrochip"></div><div class="form-group"><label>📕 Pasaporte:</label><input type="text" id="editPasaporte"></div><div class="form-group"><label> Dueño:</label><input type="text" id="editNombreDueno"></div><div class="form-group"><label>🆔 DNI:</label><input type="text" id="editDniDueno"></div><div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="editTelefono"></div><div class="form-group"><label>📧 Email:</label><input type="email" id="editEmail"></div><div class="form-group half-width"><label>📍 Dirección:</label><input type="text" id="editDireccion"></div><div class="form-group"><label>🏥 Vet:</label><input type="text" id="editVeterinario"></div><div class="form-group full-width"><label>📝 Notas:</label><textarea id="editNotas" rows="2"></textarea></div><div class="salud-section"><h3> Salud y Cuidados</h3><div class="form-grid"><div class="form-group"><label>✨ Estado del Pelo:</label><select id="editEstadoPelo"><option value="Bien">Bien</option><option value="Regular">Regular</option><option value="Mal">Mal</option></select></div><div class="form-group"><label>💊 ¿Medicación?:</label><select id="editMedicacion"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group full-width"><label>📋 Detalle Medicación:</label><textarea id="editDetallesMedicacion" rows="2"></textarea></div><div class="form-group full-width"><label>⚠️ Alergias:</label><textarea id="editAlergias" rows="2"></textarea></div><div class="form-group"><label>🎨 Color:</label><input type="text" id="editColorPerro"></div><div class="form-group"><label>📏 Tamaño:</label><select id="editTamanoPerro"><option value="">-</option><option value="Pequeño">Pequeño</option><option value="Mediano">Mediano</option><option value="Grande">Grande</option><option value="Gigante">Gigante</option></select></div><div class="form-group"><label>💉 Vacunas al día:</label><select id="editVacunasAlDia"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>💊 Desparasitación interna:</label><select id="editDesparasitacionInterna"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>🛡️ Desparasitación externa:</label><select id="editDesparasitacionExterna"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>🤧 Tos de las perreras:</label><select id="editTosPerreras"><option value="No">No</option><option value="Sí">Sí</option></select></div><div class="form-group"><label>🐕 Acostumbrado a otros perros:</label><select id="editContactoOtrosPerros"><option value="Sí">Sí</option><option value="No">No</option></select></div><div class="form-group"><label>⚠️ Conducta agresiva previa:</label><select id="editComportamientoAgresivo"><option value="No">No</option><option value="Sí">Sí</option></select></div></div></div><div class="salud-section" style="border-color: #cbd5e1;"><h3>💰 Tarifa Especial</h3><div class="form-group full-width"><label>💶 Precio Base (€/día o clase):</label><input type="number" id="editPrecioPersonalizado" step="0.50" placeholder="Dejar vacío para usar precio general"></div></div></div><button class="btn btn-success" id="btnGuardarEdicionPerro">💾 Guardar</button></div></div>
-<div id="modalEditarFactura" class="modal">
-    <div class="modal-content" style="max-width:700px;">
-        <span class="close" data-modal="modalEditarFactura">&times;</span>
-        <h2 style="color:#334155;margin-bottom:20px;" data-i18n="edit_invoice">✏️ Editar Factura</h2>
-        <input type="hidden" id="editFacturaId">
-        
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label data-i18n="table_client">Cliente:</label>
-                <input type="text" id="editFacturaCliente" readonly style="background:#f1f5f9;">
-            </div>
-            <div class="form-group">
-                <label data-i18n="table_date">Fecha:</label>
-                <input type="text" id="editFacturaFecha" readonly style="background:#f1f5f9;">
-            </div>
-            <div class="form-group">
-                <label>Nº Factura:</label>
-                <input type="text" id="editFacturaNumero" readonly style="background:#f1f5f9;">
-            </div>
-        </div>
-
-        <hr style="margin:20px 0; border:1px solid #e2e8f0;">
-        <h4 style="margin-bottom:15px;" data-i18n="invoice_concepts">📝 Conceptos de la Factura</h4>
-        
-        <table class="conceptos-table" id="tablaConceptosEdit">
-            <thead>
-                <tr>
-                    <th style="width:40%">Servicio</th>
-                    <th style="width:15%">Cant/Días</th>
-                    <th style="width:15%">Precio Unit.</th>
-                    <th style="width:20%">Subtotal</th>
-                    <th style="width:10%"></th>
-                </tr>
-            </thead>
-            <tbody id="listaConceptosEdit"></tbody>
-        </table>
-        
-        <button class="btn btn-info" id="btnAñadirConceptoEdit" style="margin-top:10px;" data-i18n="add_line">➕ Añadir Línea</button>
-
-        <div class="total-factura-box" style="margin-top:20px;">
-            <h4>Base Imponible: <span id="editTotalBase">0.00</span> €</h4>
-            <h4>IVA (21%): <span id="editTotalIVA">0.00</span> €</h4>
-            <h2>TOTAL: <span id="editTotalFinal">0.00</span> €</h2>
-        </div>
-
-        <button class="btn btn-success" id="btnGuardarEdicionFactura" style="width:100%; margin-top:20px; padding:15px;" data-i18n="save_changes">💾 Guardar Cambios</button>
-    </div>
-</div>
+<div id="modalEditarFactura" class="modal"><div class="modal-content"><span class="close" data-modal="modalEditarFactura">&times;</span><h2 style="color:#334155;margin-bottom:20px;">✏️ Editar Factura</h2><input type="hidden" id="editFacturaId"><div class="form-group"><label>Cliente:</label><input type="text" id="editFacturaCliente" readonly></div><div class="form-group"><label>Servicio:</label><input type="text" id="editFacturaServicio"></div><div class="form-group"><label>Total (€):</label><input type="number" id="editFacturaTotal" step="0.01"></div><div class="form-group"><label>Fecha:</label><input type="text" id="editFacturaFecha" readonly></div><button class="btn btn-success" id="btnGuardarEdicionFactura">💾 Guardar</button></div></div>
 <div id="modalConfig" class="modal"><div class="modal-content" style="max-width:600px;"><span class="close" data-modal="modalConfig">&times;</span><h2 style="color:#334155;margin-bottom:20px;">️ Configuración del Hotel</h2><div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px; font-size:16px;">🏢 Datos de Tu Empresa (Para Facturas)</h3><div class="form-group"><label>🖼️ Logo de Tu Empresa:</label><img id="configClientLogoPreview" class="foto-perro-grande hidden" src="" alt="Logo Cliente" style="max-width: 120px; margin: 10px auto; display: block;"><div style="margin-top: 5px; display: flex; gap: 5px; justify-content: center;"><button class="btn btn-info" id="btnSubirLogoConfig"> Subir Logo</button><input type="file" id="configClientLogoInput" accept="image/*" style="display: none;"><button class="btn btn-danger hidden" id="configBtnEliminarClientLogo">🗑️ Quitar</button></div></div><div class="form-grid" style="margin-top:10px;"><div class="form-group"><label>📛 Nombre Comercial:</label><input type="text" id="configClientName" placeholder="Ej: Hotel Canino Patitas"></div><div class="form-group"><label>🆔 CIF/NIF:</label><input type="text" id="configClientCIF" placeholder="B12345678"></div><div class="form-group full-width"><label>📍 Dirección:</label><input type="text" id="configClientAddress" placeholder="Calle, Nº, Ciudad, CP"></div><div class="form-group"><label>📞 Teléfono:</label><input type="tel" id="configClientPhone" placeholder="600 000 000"></div></div></div><div class="form-group"><label>🏨 Nombre de la App (Interno):</label><input type="text" id="configHotelName" value="Lyra App"></div><div class="form-group"><label>🏠 Número de Casetas:</label><input type="number" id="configTotalKennels" value="15" min="1" max="500"></div><div class="form-group"><label>🔖 Prefijo de Casetas:</label><input type="text" id="configKennelPrefix" value="C-" maxlength="5"></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">💰 Precios Generales</h3><div class="form-grid"><div class="form-group"><label>🏨 Hotel (€):</label><input type="number" id="configPrecioHotel" value="15" step="0.50"></div><div class="form-group"><label>🏠 Guardería (€):</label><input type="number" id="configPrecioGuarderia" value="10" step="0.50"></div><div class="form-group"><label> Clase Suelta (€):</label><input type="number" id="configPrecioClase" value="35" step="1"></div></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;"> Facturación</h3><div class="form-group"><label>📄 Próximo Nº Factura:</label><input type="number" id="configNextInvoice" value="1" min="1"></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">💬 WhatsApp API (Meta)</h3><div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #bbf7d0; margin-bottom: 15px;"><p style="font-size: 13px; margin-bottom: 10px; color:#166534;">Configura la API para envío automático:</p><div class="form-group"><label>📱 Phone Number ID:</label><input type="text" id="configMetaPhoneNumberId" placeholder="Ej: 1229155380276087"></div><div class="form-group"><label>🔑 Access Token:</label><input type="text" id="configMetaAccessToken" placeholder="Ej: EAA..."></div><div class="form-group"><label>🏢 Business Account ID:</label><input type="text" id="configMetaBusinessId" placeholder="Ej: 1007246542271286"></div><div class="form-group"><label>📝 Plantilla (Opcional):</label><input type="text" id="configMetaTemplateName" placeholder="Dejar vacío para texto libre"></div></div><hr style="margin:15px 0; border:1px solid #e2e8f0;"><h3 style="color:#334155; margin-bottom:10px;">📝 Contrato (Firma Digital)</h3>
 <div class="form-group full-width">
 <label>📋 Plantilla del Contrato:</label>
@@ -1582,9 +1535,7 @@ document.getElementById('btnCambiarPass').addEventListener('click', () => {
 document.getElementById('nuevaPass').value = '';
 document.getElementById('modalCambiarPass').style.display = 'block';
 });
-// ✅ LISTENER PARA GUARDAR EDICIÓN DE FACTURA
-const btnGuardarFactura = document.getElementById('btnGuardarEdicionFactura');
-if (btnGuardarFactura) btnGuardarFactura.addEventListener('click', window.guardarEdicionFactura);document.getElementById('editClassStatus').addEventListener('change', () => {
+document.getElementById('editClassStatus').addEventListener('change', () => {
 const status = document.getElementById('editClassStatus').value;
 document.getElementById('cancelReasonGroup').style.display = status === 'cancelada' ? 'block' : 'none';
 });
@@ -2147,22 +2098,19 @@ alert('❌ Error: ' + res.error);
 }
 };
 window.editarReserva = (id) => {
-    const r = reservasDB.find(x => x.id === id);
-    if (!r) return;
-    
-    reservaEditActual = r;
-    cargarSelectPerrosAñadir(); // Cargar lista para añadir al grupo
-    
-    document.getElementById('editReservaId').value = id;
-    document.getElementById('editReservaPerro').value = `${r.nombrePerro} (${r.nombreDueno})`;
-    document.getElementById('editReservaTipo').value = r.tipo || 'hotel';
-    document.getElementById('editReservaInicio').value = r.inicio;
-    document.getElementById('editReservaFin').value = r.fin;
-    document.getElementById('editReservaCaseta').value = r.caseta || '';
-    document.getElementById('editReservaPrecio').value = r.precio || 0;
-    document.getElementById('editReservaNotas').value = r.notas || '';
-    
-    document.getElementById('modalEditarReserva').style.display = 'block';
+const r = reservasDB.find(x => x.id === id);
+if (!r) return;
+reservaEditActual = r;
+cargarSelectPerrosAñadir(); // LYRA: Cargar lista para añadir al grupo
+document.getElementById('editReservaId').value = id;
+document.getElementById('editReservaPerro').value = `${r.nombrePerro} (${r.nombreDueno})`;
+document.getElementById('editReservaTipo').value = r.tipo || 'hotel';
+document.getElementById('editReservaInicio').value = r.inicio;
+document.getElementById('editReservaFin').value = r.fin;
+document.getElementById('editReservaCaseta').value = r.caseta || '-';
+document.getElementById('editReservaPrecio').value = r.precio || 0;
+document.getElementById('editReservaNotas').value = r.notas || '';
+document.getElementById('modalEditarReserva').style.display = 'block';
 };
 function mostrarReservas() {
 const t = document.getElementById('tablaReservas');
@@ -2264,72 +2212,59 @@ window.eliminarDesdeEdicion = async () => {
         }
     }
 };
-function mostrarCalendario() {
-    const grid = document.getElementById('calendarGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    const year = calendarDate.getFullYear();
-    const month = calendarDate.getMonth();
-    
-    // ✅ TRADUCIDO: Usa tArray para los meses
-    document.getElementById('calendarMonthYear').textContent = `${tArray('months', month)} ${year}`;
-    
-    // ✅ TRADUCIDO: Usa el array del idioma actual
-    const diasSemana = I18N[currentLang].days_short;
-    
-    diasSemana.forEach(dia => {
-        const div = document.createElement('div');
-        div.className = 'calendar-day-name';
-        div.textContent = dia;
-        grid.appendChild(div);
-    });
-    
-    const primerDia = new Date(year, month, 1).getDay();
-    const totalDias = new Date(year, month + 1, 0).getDate();
-    const totalK = currentConfig?.totalKennels || 15;
-    const hoy = new Date();
-    
-    for (let i = 0; i < primerDia; i++) {
-        const div = document.createElement('div');
-        div.className = 'calendar-day empty';
-        grid.appendChild(div);
-    }
-    
-    for (let dia = 1; dia <= totalDias; dia++) {
-        const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-        
-        let estaBloqueado = false;
-        if (currentConfig && currentConfig.diasBloqueados) {
-            estaBloqueado = currentConfig.diasBloqueados.some(b => fechaStr >= b.inicio && fechaStr <= b.fin);
-        }
-        
-        const ocupacion = reservasDB.filter(r => r.tipo === 'hotel' && fechaStr >= r.inicio && fechaStr <= r.fin && r.completadas < r.total).length;
-        const porcentaje = Math.round((ocupacion / totalK) * 100);
-        
-        let claseOcupacion = 'baja';
-        if (porcentaje >= 90) claseOcupacion = 'lleno';
-        else if (porcentaje >= 60) claseOcupacion = 'alta';
-        else if (porcentaje >= 20) claseOcupacion = 'media';
-        
-        const div = document.createElement('div');
-        div.className = `calendar-day ${estaBloqueado ? 'blocked-day' : ''} ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
-        
-        if (estaBloqueado) {
-            div.onclick = null;
-            // ✅ TRADUCIDO: Texto de bloqueado
-            div.innerHTML = `<div class="calendar-day-number">${dia}</div><div style="font-size:10px;color:#ef4444;font-weight:bold;text-align:center;margin-top:5px;">${t('blocked')}</div>`;
-        } else {
-            div.onclick = () => verReservasDelDia(fechaStr);
-            div.innerHTML = `<div class="calendar-day-number">${dia}</div><div class="calendar-day-ocupacion ${claseOcupacion}">${porcentaje}%</div>`;
-        }
-        grid.appendChild(div);
-    }
-
-window.verReservasDelDia = (fecha) => {
+function mostrarCalendario() {const grid = document.getElementById('calendarGrid');
+if (!grid) return;
+grid.innerHTML = '';
+const year = calendarDate.getFullYear();
+const month = calendarDate.getMonth();
+const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+document.getElementById('calendarMonthYear').textContent = `${meses[month]} ${year}`;
+const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+diasSemana.forEach(dia => {
+const div = document.createElement('div');
+div.className = 'calendar-day-name';
+div.textContent = dia;
+grid.appendChild(div);
+});
+const primerDia = new Date(year, month, 1).getDay();
+const totalDias = new Date(year, month + 1, 0).getDate();
+const totalK = currentConfig?.totalKennels || 15;
+const hoy = new Date();
+for (let i = 0; i < primerDia; i++) {
+const div = document.createElement('div');
+div.className = 'calendar-day empty';
+grid.appendChild(div);
+}
+for (let dia = 1; dia <= totalDias; dia++) {
+const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+// VERIFICAR SI ESTÁ BLOQUEADO
+let estaBloqueado = false;
+if (currentConfig && currentConfig.diasBloqueados) {
+estaBloqueado = currentConfig.diasBloqueados.some(b => fechaStr >= b.inicio && fechaStr <= b.fin);
+}
+const ocupacion = reservasDB.filter(r => r.tipo === 'hotel' && fechaStr >= r.inicio && fechaStr <= r.fin && r.completadas < r.total).length;
+const porcentaje = Math.round((ocupacion / totalK) * 100);
+let claseOcupacion = 'baja';
+if (porcentaje >= 90) claseOcupacion = 'lleno';
+else if (porcentaje >= 60) claseOcupacion = 'alta';
+else if (porcentaje >= 20) claseOcupacion = 'media';
+const div = document.createElement('div');
+// Añadir clase 'blocked-day' si está bloqueado
+div.className = `calendar-day ${estaBloqueado ? 'blocked-day' : ''} ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
+// Si está bloqueado, no permitir click para ver reservas y mostrar aviso
+if (estaBloqueado) {
+div.onclick = null;
+div.innerHTML = `<div class="calendar-day-number">${dia}</div><div style="font-size:10px;color:#ef4444;font-weight:bold;text-align:center;margin-top:5px;">BLOQUEADO</div>`;
+} else {
+div.onclick = () => verReservasDelDia(fechaStr);
+div.innerHTML = `<div class="calendar-day-number">${dia}</div><div class="calendar-day-ocupacion ${claseOcupacion}">${porcentaje}%</div>`;
+}
+grid.appendChild(div);
+}
+}window.verReservasDelDia = (fecha) => {
 const reservasDelDia = reservasDB.filter(r => r.tipo === 'hotel' && fecha >= r.inicio && fecha <= r.fin && r.completadas < r.total);
-// ✅ TRADUCIDO: Usa el idioma actual
-const localeMap = {es:'es-ES', en:'en-US', fr:'fr-FR', de:'de-DE', it:'it-IT', pt:'pt-PT', ru:'ru-RU', zh:'zh-CN'};
-const fechaFormateada = new Date(fecha).toLocaleDateString(localeMap[currentLang] || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+document.getElementById('modalDiaTitulo').textContent = `📅 Reservas del ${fechaFormateada}`;
 const contenido = document.getElementById('modalDiaContenido');
 if (reservasDelDia.length === 0) {
 contenido.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No hay reservas de hotel para este día</p>';
@@ -2340,7 +2275,7 @@ contenido.innerHTML += `<div class="dia-reserva-item" style="background:#f8fafc;
 });
 }
 document.getElementById('modalDia').style.display = 'block';
-}; //
+};
 function mostrarReservasActivas() {
 const container = document.getElementById('listaReservasActivas');
 if (!container) return;
@@ -2542,52 +2477,45 @@ alert('❌ Error: ' + res.error);
 }
 };
 function renderizarTrainingCalendar() {
-    const grid = document.getElementById('trainingCalendarGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    const year = trainingCalendarDate.getFullYear();
-    const month = trainingCalendarDate.getMonth();
-    
-    // ✅ TRADUCIDO: Usa tArray para los meses
-    document.getElementById('trainingMonthYear').textContent = `${tArray('months', month)} ${year}`;
-    
-    // ✅ TRADUCIDO: Usa el array específico de entrenamiento del idioma actual
-    const diasSemana = I18N[currentLang].days_short_training;
-    
-    diasSemana.forEach(dia => {
-        const div = document.createElement('div');
-        div.className = 'calendar-day-name';
-        div.textContent = dia;
-        grid.appendChild(div);
-    });
-    
-    const primerDia = new Date(year, month, 1).getDay();
-    const totalDias = new Date(year, month + 1, 0).getDate();
-    const startOffset = primerDia === 0 ? 6 : primerDia - 1;
-    const hoy = new Date();
-    
-    for (let i = 0; i < startOffset; i++) {
-        const div = document.createElement('div');
-        div.className = 'calendar-day empty';
-        grid.appendChild(div);
-    }
-    
-    for (let dia = 1; dia <= totalDias; dia++) {
-        const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-        const clasesDia = trainingDB.filter(t => t.fecha === fechaStr);
-        const div = document.createElement('div');
-        div.className = `calendar-day ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
-        div.onclick = () => verClasesDelDia(fechaStr);
-        
-        let content = `<div class="calendar-day-number">${dia}</div>`;
-        clasesDia.forEach(clase => {
-            const estado = clase.estado || 'programada';
-            content += `<span class="class-badge ${estado}" onclick="event.stopPropagation(); openEditClassModal('${clase.id}')">${clase.hora || '--:--'} ${clase.nombrePerro}</span>`;
-        });
-        div.innerHTML = content;
-        grid.appendChild(div);
-    }
-}function renderTrainingList() {
+const grid = document.getElementById('trainingCalendarGrid');
+if (!grid) return;
+grid.innerHTML = '';
+const year = trainingCalendarDate.getFullYear();
+const month = trainingCalendarDate.getMonth();
+const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+document.getElementById('trainingMonthYear').textContent = `${meses[month]} ${year}`;
+const diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+diasSemana.forEach(dia => {
+const div = document.createElement('div');
+div.className = 'calendar-day-name';
+div.textContent = dia;
+grid.appendChild(div);
+});
+const primerDia = new Date(year, month, 1).getDay();
+const totalDias = new Date(year, month + 1, 0).getDate();
+const startOffset = primerDia === 0 ? 6 : primerDia - 1;
+const hoy = new Date();
+for (let i = 0; i < startOffset; i++) {
+const div = document.createElement('div');
+div.className = 'calendar-day empty';
+grid.appendChild(div);
+}
+for (let dia = 1; dia <= totalDias; dia++) {
+const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+const clasesDia = trainingDB.filter(t => t.fecha === fechaStr);
+const div = document.createElement('div');
+div.className = `calendar-day ${dia === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear() ? 'today' : ''}`;
+div.onclick = () => verClasesDelDia(fechaStr);
+let content = `<div class="calendar-day-number">${dia}</div>`;
+clasesDia.forEach(clase => {
+const estado = clase.estado || 'programada';
+content += `<span class="class-badge ${estado}" onclick="event.stopPropagation(); openEditClassModal('${clase.id}')">${clase.hora || '--:--'} ${clase.nombrePerro}</span>`;
+});
+div.innerHTML = content;
+grid.appendChild(div);
+}
+}
+function renderTrainingList() {
 const listEl = document.getElementById('trainingList');
 if (!listEl) return;
 listEl.innerHTML = '';
@@ -2635,9 +2563,8 @@ document.getElementById('modalEditarClase').style.display = 'block';
 };
 window.verClasesDelDia = (fecha) => {
 const clasesDia = trainingDB.filter(t => t.fecha === fecha).sort((a, b) => (a.hora || '').localeCompare(b.hora || ''));
-const localeMap = {es:'es-ES', en:'en-US', fr:'fr-FR', de:'de-DE', it:'it-IT', pt:'pt-PT', ru:'ru-RU', zh:'zh-CN'};
-const fechaFormateada = new Date(fecha).toLocaleDateString(localeMap[currentLang] || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-;document.getElementById('modalTrainingDayTitle').textContent = `🎓 Clases del ${fechaFormateada}`;
+const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+document.getElementById('modalTrainingDayTitle').textContent = `🎓 Clases del ${fechaFormateada}`;
 const contenido = document.getElementById('modalTrainingDayContent');
 if (clasesDia.length === 0) {
 contenido.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No hay clases de adiestramiento para este día</p>';
@@ -2927,114 +2854,27 @@ else alert('❌ Error: ' + res.error);
 }
 };
 window.editarFactura = (id) => {
-    const f = facturasDB.find(x => x.id === id);
-    if (!f) return;
-    
-    document.getElementById('editFacturaId').value = id;
-    document.getElementById('editFacturaCliente').value = f.cliente || '';
-    document.getElementById('editFacturaFecha').value = f.fecha || '';
-    document.getElementById('editFacturaNumero').value = f.numero || '';
-    
-    // Cargar conceptos existentes
-    const tbody = document.getElementById('listaConceptosEdit');
-    tbody.innerHTML = '';
-    
-    if (f.conceptos && f.conceptos.length > 0) {
-        f.conceptos.forEach(c => {
-            añadirFilaConceptoEdit(c.servicio, c.cantidad, c.precio);
-        });
-    } else {
-        // Si no hay conceptos detallados (facturas antiguas), creamos una fila genérica
-        añadirFilaConceptoEdit(f.servicio || 'Servicio General', 1, f.total || 0);
-    }
-    
-    calcularTotalesFacturaEdit();
-    document.getElementById('modalEditarFactura').style.display = 'block';
+const f = facturasDB.find(x => x.id === id);
+if (!f) return;
+document.getElementById('editFacturaId').value = id;
+document.getElementById('editFacturaCliente').value = f.cliente || '';
+document.getElementById('editFacturaServicio').value = f.conceptos && f.conceptos.length > 0 ? f.conceptos.map(c => c.servicio).join(', ') : '';
+document.getElementById('editFacturaTotal').value = f.total || '';
+document.getElementById('editFacturaFecha').value = f.fecha || '';
+document.getElementById('modalEditarFactura').style.display = 'block';
 };
-function añadirFilaConceptoEdit(servicio = '', cantidad = 1, precio = 0) {
-    const tbody = document.getElementById('listaConceptosEdit');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td><input type="text" class="servicio-input-edit" value="${servicio}" style="width:100%; padding:5px;"></td>
-        <td><input type="number" class="cantidad-input-edit" value="${cantidad}" min="1" oninput="calcularTotalesFacturaEdit()" style="width:100%; padding:5px;"></td>
-        <td><input type="number" class="precio-input-edit" value="${precio}" step="0.01" oninput="calcularTotalesFacturaEdit()" style="width:100%; padding:5px;"></td>
-        <td class="subtotal-cell-edit">0.00 €</td>
-        <td><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); calcularTotalesFacturaEdit()">🗑️</button></td>
-    `;
-    tbody.appendChild(row);
-    calcularTotalesFacturaEdit();
-}
-
-document.getElementById('btnAñadirConceptoEdit').addEventListener('click', () => {
-    añadirFilaConceptoEdit();
-});
-
-window.calcularTotalesFacturaEdit = () => {
-    let baseTotal = 0;
-    const filas = document.querySelectorAll('#listaConceptosEdit tr');
-    
-    filas.forEach(row => {
-        const cantidad = parseFloat(row.querySelector('.cantidad-input-edit').value) || 0;
-        const precio = parseFloat(row.querySelector('.precio-input-edit').value) || 0;
-        const subtotal = cantidad * precio;
-        row.querySelector('.subtotal-cell-edit').textContent = subtotal.toFixed(2) + ' €';
-        baseTotal += subtotal;
-    });
-    
-    const iva = baseTotal * 0.21;
-    const total = baseTotal + iva;
-    
-    document.getElementById('editTotalBase').textContent = baseTotal.toFixed(2);
-    document.getElementById('editTotalIVA').textContent = iva.toFixed(2);
-    document.getElementById('editTotalFinal').textContent = total.toFixed(2);
-};
-
 window.guardarEdicionFactura = async () => {
-    const id = document.getElementById('editFacturaId').value;
-    if (!id) return;
-    
-    // Recopilar nuevos conceptos
-    const nuevosConceptos = [];
-    const filas = document.querySelectorAll('#listaConceptosEdit tr');
-    
-    filas.forEach(row => {
-        const servicio = row.querySelector('.servicio-input-edit').value;
-        const cantidad = parseFloat(row.querySelector('.cantidad-input-edit').value) || 0;
-        const precio = parseFloat(row.querySelector('.precio-input-edit').value) || 0;
-        if (servicio) {
-            nuevosConceptos.push({ servicio, cantidad, precio, subtotal: (cantidad * precio).toFixed(2) });
-        }
-    });
-    
-    if (nuevosConceptos.length === 0) {
-        alert('⚠️ Debe haber al menos un concepto');
-        return;
-    }
-    
-    const totalFinal = parseFloat(document.getElementById('editTotalFinal').textContent);
-    const baseImponible = parseFloat(document.getElementById('editTotalBase').textContent);
-    const iva = parseFloat(document.getElementById('editTotalIVA').textContent);
-    
-    const datos = {
-        conceptos: nuevosConceptos,
-        total: totalFinal,
-        baseImponible: baseImponible,
-        iva: iva
-    };
-    
-    try {
-        const res = await actualizarFactura(id, datos);
-        if (res.success) {
-            alert(t('alert_saved') || '✅ Factura actualizada correctamente');
-            document.getElementById('modalEditarFactura').style.display = 'none';
-            mostrarFacturas();
-            calcularEstadisticas();
-        } else {
-            alert('❌ Error: ' + res.error);
-        }
-    } catch (e) {
-        alert('❌ Error crítico: ' + e.message);
-    }
+const id = document.getElementById('editFacturaId').value;
+if (!id) return;
+const total = parseFloat(document.getElementById('editFacturaTotal').value) || 0;
+const servicio = document.getElementById('editFacturaServicio').value.trim();
+const res = await actualizarFactura(id, { servicio, total });
+if (res.success) {
+alert('✅ Factura actualizada');
+document.getElementById('modalEditarFactura').style.display = 'none';
+} else {
+alert('❌ Error: ' + res.error);
+}
 };
 window.imprimirFacturaIndividual = async (id) => {
 const res = await imprimirFactura(id);
@@ -3380,7 +3220,8 @@ abrirVentanaImpresion(contenido);
 window.imprimirCalendario = () => {
 const year = calendarDate.getFullYear();
 const month = calendarDate.getMonth();
-const meses = I18N[currentLang].months;let gridHTML = '';
+const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+let gridHTML = '';
 const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 diasSemana.forEach(d => { gridHTML += `<div style="background:#334155;color:white;padding:10px;text-align:center;font-weight:bold">${d}</div>`; });
 const primerDia = new Date(year, month, 1).getDay();
@@ -3943,27 +3784,19 @@ const I18N = {
         'tab_invoices': '📄 发票', 'tab_employees': '👥 员工', 'tab_whatsapp': '💬 WhatsApp',
         'stat_dogs': '狗狗', 'stat_owners': '👤 主人', 'stat_reservations': '📅 预订', 'stat_hotel_slots': '🏨 酒店床位'
     }
+};
+
 let currentLang = localStorage.getItem('lyra_lang') || 'es';
-
-// ✅ FUNCIÓN HELPER para traducir textos dinámicos
-window.t = (key) => {
-    const texts = I18N[currentLang] || I18N.es;
-    return texts[key] || I18N.es[key] || key;
-};
-
-// ✅ FUNCIÓN para obtener array traducido (meses, días, tipos)
-window.tArray = (key, index) => {
-    const texts = I18N[currentLang] || I18N.es;
-    return texts[key] ? texts[key][index] : I18N.es[key][index];
-};
 
 // Función rápida de traducción
 window.changeLanguage = (lang) => {
-    if (!I18N[lang]) lang = 'es';
+    if (!I18N[lang]) lang = 'es'; // Fallback a español si el idioma no existe
     currentLang = lang;
     localStorage.setItem('lyra_lang', lang);
+    
     const texts = I18N[lang];
-
+    
+    // 1. Traducir elementos con data-i18n (Instantáneo)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (texts[key]) {
@@ -3972,6 +3805,7 @@ window.changeLanguage = (lang) => {
         }
     });
 
+    // 2. Sincronizar selector
     const headerLang = document.getElementById('headerLangSelector');
     if (headerLang) headerLang.value = lang;
 };
